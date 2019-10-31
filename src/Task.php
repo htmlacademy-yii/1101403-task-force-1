@@ -4,6 +4,7 @@ class Task
 {
     // Константы:
     const ACTIONS = [
+        'answer' => null,
         'finish' => ['finished'],
         'cancel' => ['cancelled'],
         'refuse' => ['failed'],
@@ -55,7 +56,11 @@ class Task
     public function ifAction(string $action):? string
     {
         if (isset($this->ACTIONS[$action])) {
-            $statusNew = $this->ACTIONS[$action];
+            if ($this->ACTIONS[$action] === null) {
+                $statusNew = $this->statusActive;
+            } else {
+                $statusNew = $this->ACTIONS[$action];
+            }
         } else {
             $statusNew = null;
         }
