@@ -19,7 +19,7 @@ class Task
     public $statusActive = null;
 
     // Конструктор класса
-    public function _construct($idClient, $idExecutive, $dtEnd, $statusActive)
+    public function __construct($idClient, $idExecutive, $dtEnd, $statusActive)
     {
         $this->idClient = $idClient;
         $this->idExecutive = $idExecutive;
