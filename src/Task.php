@@ -15,11 +15,11 @@ class Task
     /**
      * Константы возможных статусов
      */
-    const STATUS_NEW = ['' => 'new'];
-    const STATUS_COMPLETE = ['complete' => 'completed'];
-    const STATUS_CANCEL = ['cancel' => 'cancelled'];
-    const STATUS_REFUSE = ['refuse' => 'failed'];
-    const STATUS_APPOINT = ['appoint' => 'in progress'];
+    const STATUS_NEW = 'new';
+    const STATUS_COMPLETE = 'completed';
+    const STATUS_CANCEL = 'cancelled';
+    const STATUS_REFUSE = 'failed';
+    const STATUS_APPOINT = 'in progress';
 
     /**
      * Константы возможных ролей
@@ -68,7 +68,7 @@ class Task
      *
      * @return array $actions
      */
-    public function showActions(): array
+    public function getActions(): array
     {
         $actions = [self::ACTION_ANSWER, self::ACTION_COMPLETE, self::ACTION_CANCEL, self::ACTION_REFUSE, self::ACTION_APPOINT];
         return $actions;
@@ -78,15 +78,9 @@ class Task
      *
      * @return array
      */
-    public function showStatuses(): array
+    public function getStatuses(): array
     {
-        $statuses = [
-            self::STATUS_NEW[''],
-            self::STATUS_COMPLETE['complete'],
-            self::STATUS_CANCEL['cancel'],
-            self::STATUS_REFUSE['refuse'],
-            self::STATUS_APPOINT['appoint']
-        ];
+        $statuses = [self::STATUS_NEW, self::STATUS_COMPLETE, self::STATUS_CANCEL, self::STATUS_REFUSE, self::STATUS_APPOINT];
         return $statuses;
     }
 
@@ -98,17 +92,16 @@ class Task
     public function ifAction(string $action): string
     {
         $connections = [
-            self::STATUS_COMPLETE,
-            self::STATUS_CANCEL,
-            self::STATUS_REFUSE,
-            self::STATUS_APPOINT
+            self::ACTION_COMPLETE => self::STATUS_COMPLETE,
+            self::ACTION_CANCEL => self::STATUS_CANCEL,
+            self::ACTION_REFUSE => self::STATUS_REFUSE,
+            self::ACTION_APPOINT => self::STATUS_APPOINT,
+            self::ACTION_ANSWER => $this->statusActive
         ];
-        $statusNew = $this->statusActive;
-        foreach ($connections as $key => $value) {
-            foreach ($value as $act => $status) {
-                if ($action === $act) {
-                    $statusNew = $status;
-                }
+        $statusNew = null;
+        foreach ($connections as $act => $status) {
+            if ($action === $act) {
+                $statusNew = $status;
             }
         }
         return $statusNew;
