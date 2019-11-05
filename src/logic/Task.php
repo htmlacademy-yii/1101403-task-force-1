@@ -1,5 +1,5 @@
 <?php
-namespace Htmlacademy;
+namespace Htmlacademy\logic;
 
 class Task
 {
@@ -99,10 +99,8 @@ class Task
             self::ACTION_ANSWER => $this->statusActive
         ];
         $statusNew = null;
-        foreach ($connections as $act => $status) {
-            if ($action === $act) {
-                $statusNew = $status;
-            }
+        if (array_key_exists($action, $connections)) {
+            $statusNew = $connections[$action];
         }
         return $statusNew;
     }
