@@ -1,5 +1,5 @@
 <?php
-use \Htmlacademy\logic\Task;
+use \Htmlacademy\Logic\Task;
 require_once('vendor/autoload.php');
 
 $task = new Task(78, 54, '30-12-2019');

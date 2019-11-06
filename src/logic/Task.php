@@ -1,5 +1,5 @@
 <?php
-namespace Htmlacademy\logic;
+namespace Htmlacademy\Logic;
 
 class Task
 {
