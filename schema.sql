@@ -87,6 +87,7 @@ CREATE TABLE categories (
 );
 CREATE TABLE alerts (
     id              INT UNSIGHNED NOT NULL AUTO_INCREMENT,
+    user_id         INT UNSIGHNED NOT NULL,
     answer_id       INT UNSIGHNED NOT NULL,
     task_id         INT UNSIGHNED NOT NULL,
     message_id      INT UNSIGHNED NOT NULL,
@@ -96,7 +97,8 @@ CREATE TABLE alerts (
     PRIMARY KEY (id),
     FOREIGN KEY (answer_id) REFERENCES answers(id),
     FOREIGN KEY (task_id) REFERENCES tasks(id),
-    FOREIGN KEY (message_id) REFERENCES messages(id)
+    FOREIGN KEY (message_id) REFERENCES messages(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 CREATE TABLE answers (
     id              INT UNSIGHNED NOT NULL AUTO_INCREMENT,
