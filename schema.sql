@@ -45,8 +45,6 @@ CREATE TABLE users (
     longitude       DECIMAL(9,6),
     latitude        DECIMAL(9,6),
     bio             VARCHAR(65535),
-    tasks_fld       INT UNSIGHNED,
-    tasks_publshd   INT UNSIGHNED,
     PRIMARY KEY (id),
     FOREIGN KEY (city_id) REFERENCES cities(id)
 );
