@@ -61,18 +61,13 @@ CREATE TABLE reviews (
     FOREIGN KEY (executive_id) REFERENCES users(id),
     FOREIGN KEY (task_id) REFERENCES tasks(id)
 );
-CREATE TABLE majors (
-    id              INT UNSIGHNED NOT NULL AUTO_INCREMENT,
-    title           VARCHAR(64),
-    PRIMARY KEY (id)
-);
-CREATE TABLE us_majors (
+CREATE TABLE users_specifications (
     id              INT UNSIGHNED NOT NULL AUTO_INCREMENT,
     user_id         INT UNSIGHNED NOT NULL,
-    maj_id          INT UNSIGHNED NOT NULL,
+    cat_id          INT UNSIGHNED NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (maj_id) REFERENCES majors(id)
+    FOREIGN KEY (cat_id) REFERENCES categories(id)
 );
 CREATE TABLE cities (
     id              INT UNSIGHNED NOT NULL AUTO_INCREMENT,
@@ -88,19 +83,19 @@ CREATE TABLE categories (
 CREATE TABLE alerts (
     id              INT UNSIGHNED NOT NULL AUTO_INCREMENT,
     user_id         INT UNSIGHNED NOT NULL,
-    answer_id       INT UNSIGHNED NOT NULL,
+    reply_id       INT UNSIGHNED NOT NULL,
     task_id         INT UNSIGHNED NOT NULL,
     message_id      INT UNSIGHNED NOT NULL,
     note_type       ENUM('answer', 'message', 'refuse', 'start', 'finish') NOT NULL,
     is_new          TINYINT(1) UNSIGHNED NOT NULL,
     dt_create       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    FOREIGN KEY (answer_id) REFERENCES answers(id),
+    FOREIGN KEY (reply_id) REFERENCES task_replies(id),
     FOREIGN KEY (task_id) REFERENCES tasks(id),
     FOREIGN KEY (message_id) REFERENCES messages(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
-CREATE TABLE answers (
+CREATE TABLE task_replies (
     id              INT UNSIGHNED NOT NULL AUTO_INCREMENT,
     executive_id    INT UNSIGHNED NOT NULL,
     task_id         INT UNSIGHNED NOT NULL,
@@ -121,7 +116,7 @@ CREATE TABLE attachments (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (task_id) REFERENCES tasks(id)
 );
-CREATE TABLE favorites (
+CREATE TABLE clients_favorites_executors (
     id              INT UNSIGHNED NOT NULL AUTO_INCREMENT,
     client_id       INT UNSIGHNED NOT NULL,
     executive_id    INT UNSIGHNED NOT NULL,
