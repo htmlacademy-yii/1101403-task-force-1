@@ -1,8 +1,8 @@
 <?php
-use \Htmlacademy\Logic\Task;
+use \Htmlacademy\Logic\AvailableActions;
 require_once('vendor/autoload.php');
 
-$task = new Task(78, 54, '30-12-2019');
+$task = new AvailableActions(78, 54, '30-12-2019');
 
 echo 'Метод getActions: ';
 var_dump($task->getActions());
