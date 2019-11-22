@@ -1,16 +1,16 @@
 <?php
 namespace Htmlacademy\Logic;
 
-class Task
+class AvailableActions
 {
     /**
      * Константы возможных действий
      */
-    const ACTION_ANSWER = 'answer';
-    const ACTION_COMPLETE = 'complete';
-    const ACTION_CANCEL = 'cancel';
-    const ACTION_REFUSE = 'refuse';
-    const ACTION_APPOINT = 'appoint';
+    const ACTION_ANSWER = 'AnswerAction';
+    const ACTION_COMPLETE = 'CompleteAction';
+    const ACTION_CANCEL = 'CancelAction';
+    const ACTION_REFUSE = 'RefuseAction';
+    const ACTION_APPOINT = 'AppointAction';
 
     /**
      * Константы возможных статусов
@@ -49,7 +49,7 @@ class Task
     public $statusActive;
 
     /**
-     * Конструктор класса Task
+     * Конструктор класса AvailableActions
      * @param $idClient
      * @param $idExecutive
      * @param $dtEnd
