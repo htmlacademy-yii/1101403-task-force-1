@@ -1,7 +1,7 @@
 <?php
 namespace Htmlacademy\Logic;
 
-class AnswerAction extends AbstractAction
+class ReplyAction extends AbstractAction
 {
     /**
      * Возвращает название класса
@@ -9,7 +9,7 @@ class AnswerAction extends AbstractAction
      */
     static function getTitle()
     {
-        return AnswerAction::class;
+        return 'Откликнуться';
     }
 
     /**
@@ -18,7 +18,7 @@ class AnswerAction extends AbstractAction
      */
     static function getInnerName()
     {
-        return 'answer';
+        return 'reply';
     }
 
     /**
