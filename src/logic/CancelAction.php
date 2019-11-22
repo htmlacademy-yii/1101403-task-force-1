@@ -9,7 +9,7 @@ class CancelAction extends AbstractAction
      */
     static function getTitle()
     {
-        return CancelAction::class;
+        return 'Отменить';
     }
 
     /**

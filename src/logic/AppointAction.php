@@ -9,7 +9,7 @@ class AppointAction extends AbstractAction
      */
     static function getTitle()
     {
-        return AppointAction::class;
+        return 'Назначить';
     }
 
     /**

@@ -9,7 +9,7 @@ class CompleteAction extends AbstractAction
      */
     static function getTitle()
     {
-        return CompleteAction::class;
+        return 'Завершить';
     }
 
     /**

@@ -9,7 +9,7 @@ class RefuseAction extends AbstractAction
      */
     static function getTitle()
     {
-        return RefuseAction::class;
+        return 'Отказаться';
     }
 
     /**

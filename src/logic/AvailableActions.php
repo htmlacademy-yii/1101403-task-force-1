@@ -6,7 +6,7 @@ class AvailableActions
     /**
      * Константы возможных действий
      */
-    const ACTION_ANSWER = 'AnswerAction';
+    const ACTION_REPLY = 'ReplyAction';
     const ACTION_COMPLETE = 'CompleteAction';
     const ACTION_CANCEL = 'CancelAction';
     const ACTION_REFUSE = 'RefuseAction';
@@ -70,7 +70,7 @@ class AvailableActions
      */
     public function getActions(): array
     {
-        $actions = [self::ACTION_ANSWER, self::ACTION_COMPLETE, self::ACTION_CANCEL, self::ACTION_REFUSE, self::ACTION_APPOINT];
+        $actions = [self::ACTION_REPLY, self::ACTION_COMPLETE, self::ACTION_CANCEL, self::ACTION_REFUSE, self::ACTION_APPOINT];
         return $actions;
     }
 
@@ -96,7 +96,7 @@ class AvailableActions
             self::ACTION_CANCEL => self::STATUS_CANCEL,
             self::ACTION_REFUSE => self::STATUS_REFUSE,
             self::ACTION_APPOINT => self::STATUS_APPOINT,
-            self::ACTION_ANSWER => $this->statusActive
+            self::ACTION_REPLY => $this->statusActive
         ];
         $statusNew = null;
         if (array_key_exists($action, $connections)) {
