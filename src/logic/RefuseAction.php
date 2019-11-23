@@ -23,11 +23,13 @@ class RefuseAction extends AbstractAction
 
     /**
      * Проверяет, разрешено ли действие
+     *
+     * @param int $clientId
      * @return bool
      */
-    static function isPermitted()
+    static function isPermitted($executiveId)
     {
-        if ($role === 'executive' && $status === 'in progress') {
+        if ($executiveId === $userId) {
             return true;
         }
         return false;

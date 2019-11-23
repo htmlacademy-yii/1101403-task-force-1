@@ -23,11 +23,13 @@ class CompleteAction extends AbstractAction
 
     /**
      * Проверяет, разрешено ли действие
+     *
+     * @param int $clientId
      * @return bool
      */
-    static function isPermitted()
+    static function isPermitted($clientId)
     {
-        if ($role === 'client' && $status === 'in progress') {
+        if ($clientId === $userId) {
             return true;
         }
         return false;

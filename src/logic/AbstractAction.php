@@ -16,18 +16,27 @@ abstract class AbstractAction
     protected $status;
 
     /**
+     * id пользователя
+     * @var int
+     */
+    protected $userId;
+
+    /**
      * Конструктор класса AbstractAction.
      * @param $role string
+     * @param $status string
+     * @param $userId int
      */
-    function __construct($role, $status)
+    function __construct($role, $status, $userId)
     {
         $this->role = $role;
         $this->status = $status;
+        $this->userId = $userId;
     }
 
     abstract static function getTitle();
 
     abstract static function getInnerName();
 
-    abstract static function isPermitted();
+    abstract static function isPermitted($roleId);
 }

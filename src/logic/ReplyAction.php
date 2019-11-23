@@ -23,11 +23,13 @@ class ReplyAction extends AbstractAction
 
     /**
      * Проверяет, разрешено ли действие
+     *
+     * @param int $executiveId
      * @return bool
      */
-    static function isPermitted()
+    static function isPermitted($executiveId)
     {
-        if ($role === 'executive' && $status === 'new') {
+        if ($executiveId === $userId) {
             return true;
         }
         return false;
