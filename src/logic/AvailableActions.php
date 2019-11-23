@@ -6,20 +6,20 @@ class AvailableActions
     /**
      * Константы возможных действий
      */
-    const ACTION_REPLY = 'ReplyAction';
-    const ACTION_COMPLETE = 'CompleteAction';
-    const ACTION_CANCEL = 'CancelAction';
-    const ACTION_REFUSE = 'RefuseAction';
-    const ACTION_APPOINT = 'AppointAction';
+    const ACTION_REPLY = 'Htmlacademy\Logic\ReplyAction';
+    const ACTION_COMPLETE = 'Htmlacademy\Logic\CompleteAction';
+    const ACTION_CANCEL = 'Htmlacademy\Logic\CancelAction';
+    const ACTION_REFUSE = 'Htmlacademy\Logic\RefuseAction';
+    const ACTION_APPOINT = 'Htmlacademy\Logic\AppointAction';
 
     /**
      * Константы возможных статусов
      */
     const STATUS_NEW = 'new';
-    const STATUS_COMPLETE = 'completed';
-    const STATUS_CANCEL = 'cancelled';
-    const STATUS_REFUSE = 'failed';
-    const STATUS_APPOINT = 'in progress';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_CANCELLED = 'cancelled';
+    const STATUS_FAILED = 'failed';
+    const STATUS_IN_PROGRESS = 'in progress';
 
     /**
      * Константы возможных ролей
@@ -31,12 +31,12 @@ class AvailableActions
      * id заказчика
      * @var int
      */
-    public $idClient;
+    public $clientId;
     /**
      * id исполнителя
      * @var int
      */
-    public $idExecutive;
+    public $executiveId;
     /**
      * Дата окончания существования задания
      * @var string
@@ -50,15 +50,15 @@ class AvailableActions
 
     /**
      * Конструктор класса AvailableActions
-     * @param $idClient
-     * @param $idExecutive
+     * @param $clientId
+     * @param $executiveId
      * @param $dtEnd
      * @param string $statusActive
      */
-    public function __construct($idClient, $idExecutive, $dtEnd, $statusActive = 'new')
+    public function __construct($clientId, $executiveId, $dtEnd, $statusActive = 'new')
     {
-        $this->idClient = $idClient;
-        $this->idExecutive = $idExecutive;
+        $this->clientId = $clientId;
+        $this->executiveId = $executiveId;
         $this->dtEnd = $dtEnd;
         $this->statusActive = $statusActive;
     }
@@ -80,29 +80,64 @@ class AvailableActions
      */
     public function getStatuses(): array
     {
-        $statuses = [self::STATUS_NEW, self::STATUS_COMPLETE, self::STATUS_CANCEL, self::STATUS_REFUSE, self::STATUS_APPOINT];
+        $statuses = [self::STATUS_NEW, self::STATUS_COMPLETED, self::STATUS_CANCELLED, self::STATUS_FAILED, self::STATUS_IN_PROGRESS];
         return $statuses;
     }
 
     /** Возвращает статус, в который перейдет задача для указанного действия
      *
-     * @param string $action - действие
-     * @return string|null $statusNew
+     * @param string $actionClassName - название класса действия
+     * @return string $statusNew
      */
-    public function ifAction(string $action): string
+    public function ifAction(string $actionClassName): string
     {
         $connections = [
-            self::ACTION_COMPLETE => self::STATUS_COMPLETE,
-            self::ACTION_CANCEL => self::STATUS_CANCEL,
-            self::ACTION_REFUSE => self::STATUS_REFUSE,
-            self::ACTION_APPOINT => self::STATUS_APPOINT,
+            self::ACTION_COMPLETE => self::STATUS_COMPLETED,
+            self::ACTION_CANCEL => self::STATUS_CANCELLED,
+            self::ACTION_REFUSE => self::STATUS_FAILED,
+            self::ACTION_APPOINT => self::STATUS_IN_PROGRESS,
             self::ACTION_REPLY => $this->statusActive
         ];
         $statusNew = null;
-        if (array_key_exists($action, $connections)) {
-            $statusNew = $connections[$action];
+        if (array_key_exists($actionClassName, $connections)) {
+            $statusNew = $connections[$actionClassName];
         }
         return $statusNew;
+    }
+
+    /**
+     *
+     * @param string $role роль пользователя
+     * @param int $userId
+     * @return array $openActions список из названий классов действий
+     */
+    public function getOpenActions(string $role, int $userId): array
+    {
+        $openActions = [];
+        if ($role === 'client' && $userId === $this->clientId) {
+            if ($this->statusActive === self::STATUS_NEW ) {
+                $openActions = [
+                    self::ACTION_APPOINT,
+                    self::ACTION_CANCEL
+                ];
+            } elseif ($this->statusActive === self::STATUS_IN_PROGRESS) {
+                $openActions = [
+                    self::ACTION_COMPLETE
+                ];
+            }
+        } elseif ($role === 'executive' && $userId === $this->executiveId) {
+            if ($this->statusActive === self::STATUS_NEW) {
+                $openActions = [
+                    self::ACTION_REPLY
+                ];
+            } elseif ($this->statusActive === self::STATUS_IN_PROGRESS) {
+                $openActions = [
+                    self::ACTION_REFUSE
+                ];
+            }
+        }
+
+        return $openActions;
     }
 }
 
