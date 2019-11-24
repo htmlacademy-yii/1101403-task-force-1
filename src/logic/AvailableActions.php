@@ -6,11 +6,11 @@ class AvailableActions
     /**
      * Константы возможных действий
      */
-    const ACTION_REPLY = 'Htmlacademy\Logic\ReplyAction';
-    const ACTION_COMPLETE = 'Htmlacademy\Logic\CompleteAction';
-    const ACTION_CANCEL = 'Htmlacademy\Logic\CancelAction';
-    const ACTION_REFUSE = 'Htmlacademy\Logic\RefuseAction';
-    const ACTION_APPOINT = 'Htmlacademy\Logic\AppointAction';
+    const ACTION_REPLY = 'reply';
+    const ACTION_COMPLETE = 'complete';
+    const ACTION_CANCEL = 'cancel';
+    const ACTION_REFUSE = 'refuse';
+    const ACTION_APPOINT = 'appoint';
 
     /**
      * Константы возможных статусов
@@ -99,8 +99,9 @@ class AvailableActions
             self::ACTION_REPLY => $this->statusActive
         ];
         $statusNew = null;
-        if (array_key_exists($actionClassName, $connections)) {
-            $statusNew = $connections[$actionClassName];
+        $key = (!empty($actionClassName)) ? $actionClassName::getInnerName() : '';
+        if (array_key_exists($key, $connections)) {
+            $statusNew = $connections[$actionClassName::getInnerName()];
         }
         return $statusNew;
     }
