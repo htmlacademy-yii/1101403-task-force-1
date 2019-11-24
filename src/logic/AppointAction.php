@@ -27,7 +27,7 @@ class AppointAction extends AbstractAction
      * @param int $clientId
      * @return bool
      */
-    static function isPermitted($clientId)
+    static function isPermitted($userId, $clientId)
     {
         if ($clientId === $userId) {
             return true;

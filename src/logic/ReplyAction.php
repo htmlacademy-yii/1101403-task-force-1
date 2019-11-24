@@ -27,7 +27,7 @@ class ReplyAction extends AbstractAction
      * @param int $executiveId
      * @return bool
      */
-    static function isPermitted($executiveId)
+    static function isPermitted($userId, $executiveId)
     {
         if ($executiveId === $userId) {
             return true;

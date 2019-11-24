@@ -15,11 +15,6 @@ abstract class AbstractAction
      */
     protected $status;
 
-    /**
-     * id пользователя
-     * @var int
-     */
-    protected $userId;
 
     /**
      * Конструктор класса AbstractAction.
@@ -38,5 +33,5 @@ abstract class AbstractAction
 
     abstract static function getInnerName();
 
-    abstract static function isPermitted($roleId);
+    abstract static function isPermitted($userId, $roleId);
 }

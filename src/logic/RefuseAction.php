@@ -27,7 +27,7 @@ class RefuseAction extends AbstractAction
      * @param int $clientId
      * @return bool
      */
-    static function isPermitted($executiveId)
+    static function isPermitted($userId, $executiveId)
     {
         if ($executiveId === $userId) {
             return true;
