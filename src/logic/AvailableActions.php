@@ -6,11 +6,11 @@ class AvailableActions
     /**
      * Константы возможных действий
      */
-    const ACTION_REPLY = 'reply';
-    const ACTION_COMPLETE = 'complete';
-    const ACTION_CANCEL = 'cancel';
-    const ACTION_REFUSE = 'refuse';
-    const ACTION_APPOINT = 'appoint';
+    const ACTION_REPLY = ReplyAction::class;
+    const ACTION_COMPLETE = CompleteAction::class;
+    const ACTION_CANCEL = CancelAction::class;
+    const ACTION_REFUSE = RefuseAction::class;
+    const ACTION_APPOINT = AppointAction::class;
 
     /**
      * Константы возможных статусов
@@ -99,9 +99,8 @@ class AvailableActions
             self::ACTION_REPLY => $this->statusActive
         ];
         $statusNew = null;
-        $key = (!empty($actionClassName)) ? $actionClassName::getInnerName() : '';
-        if (array_key_exists($key, $connections)) {
-            $statusNew = $connections[$actionClassName::getInnerName()];
+        if (array_key_exists($actionClassName, $connections)) {
+            $statusNew = $connections[$actionClassName];
         }
         return $statusNew;
     }
