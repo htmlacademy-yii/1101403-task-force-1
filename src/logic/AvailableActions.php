@@ -63,6 +63,9 @@ class AvailableActions
             throw new ErrorHandler('Такого статуса не существует', __DIR__, 63);
         };
 
+        if (strtotime($dtEnd) < strtotime('tomorrow')) {
+            throw new ErrorHandler('Время окончания задания должно быть хотя бы на один день больше сегодняшней даты', __DIR__, 67);
+        }
         $this->clientId = $clientId;
         $this->executiveId = $executiveId;
         $this->dtEnd = $dtEnd;
