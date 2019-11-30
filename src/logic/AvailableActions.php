@@ -1,5 +1,6 @@
 <?php
 namespace Htmlacademy\Logic;
+use Htmlacademy\ErrorHandlers\ErrorHandler;
 
 class AvailableActions
 {
@@ -50,13 +51,18 @@ class AvailableActions
 
     /**
      * Конструктор класса AvailableActions
-     * @param $clientId
-     * @param $executiveId
-     * @param $dtEnd
+     * @param int $clientId
+     * @param int $executiveId
+     * @param string $dtEnd
      * @param string $statusActive
      */
-    public function __construct($clientId, $executiveId, $dtEnd, $statusActive = 'new')
+    public function __construct(int $clientId, int $executiveId, string $dtEnd, $statusActive = 'new')
     {
+        $statusConst = 'self::STATUS_' . strtoupper($statusActive);
+        if (!defined($statusConst)) {
+            throw new ErrorHandler('Такого статуса не существует', __DIR__, 63);
+        };
+
         $this->clientId = $clientId;
         $this->executiveId = $executiveId;
         $this->dtEnd = $dtEnd;
