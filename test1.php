@@ -1,8 +1,14 @@
 <?php
 use \Htmlacademy\Logic\AvailableActions;
+use \Htmlacademy\ErrorHandlers\ErrorHandler;
 require_once('vendor/autoload.php');
 
-$task = new AvailableActions(78, 54, '30-12-2019', 'in progress');
+try {
+    $task = new AvailableActions(78, 54, '30-12-2019', 'in progress');
+}
+catch (ErrorHandler $exception) {
+
+}
 
 echo 'Метод getActions: ';
 var_dump($task->getActions());
