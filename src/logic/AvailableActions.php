@@ -29,21 +29,6 @@ class AvailableActions
     const ROLE_EXECUTIVE = 'executive';
 
     /**
-     * id заказчика
-     * @var int
-     */
-    public $clientId;
-    /**
-     * id исполнителя
-     * @var int
-     */
-    public $executiveId;
-    /**
-     * Дата окончания существования задания
-     * @var string
-     */
-    public $dtEnd;
-    /**
      * статус задания
      * @var string
      */
@@ -56,16 +41,12 @@ class AvailableActions
      * @param string $dtEnd
      * @param string $statusActive
      */
-    public function __construct(int $clientId, int $executiveId, string $dtEnd, $statusActive = 'new')
+    public function __construct($statusActive = 'new')
     {
-        $statusConst = 'self::STATUS_' . strtoupper($statusActive);
-        if (!defined($statusConst)) {
-            throw new ErrorHandler('Такого статуса не существует', __DIR__, 63);
+        if (!in_array($statusActive, $this->getStatuses())) {
+            throw new ErrorHandler('Такого статуса не существует', __FILE__, __LINE__);
         };
 
-        $this->clientId = $clientId;
-        $this->executiveId = $executiveId;
-        $this->dtEnd = $dtEnd;
         $this->statusActive = $statusActive;
     }
 
@@ -80,7 +61,8 @@ class AvailableActions
         return $actions;
     }
 
-    /** Возвращает список статусов
+    /**
+     * Возвращает список статусов
      *
      * @return array
      */
@@ -90,13 +72,28 @@ class AvailableActions
         return $statuses;
     }
 
-    /** Возвращает статус, в который перейдет задача для указанного действия
+    /**
+     * Возвращает список ролей
+     *
+     * @return array
+     */
+    public function getRoles(): array
+    {
+        $roles = [self::ROLE_CLIENT, self::ROLE_EXECUTIVE];
+        return $roles;
+    }
+
+    /**
+     * Возвращает статус, в который перейдет задача для указанного действия
      *
      * @param string $actionClassName - название класса действия
      * @return string $statusNew
      */
     public function ifAction(string $actionClassName): string
     {
+        if (!in_array($actionClassName, $this->getActions())) {
+            throw new ErrorHandler('Такого действия не существует', __FILE__, __LINE__);
+        }
         $connections = [
             self::ACTION_COMPLETE => self::STATUS_COMPLETED,
             self::ACTION_CANCEL => self::STATUS_CANCELLED,
@@ -115,12 +112,16 @@ class AvailableActions
      *
      * @param string $role роль пользователя
      * @param int $userId
-     * @return array $openActions список из названий классов действий
+     * @param Task $task - объект задачи
+     * @return array $openActions список из названий доступных классов действий
      */
-    public function getOpenActions(string $role, int $userId): array
+    public function getOpenActions(Task $task, string $role, int $userId): array
     {
+        if (!in_array($role, $this->getRoles())) {
+            throw new ErrorHandler('Такой роли не существует', __FILE__, __LINE__);
+        }
         $openActions = [];
-        if ($role === 'client' && $userId === $this->clientId) {
+        if ($role === 'client' && $userId === $task->getClientId()) {
             if ($this->statusActive === self::STATUS_NEW ) {
                 $openActions = [
                     self::ACTION_APPOINT,
@@ -131,7 +132,7 @@ class AvailableActions
                     self::ACTION_COMPLETE
                 ];
             }
-        } elseif ($role === 'executive' && $userId === $this->executiveId) {
+        } elseif ($role === 'executive' && $userId === $task->getExecutiveId()) {
             if ($this->statusActive === self::STATUS_NEW) {
                 $openActions = [
                     self::ACTION_REPLY
