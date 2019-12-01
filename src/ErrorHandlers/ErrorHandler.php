@@ -9,17 +9,17 @@ class ErrorHandler extends \Exception
      * Текст сообщения об ошибке
      * @var string $message
      */
-    private $message;
+    protected $message;
     /**
      * Путь к файлу, в котором было выкинуто исключение
      * @var string $filePath
      */
-    private $filePath;
+    protected $filePath;
     /**
      * Номер строки, где произошла ошибка
      * @var int $stringNumber
      */
-    private $stringNumber;
+    protected $stringNumber;
 
     public function __construct($message = "", $filePath, $stringNumber, $code = 0, Throwable $previous = null)
     {
