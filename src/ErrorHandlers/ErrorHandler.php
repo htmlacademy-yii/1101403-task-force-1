@@ -1,6 +1,5 @@
 <?php
 namespace Htmlacademy\ErrorHandlers;
-
 use Throwable;
 
 class ErrorHandler extends \Exception
@@ -21,7 +20,7 @@ class ErrorHandler extends \Exception
      */
     protected $stringNumber;
 
-    public function __construct($message = "", $filePath, $stringNumber, $code = 0, Throwable $previous = null)
+    public function __construct($message = "", string $filePath, int $stringNumber, $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
         $this->filePath = $filePath;
@@ -32,7 +31,7 @@ class ErrorHandler extends \Exception
      * Возвращает номер строки с ошибкой
      * @return int
      */
-    public function getStringNumber()
+    public function getStringNumber(): int
     {
         return $this->stringNumber;
     }
@@ -41,7 +40,7 @@ class ErrorHandler extends \Exception
      * Возвращает путь к файлу с ошибкой
      * @return string
      */
-    public function getFilePath()
+    public function getFilePath(): string
     {
         return $this->filePath;
     }
