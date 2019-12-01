@@ -1,10 +1,18 @@
 <?php
 use \Htmlacademy\Logic\AvailableActions;
+use \Htmlacademy\ErrorHandlers\ErrorHandler;
+use \Htmlacademy\Logic\Task;
 require_once('D:\HTML_academy\OSPanel\domains\1101403-task-force-1\vendor\autoload.php');
 
-$task = new AvailableActions(63, 8, '30-12-2019');
+try {
+    $action = new AvailableActions();
+}
+catch (ErrorHandler $e) {
+    echo 'Ошибка: ' . $e->getMessage() . '. ';
+}
+$task = new Task(63, 8, '30-12-2019');
 
-assert($task->getOpenActions('client', 63) === ['appoint','cancel']);
-assert($task->getOpenActions('client', 5) === []);
-assert($task->getOpenActions('executive', 8) === ['reply']);
-assert($task->getOpenActions('executive', 16) === []);
+assert($action->getOpenActions($task,'client', 63) === ['Htmlacademy\Logic\AppointAction','Htmlacademy\Logic\CancelAction']);
+assert($action->getOpenActions($task,'client', 5) === []);
+assert($action->getOpenActions($task,'executive', 8) === ['Htmlacademy\Logic\ReplyAction']);
+assert($action->getOpenActions($task,'executive', 16) === []);
