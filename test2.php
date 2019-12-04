@@ -2,7 +2,7 @@
 use \Htmlacademy\Logic\AvailableActions;
 use \Htmlacademy\ErrorHandlers\ErrorHandler;
 use \Htmlacademy\Logic\Task;
-require_once('D:\HTML_academy\OSPanel\domains\1101403-task-force-1\vendor\autoload.php');
+require_once('vendor/autoload.php');
 
 try {
     $action = new AvailableActions();
