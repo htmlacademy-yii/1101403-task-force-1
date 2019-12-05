@@ -1,5 +1,7 @@
 <?php
 namespace Htmlacademy\Logic;
+use Htmlacademy\MyExceptions\StatusInvalid;
+
 
 class Task
 {
@@ -18,18 +20,28 @@ class Task
      * @var string
      */
     private $dtEnd;
+    /**
+     * Статус задания
+     * @var string
+     */
+    private $statusActive;
 
     /**
      * Конструктор класса Task.
      * @param int $clientId
      * @param int $executiveId
      * @param string|null $dtEnd
+     * @param string $statusActive
      */
-    public function __construct(int $clientId, int $executiveId, string $dtEnd = null)
+    public function __construct(int $clientId, int $executiveId, string $statusActive, string $dtEnd = null)
     {
+        if (!in_array($statusActive, AvailableActions::getStatuses())) {
+            throw new StatusInvalid();
+        }
         $this->clientId = $clientId;
         $this->executiveId = $executiveId;
         $this->dtEnd = $dtEnd;
+        $this->statusActive = $statusActive;
     }
 
     /**
@@ -54,6 +66,14 @@ class Task
     public function getDtEnd(): string
     {
         return $this->dtEnd;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->statusActive;
     }
 
 }
