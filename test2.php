@@ -1,18 +1,37 @@
 <?php
 use \Htmlacademy\Logic\AvailableActions;
-use \Htmlacademy\ErrorHandlers\ErrorHandler;
+use \Htmlacademy\MyExceptions\StatusInvalid;
+use \Htmlacademy\MyExceptions\RoleInvalid;
+use \Htmlacademy\MyExceptions\ActionInvalid;
 use \Htmlacademy\Logic\Task;
+use \Htmlacademy\Logic;
 require_once('vendor/autoload.php');
 
-try {
-    $action = new AvailableActions();
-}
-catch (ErrorHandler $e) {
-    echo 'Ошибка: ' . $e->getMessage() . '. ';
-}
-$task = new Task(63, 8, '30-12-2019');
 
-assert($action->getOpenActions($task,'client', 63) === ['Htmlacademy\Logic\AppointAction','Htmlacademy\Logic\CancelAction']);
+$action = new AvailableActions();
+
+try {
+    $task = new Task(63, 8, 'new', '30-12-2019');
+}
+catch (StatusInvalid $s) {
+    echo 'Ошибка: ' . $s->getMessage();
+}
+
+assert($action->getOpenActions($task,'client', 63) === [Logic\AppointAction::class, Logic\CancelAction::class]);
 assert($action->getOpenActions($task,'client', 5) === []);
-assert($action->getOpenActions($task,'executive', 8) === ['Htmlacademy\Logic\ReplyAction']);
+assert($action->getOpenActions($task,'executive', 8) === [Logic\ReplyAction::class]);
 assert($action->getOpenActions($task,'executive', 16) === []);
+
+try {
+    $action->getOpenActions($task, 'courier', 67);
+}
+catch (RoleInvalid $r) {
+    echo 'Ошибка: ' . $r->getMessage() . '. ';
+}
+
+try {
+    $action->ifAction($task, 'Introduce');
+}
+catch (ActionInvalid $a) {
+    echo 'Ошибка: ' . $a->getMessage() . '. ';
+}

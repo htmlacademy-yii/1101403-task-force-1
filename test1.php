@@ -1,58 +1,59 @@
 <?php
 use \Htmlacademy\Logic\AvailableActions;
-use \Htmlacademy\ErrorHandlers\ErrorHandler;
+use \Htmlacademy\MyExceptions\StatusInvalid;
+use \Htmlacademy\MyExceptions\RoleInvalid;
+use \Htmlacademy\MyExceptions\ActionInvalid;
 use \Htmlacademy\Logic\Task;
+use \Htmlacademy\Logic;
 require_once('vendor/autoload.php');
 
-try {
-    $action = new AvailableActions('in progress');
-}
-catch (ErrorHandler $e) {
-    echo 'Ошибка: ' . $e->getMessage();
-}
-$task = new Task(78, 54, '30-12-2019');
+$action = new AvailableActions();
 
-/**
- * 78, 54, '30-12-2019', 'in progress'
- */
+try {
+    $task = new Task(78, 54, 'in progress', '30-12-2019');
+}
+catch (StatusInvalid $e) {
+    echo 'Ошибка: ' . $e->getMessage() . '. ';
+}
+
 echo 'Метод getActions: ';
 var_dump($action->getActions());
 echo 'Метод getStatuses: ';
 var_dump($action->getStatuses());
 
 
-assert($action->getOpenActions($task,'executive',54) === ['Htmlacademy\Logic\RefuseAction']);
+assert($action->getOpenActions($task,'executive',54) === [Logic\RefuseAction::class]);
 assert($action->getOpenActions($task,'executive',58) === []);
-assert($action->getOpenActions($task,'client', 78) === ['Htmlacademy\Logic\CompleteAction']);
+assert($action->getOpenActions($task,'client', 78) === [Logic\CompleteAction::class]);
 assert($action->getOpenActions($task,'client', 54) === []);
 
-assert($action->ifAction('Htmlacademy\Logic\ReplyAction') === $action->statusActive);
-assert($action->ifAction('Htmlacademy\Logic\CompleteAction') === 'completed');
-assert($action->ifAction('Htmlacademy\Logic\CancelAction') === 'cancelled');
-assert($action->ifAction('Htmlacademy\Logic\RefuseAction') === 'failed');
-assert($action->ifAction('Htmlacademy\Logic\AppointAction') === 'in progress');
+assert($action->ifAction($task, Logic\ReplyAction::class) === $task->getStatus());
+assert($action->ifAction($task, Logic\CompleteAction::class) === 'completed');
+assert($action->ifAction($task, Logic\CancelAction::class) === 'cancelled');
+assert($action->ifAction($task, Logic\RefuseAction::class) === 'failed');
+assert($action->ifAction($task, Logic\AppointAction::class) === 'in progress');
 
+try {
+    $task2 = new Task(55, 68, 'at home', '31-12-2019');
+}
+catch (StatusInvalid $s) {
+    echo 'Ошибка: ' . $s->getMessage() . ', файл: ' . $s->getFile() . ', строка: ' . $s->getLine() . '. ';
+}
 
 try {
     $action->getOpenActions($task, 'customer', 54);
 }
-catch (ErrorHandler $e) {
-    echo 'Ошибка: ' . $e->getMessage() . '. ';
+catch (RoleInvalid $r) {
+    echo 'Ошибка: ' . $r->getMessage() . '. ';
 }
 
 try {
-    $action->ifAction('');
+    $action->ifAction($task, '');
 }
-catch (ErrorHandler $e){
-    echo 'Ошибка: ' . $e->getMessage() . '. ';
+catch (ActionInvalid $a){
+    echo 'Ошибка: ' . $a->getMessage() . '. ';
 }
 
-try {
-    $action = new AvailableActions('invisible');
-}
-catch (ErrorHandler $e) {
-    echo 'Ошибка: ' . $e->getMessage() . ', файл: ' . $e->getFilePath() . ', строка: ' . $e->getStringNumber() . ' ';
-}
 
 
 
