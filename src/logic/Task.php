@@ -27,11 +27,12 @@ class Task
     private $statusActive;
 
     /**
-     * Конструктор класса Task.
+     * Конструктор класса Task
      * @param int $clientId
      * @param int $executiveId
      * @param string|null $dtEnd
      * @param string $statusActive
+     * @throws StatusInvalid
      */
     public function __construct(int $clientId, int $executiveId, string $statusActive, string $dtEnd = null)
     {
