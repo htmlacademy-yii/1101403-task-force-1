@@ -1,4 +1,4 @@
-cities_id,role,name,dt_birth,email,phone,password
+city_id,role,name,dt_birth,email,phone,password
 23,client,Andrew Binner,1990-12-25,fdgdh@mail.ru,89321587463,Hngfjncby3
 11,executive,Karrie Buttress,2000-08-10,kbuttress0@1und1.de,89115256354,JcfoKBYAB4k
 52,executive,Bob Aymer,1978-12-21,baymer1@hp.com,89202658874,ZEE54kg

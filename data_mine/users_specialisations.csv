@@ -1,4 +1,4 @@
-users_id,categories_id
+user_id,cat_id
 1,2
 2,5
 5,3

@@ -15,9 +15,14 @@ CREATE TABLE cities (
     lng            DECIMAL(10,7),
     PRIMARY KEY (id)
 );
+CREATE TABLE stop_words (
+    id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    value      VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
 CREATE TABLE users (
     id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    cities_id       INT UNSIGNED NOT NULL,
+    city_id         INT UNSIGNED NOT NULL,
     role            ENUM('client', 'executive') NOT NULL,
     message_alert   TINYINT(1) UNSIGNED DEFAULT 1 NOT NULL,
     action_alert    TINYINT(1) UNSIGNED DEFAULT 1 NOT NULL,
@@ -38,14 +43,14 @@ CREATE TABLE users (
     latitude        DECIMAL(10,7),
     bio             VARCHAR(16383),
     PRIMARY KEY (id),
-    FOREIGN KEY (cities_id) REFERENCES cities(id)
+    FOREIGN KEY (city_id) REFERENCES cities(id)
 );
 CREATE TABLE tasks (
     id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    users_client_id     INT UNSIGNED NOT NULL,
-    users_executive_id  INT UNSIGNED NOT NULL,
-    categories_id       INT UNSIGNED NOT NULL,
-    cities_id           INT UNSIGNED NOT NULL,
+    client_id           INT UNSIGNED NOT NULL,
+    executive_id        INT UNSIGNED NOT NULL,
+    cat_id              INT UNSIGNED NOT NULL,
+    city_id             INT UNSIGNED NOT NULL,
     status              ENUM('new', 'completed', 'cancelled', 'failed', 'in progress') NOT NULL,
     title               VARCHAR(128) NOT NULL,
     description         VARCHAR(255) NOT NULL,
@@ -56,92 +61,87 @@ CREATE TABLE tasks (
     latitude            DECIMAL(10,7),
     view_count          INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (users_client_id) REFERENCES users(id),
-    FOREIGN KEY (users_executive_id) REFERENCES users(id),
-    FOREIGN KEY (categories_id) REFERENCES categories(id),
-    FOREIGN KEY (cities_id) REFERENCES cities(id)
+    FOREIGN KEY (client_id) REFERENCES users(id),
+    FOREIGN KEY (executive_id) REFERENCES users(id),
+    FOREIGN KEY (cat_id) REFERENCES categories(id),
+    FOREIGN KEY (city_id) REFERENCES cities(id)
 );
 CREATE TABLE reviews (
     id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    users_client_id     INT UNSIGNED NOT NULL,
-    users_executive_id  INT UNSIGNED NOT NULL,
-    tasks_id            INT UNSIGNED NOT NULL,
+    client_id           INT UNSIGNED NOT NULL,
+    executive_id        INT UNSIGNED NOT NULL,
+    task_id             INT UNSIGNED NOT NULL,
     comment             VARCHAR(16383),
     rate                ENUM('1', '2', '3', '4', '5') NOT NULL,
     dt_create           TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (users_client_id) REFERENCES users(id),
-    FOREIGN KEY (users_executive_id) REFERENCES users(id),
-    FOREIGN KEY (tasks_id) REFERENCES tasks(id)
+    FOREIGN KEY (client_id) REFERENCES users(id),
+    FOREIGN KEY (executive_id) REFERENCES users(id),
+    FOREIGN KEY (task_id) REFERENCES tasks(id)
 );
 CREATE TABLE users_specialisations (
     id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    users_id            INT UNSIGNED NOT NULL,
-    categories_id       INT UNSIGNED NOT NULL,
+    user_id             INT UNSIGNED NOT NULL,
+    cat_id              INT UNSIGNED NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (users_id) REFERENCES users(id),
-    FOREIGN KEY (categories_id) REFERENCES categories(id)
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (cat_id) REFERENCES categories(id)
 );
 CREATE TABLE task_replies (
     id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    users_executive_id  INT UNSIGNED NOT NULL,
-    tasks_id            INT UNSIGNED NOT NULL,
+    executive_id        INT UNSIGNED NOT NULL,
+    task_id             INT UNSIGNED NOT NULL,
     comment             VARCHAR(16383),
     price               INT UNSIGNED NOT NULL,
     dt_create           TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (users_executive_id) REFERENCES users(id),
-    FOREIGN KEY (tasks_id) REFERENCES tasks(id)
+    FOREIGN KEY (executive_id) REFERENCES users(id),
+    FOREIGN KEY (task_id) REFERENCES tasks(id)
 );
 CREATE TABLE messages (
     id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    users_author_id     INT UNSIGNED NOT NULL,
-    users_addressee_id  INT UNSIGNED NOT NULL,
-    tasks_id            INT UNSIGNED NOT NULL,
+    author_id           INT UNSIGNED NOT NULL,
+    addressee_id        INT UNSIGNED NOT NULL,
+    task_id             INT UNSIGNED NOT NULL,
     dt_create           TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     text                VARCHAR(16383) NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (users_author_id) REFERENCES users(id),
-    FOREIGN KEY (users_addressee_id) REFERENCES users(id),
-    FOREIGN KEY (tasks_id) REFERENCES tasks(id)
+    FOREIGN KEY (author_id) REFERENCES users(id),
+    FOREIGN KEY (addressee_id) REFERENCES users(id),
+    FOREIGN KEY (task_id) REFERENCES tasks(id)
 );
 CREATE TABLE alerts (
     id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    users_id            INT UNSIGNED NOT NULL,
-    task_replies_id     INT UNSIGNED,
-    tasks_id            INT UNSIGNED NOT NULL,
+    user_id             INT UNSIGNED NOT NULL,
+    reply_id            INT UNSIGNED,
+    task_id             INT UNSIGNED NOT NULL,
     messages_id         INT UNSIGNED,
     note_type           ENUM('answer', 'message', 'refuse', 'start', 'finish') NOT NULL,
     is_new              TINYINT(1) UNSIGNED DEFAULT 1 NOT NULL,
     dt_create           TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (task_replies_id) REFERENCES task_replies(id),
-    FOREIGN KEY (tasks_id) REFERENCES tasks(id),
+    FOREIGN KEY (reply_id) REFERENCES task_replies(id),
+    FOREIGN KEY (task_id) REFERENCES tasks(id),
     FOREIGN KEY (messages_id) REFERENCES messages(id),
-    FOREIGN KEY (users_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 CREATE TABLE attachments (
     id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    users_id        INT UNSIGNED NOT NULL,
-    tasks_id        INT UNSIGNED NOT NULL,
+    user_id         INT UNSIGNED NOT NULL,
+    task_id         INT UNSIGNED NOT NULL,
     attach_type     ENUM('task', 'user') NOT NULL,
     image_path      VARCHAR(128) NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (users_id) REFERENCES users(id),
-    FOREIGN KEY (tasks_id) REFERENCES tasks(id)
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (task_id) REFERENCES tasks(id)
 );
 CREATE TABLE clients_favorites_executors (
     id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    users_client_id     INT UNSIGNED NOT NULL,
-    users_executive_id  INT UNSIGNED NOT NULL,
+    client_id           INT UNSIGNED NOT NULL,
+    executive_id        INT UNSIGNED NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (users_client_id) REFERENCES users(id),
-    FOREIGN KEY (users_executive_id) REFERENCES users(id)
-);
-CREATE TABLE stop_words (
-    id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    value      VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+    FOREIGN KEY (client_id) REFERENCES users(id),
+    FOREIGN KEY (executive_id) REFERENCES users(id)
 );
 
 CREATE FULLTEXT INDEX person ON users(name);

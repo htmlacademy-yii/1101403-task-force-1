@@ -1,4 +1,4 @@
-users_client_id,users_executive_id,tasks_id,comment,rate
+client_id,executive_id,task_id,comment,rate
 5,2,4,"Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.
 
 Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus.

@@ -1,4 +1,4 @@
-users_id,tasks_id,note_type
+user_id,task_id,note_type
 2,5,answer
 3,6,refuse
 6,1,message

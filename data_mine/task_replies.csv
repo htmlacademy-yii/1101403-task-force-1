@@ -1,4 +1,4 @@
-users_executive_id,tasks_id,comment,price
+executive_id,task_id,comment,price
 2,5,"Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae",5500
 3,6,"Fusce consequat. Nulla nisl. Nunc nisl.",6800
 5,2,"In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat",5500
