@@ -6,11 +6,6 @@ use Htmlacademy\MyExceptions\FileFormatInvalid;
 class CSVReader
 {
     /**
-     * @var $filePath - путь к файлу CSV
-     */
-    private $filePath;
-
-    /**
      * @var - экземпляр класса \SplFileObject
      */
     private $file;
@@ -21,16 +16,20 @@ class CSVReader
     private $headers;
 
     /**
+     * @var
+     */
+    private $scndLinePosition;
+
+    /**
      * CSVReader конструктор.
-     * @param $filePath - путь к файлу
+     * @param $file - экземпляр класса \SplFileObject в режиме 'r'
      * @throws FileFormatInvalid
      */
-    public function __construct($filePath)
+    public function __construct($file)
     {
-        $this->filePath = $filePath;
-        $this->file = new \SplFileObject($this->filePath, 'r');
+        $this->file = $file;
         $this->headers = $this->getHeaderData();
-        if (!$this->getHeaderData()) {
+        if (!$this->headers) {
             throw new FileFormatInvalid('Заголовки полей заданы неверно');
         }
     }
@@ -43,19 +42,23 @@ class CSVReader
     {
         $this->file->rewind();
         $headers = $this->file->fgetcsv();
+        $this->scndLinePosition = $this->file->ftell();
+        $this->file->rewind();
 
         return $headers;
     }
 
     /**
      * Метод извлекает массив со следующей строкой файла CSV, если файл не подошел к концу
-     * @return array массив данных следующей строки, если файл не подошел к концу
+     * @return array|bool массив данных следующей строки, если файл не подошел к концу
      */
     protected function getNextLine()
     {
-        if (!$this->file->eof()) {
-            return $this->file->fgetcsv();
+        if ($this->file->valid()) {
+            $result = $this->file->fgetcsv();
+            return $result;
         }
+        return false;
     }
 
     /**
@@ -65,8 +68,7 @@ class CSVReader
     public function getContent()
     {
         $content = [];
-        $this->file->rewind();
-        $this->file->next();
+        $this->file->fseek($this->scndLinePosition);
         while($line = $this->getNextLine()) {
             $content[] = $line;
         }
