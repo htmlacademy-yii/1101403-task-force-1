@@ -49,7 +49,7 @@ class CSVReader
 
     /**
      * Метод извлекает массив со следующей строкой файла CSV, если файл не подошел к концу
-     * @return array массив данных следующей строки
+     * @return array массив данных следующей строки, если файл не подошел к концу
      */
     protected function getNextLine()
     {
@@ -65,6 +65,8 @@ class CSVReader
     public function getContent()
     {
         $content = [];
+        $this->file->rewind();
+        $this->file->next();
         while($line = $this->getNextLine()) {
             $content[] = $line;
         }
