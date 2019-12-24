@@ -33,16 +33,14 @@ class SQLwriter
     /**
      * SQLwriter constructor.
      * @param $filePath - путь к файлу
-     * @param $host - название хоста
-     * @param $userName - имя юзера для подключения к хосту
-     * @param $password - пароль для подключения к хосту
+     * @param $mysql - пароль для подключения к хосту
      * @param $dataBase - название базы данных
      * @throws ConnectionInvalid - исключение для плохого соединения
      */
-    public function __construct(string $filePath, string $host, string $userName, string $password, string $dataBase)
+    public function __construct(string $filePath, $mysql, string $dataBase)
     {
         $this->filePath = $filePath;
-        $this->mysql = new \mysqli($host, $userName, $password, $dataBase);
+        $this->mysql = $mysql;
         if (!$this->mysql) {
             throw new ConnectionInvalid('Не удалось подключиться к БД, проверьте данные подключения');
         }
@@ -83,6 +81,7 @@ class SQLwriter
                 $this->request .= "INSERT INTO " . $this->tableName . "(id, " . implode(", ", $headers) . ") VALUES (" . $id . ", '";
                 foreach ($line as $i => $column) {
                     if (array_key_exists($i, $fks)) {
+                        var_dump($fks);
                         $random = array_rand($fks[$i]);
                         $line[$i] = $fks[$i][$random];
                     }
