@@ -56,21 +56,20 @@ class SQLwriter
      */
     public function getNewFileName(): string
     {
-        $newName = $this->tableName . '.sql';
-        return $newName;
+        return $this->tableName . '.sql';
     }
 
     /**
      * Метод создает команды SQL из содержимого массива $content и добавляет их в текст запроса
      * @param array $headers
      * @param array $content - двумерный массив с массивами из содержимого полей вида [[массив_строки_1],[массив_строки_2],...]
-     * @param array $fks ассоциативный массив вида индекс => массив с id, где индекс - это индекс элемента, содержащего внешний ключ, а массив с id - это
-     * массив допустимых значений для данного элемента.
      */
-    public function add2Request(array $headers, array $content, array $fks)
+    public function addToRequest(array $headers, array $content)
     {
-        $this->ids = [];
         $id = 0;
+        foreach ($headers as $header) {
+            $this->mysql->real_escape_string($header);
+        }
         foreach ($content as $line) {
             if (count($headers) === count($line)) {
                 $id++;
@@ -78,18 +77,10 @@ class SQLwriter
                 foreach ($headers as $header) {
                     $this->mysql->real_escape_string($header);
                 }
-                $this->request .= "INSERT INTO " . $this->tableName . "(id, " . implode(", ", $headers) . ") VALUES (" . $id . ", '";
-                foreach ($line as $i => $column) {
-                    if (array_key_exists($i, $fks)) {
-                        var_dump($fks);
-                        $random = array_rand($fks[$i]);
-                        $line[$i] = $fks[$i][$random];
-                    }
-                }
                 foreach ($line as $value) {
                     $this->mysql->real_escape_string($value);
                 }
-                $this->request .= implode("', '", $line) . "');\r\n";
+                $this->request .= "INSERT INTO " . $this->tableName . " (id, " . implode(", ", $headers) . ") VALUES (" . $id . ", '" . implode("', '", $line) . "' );\r\n";
             }
         }
     }
@@ -111,5 +102,14 @@ class SQLwriter
     public function getIds()
     {
         return $this->ids;
+    }
+
+    /**
+     * Метод возвращает массив с названием обрабатываемой таблицы
+     * @return string
+     */
+    public function getTableName(): string
+    {
+        return $this->tableName;
     }
 }
