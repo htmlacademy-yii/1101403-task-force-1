@@ -69,7 +69,10 @@ class CSVReader
     {
         $content = [];
         $this->file->fseek($this->scndLinePosition);
-        while($line = $this->getNextLine()) {
+        while ($line = $this->getNextLine()) {
+            if (count($line) === 1 && $line[0] === null) {
+                continue;
+            }
             $content[] = $line;
         }
         return $content;
