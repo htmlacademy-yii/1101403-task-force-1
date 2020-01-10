@@ -20,10 +20,6 @@ class SQLwriter
      */
     private $tableName;
 
-    /**
-     * @var - массив с id данных, которые создаются в экземпляре класса
-     */
-    private $ids;
 
     /**
      * @var - объект класса \mysqli для соединения с БД
@@ -64,8 +60,9 @@ class SQLwriter
      * @param array $headers
      * @param array $content - двумерный массив с массивами из содержимого полей вида [[массив_строки_1],[массив_строки_2],...]
      */
-    public function addToRequest(array $headers, array $content)
+    public function addToRequest(array $headers, array $content): array
     {
+        $ids =[];
         $id = 0;
         foreach ($headers as $header) {
             $this->mysql->real_escape_string($header);
@@ -73,7 +70,7 @@ class SQLwriter
         foreach ($content as $line) {
             if (count($headers) === count($line)) {
                 $id++;
-                $this->ids[] = $id;
+                $ids[] = $id;
                 foreach ($headers as $header) {
                     $this->mysql->real_escape_string($header);
                 }
@@ -83,6 +80,8 @@ class SQLwriter
                 $this->request .= "INSERT INTO " . $this->tableName . " (id, " . implode(", ", $headers) . ") VALUES (" . $id . ", '" . implode("', '", $line) . "' );\r\n";
             }
         }
+
+        return $ids;
     }
 
     /**
@@ -95,14 +94,6 @@ class SQLwriter
         return $this->request;
     }
 
-    /**
-     * Метод возвращает массив с id записей из обрабатываемой таблицы
-     * @return mixed
-     */
-    public function getIds()
-    {
-        return $this->ids;
-    }
 
     /**
      * Метод возвращает массив с названием обрабатываемой таблицы
