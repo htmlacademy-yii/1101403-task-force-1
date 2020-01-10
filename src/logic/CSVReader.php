@@ -43,7 +43,6 @@ class CSVReader
         $this->file->rewind();
         $headers = $this->file->fgetcsv();
         $this->scndLinePosition = $this->file->ftell();
-        $this->file->rewind();
 
         return $headers;
     }

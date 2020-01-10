@@ -72,9 +72,8 @@ foreach ($filesOrder as $fileName => $fks) {
         $content = $checker->changeIds();
     }
 
-    $fileNew = new SplFileObject($writer->getNewFileName(), 'w') or die('Невозможно открыть файл!');
+    $fileNew = new SplFileObject(__DIR__ . '\\sql_queries\\' . $writer->getNewFileName(), 'w') or die('Невозможно открыть файл!');
 
-    $writer->addToRequest($reader->getHeaders(), $content);
-    $ids[$writer->getTableName()] = $writer->getIds();
+    $ids[$writer->getTableName()] = $writer->addToRequest($reader->getHeaders(), $content);
     $fileNew->fwrite($writer->getSqlCode()) or die('Невозможно записать содержимое в файл!');
 }
