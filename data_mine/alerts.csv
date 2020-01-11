@@ -1,0 +1,9 @@
+user_id,task_id,note_type
+2,5,answer
+3,6,refuse
+6,1,message
+5,6,start
+3,5,finish
+6,3,answer
+2,6,start
+8,2,refuse

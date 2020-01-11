@@ -8,7 +8,9 @@
             "email": "shesterikofff@mail.ru"
         }
     ],
-    "require": {},
+    "require": {
+      "ext-mysqli": "*"
+    },
     "autoload": {
         "psr-4": {
             "Htmlacademy\\": "src/"

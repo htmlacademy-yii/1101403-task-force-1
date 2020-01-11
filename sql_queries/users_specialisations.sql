@@ -1,0 +1,11 @@
+USE taskforce;
+INSERT INTO users_specialisations (id, user_id, cat_id) VALUES (1, '12', '2' );
+INSERT INTO users_specialisations (id, user_id, cat_id) VALUES (2, '10', '3' );
+INSERT INTO users_specialisations (id, user_id, cat_id) VALUES (3, '7', '6' );
+INSERT INTO users_specialisations (id, user_id, cat_id) VALUES (4, '6', '6' );
+INSERT INTO users_specialisations (id, user_id, cat_id) VALUES (5, '13', '5' );
+INSERT INTO users_specialisations (id, user_id, cat_id) VALUES (6, '4', '2' );
+INSERT INTO users_specialisations (id, user_id, cat_id) VALUES (7, '8', '2' );
+INSERT INTO users_specialisations (id, user_id, cat_id) VALUES (8, '11', '1' );
+INSERT INTO users_specialisations (id, user_id, cat_id) VALUES (9, '2', '6' );
+INSERT INTO users_specialisations (id, user_id, cat_id) VALUES (10, '9', '8' );
