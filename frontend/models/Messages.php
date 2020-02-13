@@ -39,9 +39,9 @@ class Messages extends \yii\db\ActiveRecord
             [['author_id', 'addressee_id', 'task_id'], 'integer'],
             [['dt_create'], 'safe'],
             [['text'], 'string', 'max' => 16383],
-            [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['author_id' => 'id']],
-            [['addressee_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['addressee_id' => 'id']],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['author_id' => 'id']],
+            [['addressee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['addressee_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -67,7 +67,7 @@ class Messages extends \yii\db\ActiveRecord
      */
     public function getAlerts()
     {
-        return $this->hasMany(Alert::className(), ['messages_id' => 'id']);
+        return $this->hasMany(Alerts::className(), ['messages_id' => 'id']);
     }
 
     /**
@@ -77,7 +77,7 @@ class Messages extends \yii\db\ActiveRecord
      */
     public function getAuthor()
     {
-        return $this->hasOne(User::className(), ['id' => 'author_id']);
+        return $this->hasOne(Users::className(), ['id' => 'author_id']);
     }
 
     /**
@@ -87,7 +87,7 @@ class Messages extends \yii\db\ActiveRecord
      */
     public function getAddressee()
     {
-        return $this->hasOne(User::className(), ['id' => 'addressee_id']);
+        return $this->hasOne(Users::className(), ['id' => 'addressee_id']);
     }
 
     /**
@@ -97,6 +97,6 @@ class Messages extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
 }

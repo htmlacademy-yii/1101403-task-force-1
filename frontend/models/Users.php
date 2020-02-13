@@ -111,7 +111,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getAlerts()
     {
-        return $this->hasMany(Alert::className(), ['user_id' => 'id']);
+        return $this->hasMany(Alerts::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -121,37 +121,37 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getAttachments()
     {
-        return $this->hasMany(Attachment::className(), ['user_id' => 'id']);
+        return $this->hasMany(Attachments::className(), ['user_id' => 'id']);
     }
 
     /**
      * Gets query for [[ClientsFavoritesExecutors]].
      *
      * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public function getClientsFavoritesExecutors()
     {
-        return $this->hasMany(ClientsFavoritesExecutor::className(), ['client_id' => 'id']);
+        return $this->hasMany(Users::className(), ['id' => 'executive_id'])->viaTable('clients_favorites_executors',['client_id' => 'id']);
     }
 
     /**
-     * Gets query for [[ClientsFavoritesExecutors0]].
-     *
-     * @return \yii\db\ActiveQuery
+     * Gets query for [[UsersSpecialisations]].
      */
-    public function getClientsFavoritesExecutors0()
+    public function getUsersSpecialisations()
     {
-        return $this->hasMany(ClientsFavoritesExecutor::className(), ['executive_id' => 'id']);
+        return $this->hasMany(Categories::className(), ['id' => 'cat_id'])->viaTable('users_specialisations',['user_id' => 'id']);
     }
+
 
     /**
      * Gets query for [[Messages]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getMessages()
+    public function getMessagesByAuthor()
     {
-        return $this->hasMany(Message::className(), ['author_id' => 'id']);
+        return $this->hasMany(Messages::className(), ['author_id' => 'id']);
     }
 
     /**
@@ -159,9 +159,9 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getMessages0()
+    public function getMessagesByAddressee()
     {
-        return $this->hasMany(Message::className(), ['addressee_id' => 'id']);
+        return $this->hasMany(Messages::className(), ['addressee_id' => 'id']);
     }
 
     /**
@@ -169,9 +169,9 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getReviews()
+    public function getReviewsByClient()
     {
-        return $this->hasMany(Review::className(), ['client_id' => 'id']);
+        return $this->hasMany(Reviews::className(), ['client_id' => 'id']);
     }
 
     /**
@@ -179,9 +179,9 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getReviews0()
+    public function getReviewsByExecutive()
     {
-        return $this->hasMany(Review::className(), ['executive_id' => 'id']);
+        return $this->hasMany(Reviews::className(), ['executive_id' => 'id']);
     }
 
     /**
@@ -191,7 +191,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getTaskReplies()
     {
-        return $this->hasMany(TaskReply::className(), ['executive_id' => 'id']);
+        return $this->hasMany(TaskReplies::className(), ['executive_id' => 'id']);
     }
 
     /**
@@ -199,9 +199,9 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTasks()
+    public function getClientsTasks()
     {
-        return $this->hasMany(Task::className(), ['client_id' => 'id']);
+        return $this->hasMany(Tasks::className(), ['client_id' => 'id']);
     }
 
     /**
@@ -209,9 +209,9 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTasks0()
+    public function getExecutivesTasks()
     {
-        return $this->hasMany(Task::className(), ['executive_id' => 'id']);
+        return $this->hasMany(Tasks::className(), ['executive_id' => 'id']);
     }
 
     /**
@@ -219,18 +219,9 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCity()
+    public function getCities()
     {
-        return $this->hasOne(City::className(), ['id' => 'city_id']);
+        return $this->hasOne(Cities::className(), ['id' => 'city_id']);
     }
 
-    /**
-     * Gets query for [[UsersSpecialisations]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUsersSpecialisations()
-    {
-        return $this->hasMany(UsersSpecialisation::className(), ['user_id' => 'id']);
-    }
 }

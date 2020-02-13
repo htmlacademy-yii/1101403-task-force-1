@@ -41,10 +41,10 @@ class Alerts extends \yii\db\ActiveRecord
             [['user_id', 'reply_id', 'task_id', 'messages_id', 'is_new'], 'integer'],
             [['note_type'], 'string'],
             [['dt_create'], 'safe'],
-            [['reply_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskReply::className(), 'targetAttribute' => ['reply_id' => 'id']],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
-            [['messages_id'], 'exist', 'skipOnError' => true, 'targetClass' => Message::className(), 'targetAttribute' => ['messages_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['reply_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskReplies::className(), 'targetAttribute' => ['reply_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['messages_id'], 'exist', 'skipOnError' => true, 'targetClass' => Messages::className(), 'targetAttribute' => ['messages_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -72,7 +72,7 @@ class Alerts extends \yii\db\ActiveRecord
      */
     public function getReply()
     {
-        return $this->hasOne(TaskReply::className(), ['id' => 'reply_id']);
+        return $this->hasOne(TaskReplies::className(), ['id' => 'reply_id']);
     }
 
     /**
@@ -82,7 +82,7 @@ class Alerts extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
 
     /**
@@ -92,7 +92,7 @@ class Alerts extends \yii\db\ActiveRecord
      */
     public function getMessages()
     {
-        return $this->hasOne(Message::className(), ['id' => 'messages_id']);
+        return $this->hasOne(Messages::className(), ['id' => 'messages_id']);
     }
 
     /**
@@ -102,6 +102,6 @@ class Alerts extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
 }

@@ -54,16 +54,17 @@ class Categories extends \yii\db\ActiveRecord
      */
     public function getTasks()
     {
-        return $this->hasMany(Task::className(), ['cat_id' => 'id']);
+        return $this->hasMany(Tasks::className(), ['cat_id' => 'id']);
     }
 
     /**
      * Gets query for [[UsersSpecialisations]].
      *
      * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public function getUsersSpecialisations()
     {
-        return $this->hasMany(UsersSpecialisation::className(), ['cat_id' => 'id']);
+        return $this->hasMany(Users::className(), ['id' => 'user_id'])->viaTable('users_specialisations', ['cat_id' => 'id']);
     }
 }

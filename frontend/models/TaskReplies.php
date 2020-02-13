@@ -38,8 +38,8 @@ class TaskReplies extends \yii\db\ActiveRecord
             [['executive_id', 'task_id', 'price'], 'integer'],
             [['dt_create'], 'safe'],
             [['comment'], 'string', 'max' => 16383],
-            [['executive_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['executive_id' => 'id']],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['executive_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executive_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -65,7 +65,7 @@ class TaskReplies extends \yii\db\ActiveRecord
      */
     public function getAlerts()
     {
-        return $this->hasMany(Alert::className(), ['reply_id' => 'id']);
+        return $this->hasMany(Alerts::className(), ['reply_id' => 'id']);
     }
 
     /**
@@ -75,7 +75,7 @@ class TaskReplies extends \yii\db\ActiveRecord
      */
     public function getExecutive()
     {
-        return $this->hasOne(User::className(), ['id' => 'executive_id']);
+        return $this->hasOne(Users::className(), ['id' => 'executive_id']);
     }
 
     /**
@@ -85,6 +85,6 @@ class TaskReplies extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
 }
