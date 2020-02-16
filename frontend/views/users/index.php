@@ -18,21 +18,16 @@
             <div class="feedback-card__top">
                 <div class="user__search-icon">
                     <a href="#"><img src="./img/man-glasses.jpg" width="65" height="65"></a>
-                    <span><?php echo count($user->executivesTasks) . ' ' . \Htmlacademy\logic\PluralForms::pluralNouns(count($user->executivesTasks), 'задание', 'задания','заданий'); ?></span>
-                    <span><?php echo count($user->reviewsByExecutive) . ' ' . \Htmlacademy\logic\PluralForms::pluralNouns(count($user->reviewsByExecutive), 'отзыв','отзыва','отзывов'); ?></span>
+                    <span><?php echo $user->exTasksNumber . ' ' . \Htmlacademy\logic\PluralForms::pluralNouns($user->exTasksNumber, 'задание', 'задания','заданий'); ?></span>
+                    <span><?php echo $user->exReviewsNumber . ' ' . \Htmlacademy\logic\PluralForms::pluralNouns($user->exReviewsNumber, 'отзыв','отзыва','отзывов'); ?></span>
                 </div>
                 <div class="feedback-card__top--name user__search-card">
                     <p class="link-name"><a href="#" class="link-regular"><?php echo $user->name; ?></a></p>
                     <span></span><span></span><span></span><span></span><span class="star-disabled"></span>
                     <b>
                         <?php
-                        $reviewsByExecutive = $user->reviewsByExecutive;
-                        $rates = 0;
-                        foreach ($reviewsByExecutive as $review) {
-                           $rates += $review->rate;
-                        }
-                        if ($rates !== 0 && count($user->reviewsByExecutive) !== 0) {
-                            echo round($rates/count($user->reviewsByExecutive),2);
+                        if ($user->rating) {
+                            echo $user->rating;
                         }
                         ?>
                     </b>

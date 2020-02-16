@@ -29,22 +29,29 @@ use Yii;
  * @property float|null $latitude
  * @property string|null $bio
  *
- * @property Alert[] $alerts
- * @property Attachment[] $attachments
- * @property ClientsFavoritesExecutor[] $clientsFavoritesExecutors
- * @property ClientsFavoritesExecutor[] $clientsFavoritesExecutors0
- * @property Message[] $messages
- * @property Message[] $messages0
- * @property Review[] $reviews
- * @property Review[] $reviews0
- * @property TaskReply[] $taskReplies
- * @property Task[] $tasks
- * @property Task[] $tasks0
- * @property City $city
- * @property UsersSpecialisation[] $usersSpecialisations
+ * @property Alerts[] $alerts
+ * @property Attachments[] $attachments
+ * @property Users[] $clientsFavoritesExecutors
+ * @property Messages[] $messagesByAuthor
+ * @property Messages[] $messagesByAddressee
+ * @property Reviews[] $reviewsByClient
+ * @property Reviews[] $reviewsByExecutive
+ * @property TaskReplies[] $taskReplies
+ * @property Tasks[] $clientsTasks
+ * @property Tasks[] $executivesTasks
+ * @property Cities $city
+ * @property Categories[] $usersSpecialisations
  */
 class Users extends \yii\db\ActiveRecord
 {
+    /**
+     * @var - рейтинг исполнителя
+     */
+    private $_rating;
+
+    private $_exTasksNumber;
+
+    private $_exReviewsNumber;
     /**
      * {@inheritdoc}
      */
@@ -103,6 +110,62 @@ class Users extends \yii\db\ActiveRecord
             'bio' => 'Bio',
         ];
     }
+
+    public function setRating($rating)
+    {
+        $this->_rating = round((float)$rating, 2);
+    }
+
+    public function getRating()
+    {
+        if ($this->isNewRecord) {
+            return null;
+        }
+
+        if ($this->_rating === null && $this->role === 'executive') {
+            $this->setRating(Reviews::find()->select('AVG(rate)')->where(['id' => $this->id]));
+            return $this->_rating;
+        }
+        echo $this->_rating;
+    }
+
+    public function setExTasksNumber($tasksNumber)
+    {
+        $this->_exTasksNumber = (int)$tasksNumber;
+    }
+
+    public function getExTasksNumber()
+    {
+        if ($this->isNewRecord) {
+            return null;
+        }
+
+        if ($this->_exTasksNumber === null) {
+            $this->setExTasksNumber($this->getExecutivesTasks()->count());
+        }
+
+        return $this->_exTasksNumber;
+    }
+
+    public function setExReviewsNumber($reviewsNumber)
+    {
+        $this->_exReviewsNumber = (int)$reviewsNumber;
+    }
+
+    public function getExReviewsNumber()
+    {
+        if ($this->isNewRecord) {
+            return null;
+        }
+
+        if ($this->_exReviewsNumber === null) {
+            $this->setExReviewsNumber($this->getReviewsByExecutive()->count());
+        }
+
+        return $this->_exReviewsNumber;
+    }
+
+
 
     /**
      * Gets query for [[Alerts]].
@@ -165,7 +228,7 @@ class Users extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Reviews]].
+     * Gets query for [[ReviewsByClient]].
      *
      * @return \yii\db\ActiveQuery
      */
@@ -175,7 +238,7 @@ class Users extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Reviews0]].
+     * Gets query for [[ReviewsbyExecutive]].
      *
      * @return \yii\db\ActiveQuery
      */
@@ -219,7 +282,7 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCities()
+    public function getCity()
     {
         return $this->hasOne(Cities::className(), ['id' => 'city_id']);
     }
