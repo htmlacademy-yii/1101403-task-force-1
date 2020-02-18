@@ -40,9 +40,9 @@ class Reviews extends \yii\db\ActiveRecord
             [['rate'], 'string'],
             [['dt_create'], 'safe'],
             [['comment'], 'string', 'max' => 16383],
-            [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['client_id' => 'id']],
-            [['executive_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['executive_id' => 'id']],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['client_id' => 'id']],
+            [['executive_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executive_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -69,7 +69,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getClient()
     {
-        return $this->hasOne(User::className(), ['id' => 'client_id']);
+        return $this->hasOne(Users::className(), ['id' => 'client_id']);
     }
 
     /**
@@ -79,7 +79,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getExecutive()
     {
-        return $this->hasOne(User::className(), ['id' => 'executive_id']);
+        return $this->hasOne(Users::className(), ['id' => 'executive_id']);
     }
 
     /**
@@ -89,6 +89,6 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::className(), ['id' => 'task_id']);
     }
 }
