@@ -49,9 +49,9 @@ class Users extends \yii\db\ActiveRecord
      */
     private $_rating;
 
-    private $_exTasksNumber;
+    private $_exTasksCount;
 
-    private $_exReviewsNumber;
+    private $_exReviewsCount;
     /**
      * {@inheritdoc}
      */
@@ -129,40 +129,40 @@ class Users extends \yii\db\ActiveRecord
         echo $this->_rating;
     }
 
-    public function setExTasksNumber($tasksNumber)
+    public function setExTasksCount($tasksNumber)
     {
-        $this->_exTasksNumber = (int)$tasksNumber;
+        $this->_exTasksCount = (int)$tasksNumber;
     }
 
-    public function getExTasksNumber()
+    public function getExTasksCount()
     {
         if ($this->isNewRecord) {
             return null;
         }
 
-        if ($this->_exTasksNumber === null) {
-            $this->setExTasksNumber($this->getExecutivesTasks()->count());
+        if ($this->_exTasksCount === null) {
+            $this->setExTasksCount($this->getExecutivesTasks()->count());
         }
 
-        return $this->_exTasksNumber;
+        return $this->_exTasksCount;
     }
 
-    public function setExReviewsNumber($reviewsNumber)
+    public function setExReviewsCount($reviewsNumber)
     {
-        $this->_exReviewsNumber = (int)$reviewsNumber;
+        $this->_exReviewsCount = (int)$reviewsNumber;
     }
 
-    public function getExReviewsNumber()
+    public function getExReviewsCount()
     {
         if ($this->isNewRecord) {
             return null;
         }
 
-        if ($this->_exReviewsNumber === null) {
-            $this->setExReviewsNumber($this->getReviewsByExecutive()->count());
+        if ($this->_exReviewsCount === null) {
+            $this->setExReviewsCount($this->getReviewsByExecutive()->count());
         }
 
-        return $this->_exReviewsNumber;
+        return $this->_exReviewsCount;
     }
 
 

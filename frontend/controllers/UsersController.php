@@ -9,7 +9,7 @@ class UsersController extends Controller
     public function actionIndex()
     {
         $users = Users::find()
-            ->select(['users.*', 'AVG(r.rate) AS rating', 'COUNT(t.id) AS exTasksNumber', 'COUNT(r.id) AS exReviewsNumber'])
+            ->select(['users.*', 'AVG(r.rate) AS rating', 'COUNT(t.id) AS exTasksCount', 'COUNT(r.id) AS exReviewsCount'])
             ->where(['role' => 'executive'])
             ->joinWith(['executivesTasks AS t', 'reviewsByExecutive AS r'])
             ->groupBy('users.id')

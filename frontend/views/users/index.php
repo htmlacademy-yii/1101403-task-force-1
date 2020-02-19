@@ -18,8 +18,8 @@
             <div class="feedback-card__top">
                 <div class="user__search-icon">
                     <a href="#"><img src="./img/man-glasses.jpg" width="65" height="65"></a>
-                    <span><?php echo $user->exTasksNumber . ' ' . \Htmlacademy\logic\PluralForms::pluralNouns($user->exTasksNumber, 'задание', 'задания','заданий'); ?></span>
-                    <span><?php echo $user->exReviewsNumber . ' ' . \Htmlacademy\logic\PluralForms::pluralNouns($user->exReviewsNumber, 'отзыв','отзыва','отзывов'); ?></span>
+                    <span><?php echo $user->exTasksCount . ' ' . \Htmlacademy\logic\PluralForms::pluralNouns($user->exTasksCount, 'задание', 'задания','заданий'); ?></span>
+                    <span><?php echo $user->exReviewsCount . ' ' . \Htmlacademy\logic\PluralForms::pluralNouns($user->exReviewsCount, 'отзыв','отзыва','отзывов'); ?></span>
                 </div>
                 <div class="feedback-card__top--name user__search-card">
                     <p class="link-name"><a href="#" class="link-regular"><?php echo $user->name; ?></a></p>
