@@ -77,7 +77,7 @@ class Users extends \yii\db\ActiveRecord
             [['phone'], 'string', 'max' => 32],
             [['bio'], 'string', 'max' => 16383],
             [['email'], 'unique'],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
 
