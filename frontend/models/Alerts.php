@@ -11,7 +11,7 @@ use Yii;
  * @property int $user_id
  * @property int|null $reply_id
  * @property int $task_id
- * @property int|null $messages_id
+ * @property int|null $message_id
  * @property string $note_type
  * @property int $is_new
  * @property string $dt_create
@@ -38,12 +38,12 @@ class Alerts extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'task_id', 'note_type'], 'required'],
-            [['user_id', 'reply_id', 'task_id', 'messages_id', 'is_new'], 'integer'],
+            [['user_id', 'reply_id', 'task_id', 'message_id', 'is_new'], 'integer'],
             [['note_type'], 'string'],
             [['dt_create'], 'safe'],
             [['reply_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskReplies::className(), 'targetAttribute' => ['reply_id' => 'id']],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
-            [['messages_id'], 'exist', 'skipOnError' => true, 'targetClass' => Messages::className(), 'targetAttribute' => ['messages_id' => 'id']],
+            [['message_id'], 'exist', 'skipOnError' => true, 'targetClass' => Messages::className(), 'targetAttribute' => ['message_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -58,7 +58,7 @@ class Alerts extends \yii\db\ActiveRecord
             'user_id' => 'User ID',
             'reply_id' => 'Reply ID',
             'task_id' => 'Task ID',
-            'messages_id' => 'Messages ID',
+            'message_id' => 'Messages ID',
             'note_type' => 'Note Type',
             'is_new' => 'Is New',
             'dt_create' => 'Dt Create',
@@ -90,9 +90,9 @@ class Alerts extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getMessages()
+    public function getMessage()
     {
-        return $this->hasOne(Messages::className(), ['id' => 'messages_id']);
+        return $this->hasOne(Messages::className(), ['id' => 'message_id']);
     }
 
     /**

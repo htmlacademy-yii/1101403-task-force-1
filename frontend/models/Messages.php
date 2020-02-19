@@ -67,7 +67,7 @@ class Messages extends \yii\db\ActiveRecord
      */
     public function getAlerts()
     {
-        return $this->hasMany(Alerts::className(), ['messages_id' => 'id']);
+        return $this->hasMany(Alerts::className(), ['message_id' => 'id']);
     }
 
     /**

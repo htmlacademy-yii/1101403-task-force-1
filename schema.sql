@@ -115,14 +115,14 @@ CREATE TABLE alerts (
     user_id             INT UNSIGNED NOT NULL,
     reply_id            INT UNSIGNED,
     task_id             INT UNSIGNED NOT NULL,
-    messages_id         INT UNSIGNED,
+    message_id          INT UNSIGNED,
     note_type           ENUM('answer', 'message', 'refuse', 'start', 'finish') NOT NULL,
     is_new              TINYINT(1) UNSIGNED DEFAULT 1 NOT NULL,
     dt_create           TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (reply_id) REFERENCES task_replies(id),
     FOREIGN KEY (task_id) REFERENCES tasks(id),
-    FOREIGN KEY (messages_id) REFERENCES messages(id),
+    FOREIGN KEY (message_id) REFERENCES messages(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 CREATE TABLE attachments (
