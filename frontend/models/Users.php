@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "users".
@@ -113,20 +114,28 @@ class Users extends \yii\db\ActiveRecord
 
     public function setRating($rating)
     {
-        $this->_rating = round((float)$rating, 2);
+        $this->_rating = round($rating, 2);
     }
 
     public function getRating()
     {
+
         if ($this->isNewRecord) {
             return null;
         }
 
         if ($this->_rating === null && $this->role === 'executive') {
-            $this->setRating(Reviews::find()->select('AVG(rate)')->where(['id' => $this->id]));
+            $query = new Query();
+            $query->select('AVG(rate) AS rating')
+                ->from('reviews')
+                ->where(['executive_id' => $this->id]);
+            $row = $query->one();
+            $this->setRating($row['rating']);
             return $this->_rating;
         }
-        echo $this->_rating;
+
+        return $this->_rating;
+
     }
 
     public function setExTasksCount($tasksNumber)
