@@ -42,7 +42,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
+            'title' => 'название',
             'icon' => 'Icon',
         ];
     }
