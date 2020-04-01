@@ -25,7 +25,7 @@ class TimeCounter
     public function __construct($dtCreate)
     {
         $this->dtCreate = $dtCreate;
-        $this->timeDiff = strtotime('now') - strtotime($this->dtCreate);
+        $this->timeDiff = time() - strtotime($this->dtCreate);
     }
 
     /**
