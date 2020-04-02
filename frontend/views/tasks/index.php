@@ -12,7 +12,7 @@
                 <?php echo $task->description; ?>
             </p>
             <b class="new-task__price new-task__price--<?php echo $task->category->icon; ?>"><?php echo $task->budget;?><b> ₽</b></b>
-            <p class="new-task__place"><?php echo $task->city->title; ?>, Центральный район</p>
+            <p class="new-task__place"><?php echo $task->city ? $task->city->title . ',': ''; ?> Центральный район</p>
             <?php
             $counter = new \Htmlacademy\logic\TimeCounter($task->dt_create);
             $timeString = $counter->countTimePassed();
@@ -43,22 +43,23 @@
             'options' => ['class' => 'search-task__form', 'name' => 'test'],
         ]);
         ?>
-        <?php echo Html::beginTag('fieldset', ['class' => 'search-task__categories'])?>
+        <?php echo Html::beginTag('fieldset', ['class' => 'search-task__categories']); ?>
         <?php echo Html::tag('legend', 'Категории'); ?>
         <?php echo $form
-            ->field($model, 'categories', ['options' => ['tag' => false]])
+            ->field($model, 'categories', ['options' => ['tag' => null]])
             ->label(false)
             ->CheckboxList($categories, [
                 'unselect' => null,
                 'tag' => false,
-                'item' => function ($index, $label, $name, $checked, $value) {
+                'item' => static function ($index, $label, $name, $checked, $value) {
+                    $checked = $checked === true ? 'checked' : '';
                     return "<input class =\"visually-hidden checkbox__input\" id=$index type=\"checkbox\" name=$name value=$value $checked>" .
                     "<label for=$index>$label</label>";
                 }
             ]);
         ?>
-        <?php echo Html::endTag('fieldset')?>
-        <?php echo Html::beginTag('fieldset', ['class' => 'search-task__categories'])?>
+        <?php echo Html::endTag('fieldset'); ?>
+        <?php echo Html::beginTag('fieldset', ['class' => 'search-task__categories']); ?>
         <?php echo Html::tag('legend', 'Дополнительно'); ?>
         <?php echo $form
             ->field($model, 'isRepliesExist', ['options' => ['tag' => false], 'template' => '{input}{label}'])
@@ -66,10 +67,11 @@
         <?php echo $form
             ->field($model, 'remoteWorking', ['options' => ['tag' => false], 'template' => '{input}{label}'])
             ->checkbox(['class' => 'visually-hidden checkbox__input', 'uncheck' => null], false); ?>
-        <?php echo Html::endTag('fieldset')?>
+        <?php echo Html::endTag('fieldset'); ?>
         <?php echo $form
-            ->field($model, 'period', ['options' => ['tag' => false], 'template' => '{label}{input}', 'labelOptions' => ['class' => 'search-task__name']])
+            ->field($model, 'chosenPeriod', ['options' => ['tag' => false], 'template' => '{label}{input}', 'labelOptions' => ['class' => 'search-task__name']])
             ->listBox($model->period, [
+                'options' => [$model->chosenPeriod => ['selected' => true]],
                 'unselect' => null,
                 'tag' => false,
                 'class' => 'multiple-select input',
@@ -81,10 +83,10 @@
                 'options' => ['tag' => false],
                 'template' => '{label}{input}',
                 'labelOptions' => ['class' => 'search-task__name'],
-                'inputOptions' => ['type' => 'search', 'class' => 'input-middle input']
-            ])
+                'inputOptions' => ['type' => 'search', 'class' => 'input-middle input'],
+            ]);
         ?>
-        <?php echo Html::submitButton('Искать', ['class' => 'button']) ?>
+        <?php echo Html::submitButton('Искать', ['class' => 'button']); ?>
         <?php ActiveForm::end(); ?>
     </div>
 </section>
