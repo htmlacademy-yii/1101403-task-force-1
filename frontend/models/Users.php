@@ -32,7 +32,6 @@ use yii\db\Query;
  *
  * @property Alerts[] $alerts
  * @property Attachments[] $attachments
- * @property Users[] $clientsFavoritesExecutors
  * @property Messages[] $messagesByAuthor
  * @property Messages[] $messagesByAddressee
  * @property Reviews[] $reviewsByClient
@@ -42,6 +41,8 @@ use yii\db\Query;
  * @property Tasks[] $executivesTasks
  * @property Cities $city
  * @property Categories[] $usersSpecialisations
+ * @property ClientsFavoritesExecutors[] $recordsInFavorites
+ * @property ClientsFavoritesExecutors[] $recordsOfClientsFavorites
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -197,15 +198,24 @@ class Users extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[ClientsFavoritesExecutors]].
+     * Gets query for [[RecordsOfClientsFavorites]].
      *
      * @return \yii\db\ActiveQuery
      * @throws \yii\base\InvalidConfigException
      */
-    public function getClientsFavoritesExecutors()
+    public function getRecordsOfClientsFavorites()
     {
-        return $this->hasMany(Users::className(), ['id' => 'executive_id'])->viaTable('clients_favorites_executors',['client_id' => 'id']);
+        return $this->hasMany(ClientsFavoritesExecutors::className(), ['client_id' => 'id']);
     }
+
+    /**
+     * Gets query for [[RecordsInFavorites]] записи о занесении исполнителя в списки избранных
+     */
+    public function getRecordsInFavorites()
+    {
+        return $this->hasMany(ClientsFavoritesExecutors::className(), ['executive_id' => 'id']);
+    }
+
 
     /**
      * Gets query for [[UsersSpecialisations]].

@@ -42,15 +42,16 @@ CREATE TABLE users (
     longitude       DECIMAL(10,7),
     latitude        DECIMAL(10,7),
     bio             VARCHAR(16383),
+    view_count      INT UNSIGNED,
     PRIMARY KEY (id),
     FOREIGN KEY (city_id) REFERENCES cities(id)
 );
 CREATE TABLE tasks (
     id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
     client_id           INT UNSIGNED NOT NULL,
-    executive_id        INT UNSIGNED NOT NULL,
+    executive_id        INT UNSIGNED,
     cat_id              INT UNSIGNED NOT NULL,
-    city_id             INT UNSIGNED NOT NULL,
+    city_id             INT UNSIGNED,
     status              ENUM('new', 'completed', 'cancelled', 'failed', 'in progress') NOT NULL,
     title               VARCHAR(128) NOT NULL,
     description         VARCHAR(255) NOT NULL,
@@ -59,7 +60,7 @@ CREATE TABLE tasks (
     dt_end              TIMESTAMP,
     longitude           DECIMAL(10,7),
     latitude            DECIMAL(10,7),
-    view_count          INT,
+    view_count          INT UNSIGNED,
     PRIMARY KEY (id),
     FOREIGN KEY (client_id) REFERENCES users(id),
     FOREIGN KEY (executive_id) REFERENCES users(id),
@@ -72,7 +73,7 @@ CREATE TABLE reviews (
     executive_id        INT UNSIGNED NOT NULL,
     task_id             INT UNSIGNED NOT NULL,
     comment             VARCHAR(16383),
-    rate                ENUM('1', '2', '3', '4', '5') NOT NULL,
+    rate                ENUM('0', '1', '2', '3', '4', '5'),
     dt_create           TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (client_id) REFERENCES users(id),
@@ -146,3 +147,4 @@ CREATE TABLE clients_favorites_executors (
 
 CREATE FULLTEXT INDEX person ON users(name);
 CREATE FULLTEXT INDEX task_search ON tasks(title);
+
