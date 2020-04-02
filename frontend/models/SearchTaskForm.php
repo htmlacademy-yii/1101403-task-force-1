@@ -4,6 +4,7 @@ namespace frontend\models;
 use phpDocumentor\Reflection\Types\Boolean;
 use Yii;
 use yii\base\Model;
+use yii\helpers\Html;
 
 /**
  * Class SearchTask Form
@@ -19,19 +20,20 @@ class SearchTaskForm extends Model
     public $period = [
         'day' => 'За день',
         'week' => 'За неделю',
-        'month' => 'За месяц'
+        'month' => 'За месяц',
+        'all' => 'За все время'
     ];
+
+    public $chosenPeriod = 'week';
 
     public $title;
 
     public function rules()
     {
         return [
-            ['isRepliesExist', 'boolean'],
-            ['categories', 'safe'],
-            ['remoteWorking', 'boolean'],
-            ['period', 'safe'],
-            ['title', 'safe']
+            [['isRepliesExist', 'remoteWorking'], 'boolean'],
+            [['title'], 'safe'],
+            [['categories', 'chosenPeriod', 'period'], 'safe']
         ];
     }
 
@@ -39,10 +41,10 @@ class SearchTaskForm extends Model
     {
         return [
             'categories' => 'Категории',
-            'isRepliesExist' => 'Без исполнителя',
+            'isRepliesExist' => 'Без откликов',
             'remoteWorking' => 'Удаленная работа',
-            'period' => 'Период',
-            'title' => 'Поиск по названию'
+            'chosenPeriod' => 'Период',
+            'title' => 'Поиск по названию',
         ];
     }
 }
