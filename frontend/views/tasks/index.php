@@ -62,14 +62,14 @@
         <?php echo Html::beginTag('fieldset', ['class' => 'search-task__categories']); ?>
         <?php echo Html::tag('legend', 'Дополнительно'); ?>
         <?php echo $form
-            ->field($model, 'isRepliesExist', ['options' => ['tag' => false], 'template' => '{input}{label}'])
+            ->field($model, 'isRepliesExist', ['options' => ['tag' => false], 'template' => '{input}{label}{error}'])
             ->checkbox(['class' => 'visually-hidden checkbox__input', 'uncheck' => null], false); ?>
         <?php echo $form
-            ->field($model, 'remoteWorking', ['options' => ['tag' => false], 'template' => '{input}{label}'])
+            ->field($model, 'remoteWorking', ['options' => ['tag' => false], 'template' => '{input}{label}{error}'])
             ->checkbox(['class' => 'visually-hidden checkbox__input', 'uncheck' => null], false); ?>
         <?php echo Html::endTag('fieldset'); ?>
         <?php echo $form
-            ->field($model, 'chosenPeriod', ['options' => ['tag' => false], 'template' => '{label}{input}', 'labelOptions' => ['class' => 'search-task__name']])
+            ->field($model, 'chosenPeriod', ['options' => ['tag' => false], 'template' => '{label}{input}{error}', 'labelOptions' => ['class' => 'search-task__name']])
             ->listBox($model->period, [
                 'options' => [$model->chosenPeriod => ['selected' => true]],
                 'unselect' => null,
@@ -81,7 +81,7 @@
         <?php echo $form
             ->field($model, 'title', [
                 'options' => ['tag' => false],
-                'template' => '{label}{input}',
+                'template' => '{label}{input}{error}',
                 'labelOptions' => ['class' => 'search-task__name'],
                 'inputOptions' => ['type' => 'search', 'class' => 'input-middle input'],
             ]);
