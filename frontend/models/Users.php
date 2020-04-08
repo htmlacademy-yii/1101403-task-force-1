@@ -46,14 +46,7 @@ use yii\db\Query;
  */
 class Users extends \yii\db\ActiveRecord
 {
-    /**
-     * @var - рейтинг исполнителя
-     */
-    private $_rating;
-
-    private $_exTasksCount;
-
-    private $_exReviewsCount;
+    
     /**
      * {@inheritdoc}
      */
@@ -113,67 +106,6 @@ class Users extends \yii\db\ActiveRecord
         ];
     }
 
-    public function setRating($rating)
-    {
-        $this->_rating = round($rating, 2);
-    }
-
-    public function getRating()
-    {
-
-        if ($this->isNewRecord) {
-            return null;
-        }
-
-        if ($this->_rating === null && $this->role === 'executive') {
-            $query = new Query();
-            $query->select('AVG(rate) AS rating')
-                ->from('reviews')
-                ->where(['executive_id' => $this->id]);
-            $row = $query->one();
-            $this->setRating($row['rating']);
-            return $this->_rating;
-        }
-
-        return $this->_rating;
-
-    }
-
-    public function setExTasksCount($tasksNumber)
-    {
-        $this->_exTasksCount = (int)$tasksNumber;
-    }
-
-    public function getExTasksCount()
-    {
-        if ($this->isNewRecord) {
-            return null;
-        }
-
-        if ($this->_exTasksCount === null) {
-            $this->setExTasksCount($this->getExecutivesTasks()->count());
-        }
-
-        return $this->_exTasksCount;
-    }
-
-    public function setExReviewsCount($reviewsNumber)
-    {
-        $this->_exReviewsCount = (int)$reviewsNumber;
-    }
-
-    public function getExReviewsCount()
-    {
-        if ($this->isNewRecord) {
-            return null;
-        }
-
-        if ($this->_exReviewsCount === null) {
-            $this->setExReviewsCount($this->getReviewsByExecutive()->count());
-        }
-
-        return $this->_exReviewsCount;
-    }
 
 
 
