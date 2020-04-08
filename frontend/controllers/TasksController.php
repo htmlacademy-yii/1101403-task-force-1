@@ -26,7 +26,6 @@ class TasksController extends Controller
         //фильтры
         if (Yii::$app->request->isPost) {
             $model->load(Yii::$app->request->post());
-            $model->validate();
             if ($model->categories) {
                 $request = $request->andWhere(['cat_id' => $model->categories]);
             }
