@@ -38,5 +38,4 @@ class SearchUsersForm extends Model
             'name' => 'Поиск по имени'
         ];
     }
-
 }

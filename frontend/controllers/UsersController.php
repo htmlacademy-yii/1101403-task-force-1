@@ -5,6 +5,7 @@ use frontend\models\Categories;
 use frontend\models\SearchUsersForm;
 use frontend\models\Users;
 use Yii;
+use yii\db\Query;
 use yii\web\Controller;
 
 class UsersController extends Controller
@@ -37,7 +38,6 @@ class UsersController extends Controller
         //фильтры
         if (Yii::$app->request->isPost) {
             $model->load(Yii::$app->request->post());
-            $model->validate();
             if ($model->categories) {
                 $request = $request
                     ->joinWith('usersSpecialisations')
@@ -63,40 +63,65 @@ class UsersController extends Controller
                     ->andWhere(['not', ['clients_favorites_executors.id' => null]]);
             }
             if ($model->name) {
-               $request = $request->andWhere('MATCH(name) AGAINST (:name)', [':name' => $model->name]);
+                $request = $request->andWhere('MATCH(name) AGAINST (:name)', [':name' => $model->name]);
             }
+
         }
 
         $users = $request->all();
+        // получаю массив id пользователей
+        $userIds = [];
+        foreach ($users as $user) {
+            $userIds[] = $user->id;
+        }
 
         //рассчитываю рейтинг, количество заданий и отзывов для каждого юзера
-        $this->addRating($users);
+        $usersInfo = $this->addInfo($userIds);
 
-        return $this->render('index', ['users' => $users, 'categories' => $categories, 'model' => $model]);
+        //передаю все в представление
+        return $this->render('index', ['users' => $users, 'categories' => $categories, 'model' => $model, 'usersInfo' => $usersInfo]);
     }
 
     /**
      * Метод рассчитывает и записывает в модели рейтинг юзеров
-     * @param $users - массив с моделями юзеров, которым надо рассчитать рейтинг
+     * @param array $userIds - массив с id юзеров, которым надо рассчитать рейтинг, количество заданий и количество отзывов
+     * @return array $usersInfo массив вида [id => ['rating' => 5, 'reviews' => 4, 'tasks' => 0],[...]] с данными о юзере
      */
-    protected function addRating(array $users) {
-        foreach ($users as $user) {
-            $user->setExTasksCount(count($user->executivesTasks));
-            $user->setExReviewsCount(count($user->reviewsByExecutive));
-
-            $rating = 0;
-            $rateCount = 0;
-            $sum = 0;
-            foreach ($user->reviewsByExecutive as $review) {
-                $sum += floatval($review->rate);
-                $rateCount += 1;
-            };
-            if ($sum !== 0) {
-                $rating = round($sum / $rateCount, 2);
-            }
-
-            $user->setRating($rating);
+    protected function addInfo(array $userIds): array
+    {
+        $usersInfo = [];
+        foreach ($userIds as $id) {
+            $usersInfo[$id] = ['rating' => 0, 'reviews' => 0, 'tasks' => 0];
         }
+        $reviewQuery = new Query();
+        $ratingAndReviews = $reviewQuery
+            ->select(["executive_id AS id", "ROUND(AVG(rate),1) AS rating", "COUNT(comment) AS reviews"])
+            ->from(['reviews'])
+            ->where(['executive_id' => $userIds])
+            ->groupBy('executive_id')
+            ->all();
+
+        foreach ($ratingAndReviews as $info) {
+            if (in_array(intval($info['id']), $userIds)) {
+                $usersInfo[$info['id']]['rating'] = $info['rating'] ?: 0;
+                $usersInfo[$info['id']]['reviews'] = $info['reviews'] ?: 0;
+            }
+        }
+        $tasksQuery = new Query();
+        $tasks = $tasksQuery
+            ->select(["executive_id AS id", "COUNT(id) AS count"])
+            ->from('tasks')
+            ->where(['executive_id' => $userIds])
+            ->groupBy('executive_id')
+            ->all();
+
+        foreach ($tasks as $task) {
+            if (in_array(intval($task['id']), $userIds)) {
+                $usersInfo[$task['id']]['tasks'] = $task['count'] ?: 0;
+            }
+        }
+
+        return $usersInfo;
     }
 
 }
