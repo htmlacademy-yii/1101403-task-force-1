@@ -73,7 +73,7 @@ CREATE TABLE reviews (
     executive_id        INT UNSIGNED NOT NULL,
     task_id             INT UNSIGNED NOT NULL,
     comment             VARCHAR(16383),
-    rate                ENUM('0', '1', '2', '3', '4', '5'),
+    rate                ENUM('1', '2', '3', '4', '5'),
     dt_create           TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (client_id) REFERENCES users(id),
