@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "users".
@@ -31,7 +32,6 @@ use Yii;
  *
  * @property Alerts[] $alerts
  * @property Attachments[] $attachments
- * @property Users[] $clientsFavoritesExecutors
  * @property Messages[] $messagesByAuthor
  * @property Messages[] $messagesByAddressee
  * @property Reviews[] $reviewsByClient
@@ -41,17 +41,12 @@ use Yii;
  * @property Tasks[] $executivesTasks
  * @property Cities $city
  * @property Categories[] $usersSpecialisations
+ * @property ClientsFavoritesExecutors[] $recordsInFavorites
+ * @property ClientsFavoritesExecutors[] $recordsOfClientsFavorites
  */
 class Users extends \yii\db\ActiveRecord
 {
-    /**
-     * @var - рейтинг исполнителя
-     */
-    private $_rating;
-
-    private $_exTasksNumber;
-
-    private $_exReviewsNumber;
+    
     /**
      * {@inheritdoc}
      */
@@ -77,7 +72,7 @@ class Users extends \yii\db\ActiveRecord
             [['phone'], 'string', 'max' => 32],
             [['bio'], 'string', 'max' => 16383],
             [['email'], 'unique'],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
 
@@ -111,59 +106,6 @@ class Users extends \yii\db\ActiveRecord
         ];
     }
 
-    public function setRating($rating)
-    {
-        $this->_rating = round((float)$rating, 2);
-    }
-
-    public function getRating()
-    {
-        if ($this->isNewRecord) {
-            return null;
-        }
-
-        if ($this->_rating === null && $this->role === 'executive') {
-            $this->setRating(Reviews::find()->select('AVG(rate)')->where(['id' => $this->id]));
-            return $this->_rating;
-        }
-        echo $this->_rating;
-    }
-
-    public function setExTasksNumber($tasksNumber)
-    {
-        $this->_exTasksNumber = (int)$tasksNumber;
-    }
-
-    public function getExTasksNumber()
-    {
-        if ($this->isNewRecord) {
-            return null;
-        }
-
-        if ($this->_exTasksNumber === null) {
-            $this->setExTasksNumber($this->getExecutivesTasks()->count());
-        }
-
-        return $this->_exTasksNumber;
-    }
-
-    public function setExReviewsNumber($reviewsNumber)
-    {
-        $this->_exReviewsNumber = (int)$reviewsNumber;
-    }
-
-    public function getExReviewsNumber()
-    {
-        if ($this->isNewRecord) {
-            return null;
-        }
-
-        if ($this->_exReviewsNumber === null) {
-            $this->setExReviewsNumber($this->getReviewsByExecutive()->count());
-        }
-
-        return $this->_exReviewsNumber;
-    }
 
 
 
@@ -188,15 +130,24 @@ class Users extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[ClientsFavoritesExecutors]].
+     * Gets query for [[RecordsOfClientsFavorites]].
      *
      * @return \yii\db\ActiveQuery
      * @throws \yii\base\InvalidConfigException
      */
-    public function getClientsFavoritesExecutors()
+    public function getRecordsOfClientsFavorites()
     {
-        return $this->hasMany(Users::className(), ['id' => 'executive_id'])->viaTable('clients_favorites_executors',['client_id' => 'id']);
+        return $this->hasMany(ClientsFavoritesExecutors::className(), ['client_id' => 'id']);
     }
+
+    /**
+     * Gets query for [[RecordsInFavorites]] записи о занесении исполнителя в списки избранных
+     */
+    public function getRecordsInFavorites()
+    {
+        return $this->hasMany(ClientsFavoritesExecutors::className(), ['executive_id' => 'id']);
+    }
+
 
     /**
      * Gets query for [[UsersSpecialisations]].

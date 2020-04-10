@@ -40,7 +40,9 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => false,
             'rules' => [
+                'users/<sort>' => 'users/index'
             ],
         ],
     ],
