@@ -13,7 +13,7 @@ class UsersController extends Controller
     public function actionIndex($sort = 'dt_reg')
     {
         $request = Users::find()
-            ->where(['role' => 'executive'])
+            ->where(['users.role' => 'executive'])
             ->with(['executivesTasks', 'reviewsByExecutive', 'usersSpecialisations'])
             ->groupBy('users.id');
         if ($sort === 'order_count') {
@@ -58,9 +58,10 @@ class UsersController extends Controller
                     ->andWhere(['not', ['reviews.comment' => null]]);
             }
             if ($model->inFavorites) {
+                //TO DO: брать u.id из сессии
                 $request = $request
-                    ->joinWith('recordsInFavorites')
-                    ->andWhere(['not', ['clients_favorites_executors.id' => null]]);
+                    ->joinWith('executorsInFavor u')
+                    ->andWhere(['u.id' => 11]);
             }
             if ($model->name) {
                 $request = $request->andWhere('MATCH(name) AGAINST (:name)', [':name' => $model->name]);

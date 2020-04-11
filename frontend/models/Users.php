@@ -41,12 +41,11 @@ use yii\db\Query;
  * @property Tasks[] $executivesTasks
  * @property Cities $city
  * @property Categories[] $usersSpecialisations
- * @property ClientsFavoritesExecutors[] $recordsInFavorites
- * @property ClientsFavoritesExecutors[] $recordsOfClientsFavorites
+ * @property Users[] $executorsInFavor
  */
 class Users extends \yii\db\ActiveRecord
 {
-    
+
     /**
      * {@inheritdoc}
      */
@@ -129,23 +128,15 @@ class Users extends \yii\db\ActiveRecord
         return $this->hasMany(Attachments::className(), ['user_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[RecordsOfClientsFavorites]].
-     *
-     * @return \yii\db\ActiveQuery
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function getRecordsOfClientsFavorites()
-    {
-        return $this->hasMany(ClientsFavoritesExecutors::className(), ['client_id' => 'id']);
-    }
 
     /**
-     * Gets query for [[RecordsInFavorites]] записи о занесении исполнителя в списки избранных
+     * Gets query for [[ExecutorsInFavor]].
+     *
+     * @return \yii\db\ActiveQuery
      */
-    public function getRecordsInFavorites()
+    public function getExecutorsInFavor()
     {
-        return $this->hasMany(ClientsFavoritesExecutors::className(), ['executive_id' => 'id']);
+        return $this->hasMany(Users::className(), ['id' => 'client_id'])->viaTable('clients_favorites_executors', ['executive_id' => 'id']);
     }
 
 

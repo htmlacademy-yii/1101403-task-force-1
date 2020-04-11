@@ -9,7 +9,7 @@ use \Htmlacademy\logic\TimeCounter;
         <p>Сортировать по:</p>
         <ul class="user__search-list">
             <li class="user__search-item user__search-item--current">
-                <a href="users/rating" class="link-regular">Рейтингу</a>
+                <a href="<?php echo  __DIR__ . '\users\rating'; ?>" class="link-regular">Рейтингу</a>
             </li>
             <li class="user__search-item">
                 <a href="users/order_count" class="link-regular">Числу заказов</a>
