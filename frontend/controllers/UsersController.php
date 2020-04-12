@@ -12,18 +12,23 @@ class UsersController extends Controller
 {
     public function actionIndex($sort = 'dt_reg')
     {
+        $listStyle = [];
         $request = Users::find()
             ->where(['users.role' => 'executive'])
             ->with(['executivesTasks', 'reviewsByExecutive', 'usersSpecialisations'])
             ->groupBy('users.id');
         if ($sort === 'order_count') {
+            $listStyle['order_count'] = 'user__search-item--current';
             $request = $request
                 ->select('users.*, COUNT(tasks.id) AS order_count')
                 ->joinWith('executivesTasks');
         } elseif ($sort === 'rating') {
+            $listStyle['rating'] = 'user__search-item--current';
             $request = $request
                 ->select('users.*, AVG(reviews.rate) AS rating')
                 ->joinWith('reviewsByExecutive');
+        } elseif ($sort === 'view_count') {
+            $listStyle['view_count'] = 'user__search-item--current';
         }
         $request = $request->orderBy([$sort => SORT_DESC]);
 
@@ -80,7 +85,7 @@ class UsersController extends Controller
         $usersInfo = $this->addInfo($userIds);
 
         //передаю все в представление
-        return $this->render('index', ['users' => $users, 'categories' => $categories, 'model' => $model, 'usersInfo' => $usersInfo]);
+        return $this->render('index', ['users' => $users, 'categories' => $categories, 'model' => $model, 'usersInfo' => $usersInfo, 'listStyle' => $listStyle]);
     }
 
     /**

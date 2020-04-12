@@ -8,14 +8,14 @@ use \Htmlacademy\logic\TimeCounter;
     <div class="user__search-link">
         <p>Сортировать по:</p>
         <ul class="user__search-list">
-            <li class="user__search-item user__search-item--current">
-                <a href="<?php echo  __DIR__ . '\users\rating'; ?>" class="link-regular">Рейтингу</a>
+            <li class="user__search-item <?php if (isset($listStyle['rating'])): echo $listStyle['rating']; endif; ?>">
+                <a href="https://yii-taskforce/users/rating" class="link-regular">Рейтингу</a>
             </li>
-            <li class="user__search-item">
-                <a href="users/order_count" class="link-regular">Числу заказов</a>
+            <li class="user__search-item <?php if (isset($listStyle['order_count'])): echo $listStyle['order_count']; endif; ?>">
+                <a href="https://yii-taskforce/users/order_count" class="link-regular">Числу заказов</a>
             </li>
-            <li class="user__search-item">
-                <a href="users/view_count" class="link-regular">Популярности</a>
+            <li class="user__search-item <?php if (isset($listStyle['view_count'])): echo $listStyle['view_count']; endif; ?>">
+                <a href="https://yii-taskforce/users/view_count" class="link-regular">Популярности</a>
             </li>
         </ul>
     </div>

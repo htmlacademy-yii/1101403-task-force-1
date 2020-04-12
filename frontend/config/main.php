@@ -42,6 +42,7 @@ return [
             'showScriptName' => false,
             'enableStrictParsing' => false,
             'rules' => [
+                '//' => '/',
                 'users/<sort>' => 'users/index'
             ],
         ],
