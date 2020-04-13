@@ -9,13 +9,13 @@ use \Htmlacademy\logic\TimeCounter;
         <p>Сортировать по:</p>
         <ul class="user__search-list">
             <li class="user__search-item <?php if (isset($listStyle['rating'])): echo $listStyle['rating']; endif; ?>">
-                <a href="https://yii-taskforce/users/rating" class="link-regular">Рейтингу</a>
+                <a href="/users/rating" class="link-regular">Рейтингу</a>
             </li>
             <li class="user__search-item <?php if (isset($listStyle['order_count'])): echo $listStyle['order_count']; endif; ?>">
-                <a href="https://yii-taskforce/users/order_count" class="link-regular">Числу заказов</a>
+                <a href="/users/order_count" class="link-regular">Числу заказов</a>
             </li>
             <li class="user__search-item <?php if (isset($listStyle['view_count'])): echo $listStyle['view_count']; endif; ?>">
-                <a href="https://yii-taskforce/users/view_count" class="link-regular">Популярности</a>
+                <a href="/users/view_count" class="link-regular">Популярности</a>
             </li>
         </ul>
     </div>
@@ -23,7 +23,7 @@ use \Htmlacademy\logic\TimeCounter;
         <div class="content-view__feedback-card user__search-wrapper">
             <div class="feedback-card__top">
                 <div class="user__search-icon">
-                    <a href="#"><img src="./img/man-glasses.jpg" width="65" height="65"></a>
+                    <a href="#"><img src="<?php echo $user->avatar_path ?: '/img/man-glasses.jpg'; ?>" width="65" height="65"></a>
                     <?php
                     $tasks = $usersInfo[$user->id]['tasks'] ?: 0;
                     $reviews = $usersInfo[$user->id]['reviews'] ?: 0;
