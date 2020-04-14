@@ -43,7 +43,8 @@ return [
             'enableStrictParsing' => false,
             'rules' => [
                 '//' => '/',
-                'users/<sort>' => 'users/index'
+                'users/<sort>/<curPage>' => 'users/index',
+                'tasks/<curPage>' => 'tasks/index'
             ],
         ],
     ],
