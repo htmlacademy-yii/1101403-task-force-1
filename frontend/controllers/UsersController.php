@@ -10,7 +10,7 @@ use yii\web\Controller;
 
 class UsersController extends Controller
 {
-    public function actionIndex($sort = 'dt_reg')
+    public function actionIndex($sort = 'dt_reg', $curPage = 1)
     {
         $listStyle = [];
         $request = Users::find()
@@ -74,6 +74,19 @@ class UsersController extends Controller
 
         }
 
+        //кол-во элементов на странице
+        $usersLimit = 5;
+        //кол-во всех записей
+        $usersNumber = $request->count();
+        //количество страниц для пагинации
+        $pages = ceil($usersNumber / $usersLimit);
+        //оффсет
+        $offset = ($curPage - 1) * $usersLimit;
+
+        $request = $request
+            ->limit($usersLimit)
+            ->offset($offset);
+
         $users = $request->all();
         // получаю массив id пользователей
         $userIds = [];
@@ -84,8 +97,18 @@ class UsersController extends Controller
         //рассчитываю рейтинг, количество заданий и отзывов для каждого юзера
         $usersInfo = $this->addInfo($userIds);
 
+
         //передаю все в представление
-        return $this->render('index', ['users' => $users, 'categories' => $categories, 'model' => $model, 'usersInfo' => $usersInfo, 'listStyle' => $listStyle]);
+        return $this->render('index', [
+            'users' => $users,
+            'categories' => $categories,
+            'model' => $model,
+            'usersInfo' => $usersInfo,
+            'listStyle' => $listStyle,
+            'pages' => $pages,
+            'sort' => $sort,
+            'curPage' => $curPage
+        ]);
     }
 
     /**

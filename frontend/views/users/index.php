@@ -9,13 +9,13 @@ use \Htmlacademy\logic\TimeCounter;
         <p>Сортировать по:</p>
         <ul class="user__search-list">
             <li class="user__search-item <?php if (isset($listStyle['rating'])): echo $listStyle['rating']; endif; ?>">
-                <a href="/users/rating" class="link-regular">Рейтингу</a>
+                <a href="/users/rating/1" class="link-regular">Рейтингу</a>
             </li>
             <li class="user__search-item <?php if (isset($listStyle['order_count'])): echo $listStyle['order_count']; endif; ?>">
-                <a href="/users/order_count" class="link-regular">Числу заказов</a>
+                <a href="/users/order_count/1" class="link-regular">Числу заказов</a>
             </li>
             <li class="user__search-item <?php if (isset($listStyle['view_count'])): echo $listStyle['view_count']; endif; ?>">
-                <a href="/users/view_count" class="link-regular">Популярности</a>
+                <a href="/users/view_count/1" class="link-regular">Популярности</a>
             </li>
         </ul>
     </div>
@@ -57,6 +57,25 @@ use \Htmlacademy\logic\TimeCounter;
             </div>
         </div>
     <?php endforeach; ?>
+    <?php if ($pages > 1): ?>
+        <div class="new-task__pagination">
+            <ul class="new-task__pagination-list">
+                <li class="pagination__item">
+                    <?php $p = $curPage - 1; ?>
+                    <a href="/users/<?php echo $sort . '/' . (($p > 0) ? $p : 1); ?>">&nbsp;</a>
+                </li>
+                <?php for ($i = 1; $i <= $pages; $i++): ?>
+                    <li class="pagination__item<?php if (intval($curPage) === $i): echo ' pagination__item--current'; endif; ?>">
+                        <a href="/users/<?php echo $sort . '/' . $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+                <li class="pagination__item">
+                    <?php $p = $curPage + 1; ?>
+                    <a href="/users/<?php echo $sort . '/' . (($p <= $pages) ? $p : $pages); ?>">&nbsp;</a>
+                </li>
+            </ul>
+        </div>
+    <?php endif; ?>
 </section>
 <section  class="search-task">
     <div class="search-task__wrapper">
