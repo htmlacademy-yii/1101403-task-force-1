@@ -21,16 +21,25 @@
         </div>
         <?php endforeach; ?>
     </div>
-    <div class="new-task__pagination">
-        <ul class="new-task__pagination-list">
-            <li class="pagination__item"><a href="#"></a></li>
-            <li class="pagination__item pagination__item--current">
-                <a>1</a></li>
-            <li class="pagination__item"><a href="#">2</a></li>
-            <li class="pagination__item"><a href="#">3</a></li>
-            <li class="pagination__item"><a href="#"></a></li>
-        </ul>
-    </div>
+    <?php if ($pages > 1): ?>
+        <div class="new-task__pagination">
+            <ul class="new-task__pagination-list">
+                <li class="pagination__item">
+                    <?php $p = $curPage - 1; ?>
+                    <a href="/tasks/<?php echo (($p > 0) ? $p : 1); ?>">&nbsp;</a>
+                </li>
+                <?php for ($i = 1; $i <= $pages; $i++): ?>
+                    <li class="pagination__item<?php if (intval($curPage) === $i): echo ' pagination__item--current'; endif; ?>">
+                        <a href="/tasks/<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+                <li class="pagination__item">
+                    <?php $p = $curPage + 1; ?>
+                    <a href="/tasks/<?php echo (($p <= $pages) ? $p : $pages); ?>">&nbsp;</a>
+                </li>
+            </ul>
+        </div>
+    <?php endif; ?>
 </section>
 <section  class="search-task">
     <div class="search-task__wrapper">

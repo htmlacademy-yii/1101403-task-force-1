@@ -9,7 +9,7 @@ use frontend\models\Tasks;
 
 class TasksController extends Controller
 {
-    public function actionIndex()
+    public function actionIndex($curPage = 1)
     {
         $request = Tasks::find()
             ->where(['status' => 'new'])
@@ -53,8 +53,28 @@ class TasksController extends Controller
                 $request = $request->andWhere('MATCH(title) AGAINST (:title)', [':title' => $model->title]);
             }
         }
+        //кол-во элементов на странице
+        $tasksLimit = 5;
+        //кол-во всех записей
+        $tasksNumber = $request->count();
+        //количество страниц для пагинации
+        $pages = ceil($tasksNumber / $tasksLimit);
+        //оффсет
+        $offset = ($curPage - 1) * $tasksLimit;
+
+        $request = $request
+            ->limit($tasksLimit)
+            ->offset($offset);
+
         $tasks = $request->all();
 
-        return $this->render('index', ['tasks' => $tasks, 'categories' => $categories, 'model' => $model]);
+        //передаю все в представление
+        return $this->render('index', [
+            'tasks' => $tasks,
+            'categories' => $categories,
+            'model' => $model,
+            'pages' => $pages,
+            'curPage' => $curPage
+        ]);
     }
 }
