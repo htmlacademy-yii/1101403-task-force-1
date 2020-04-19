@@ -70,6 +70,7 @@ class UsersController extends Controller
             }
             if ($model->name) {
                 $request = $request->andWhere('MATCH(name) AGAINST (:name)', [':name' => $model->name]);
+                $curPage = 1;
             }
 
         }
