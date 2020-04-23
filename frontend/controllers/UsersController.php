@@ -5,12 +5,13 @@ use frontend\models\Categories;
 use frontend\models\SearchUsersForm;
 use frontend\models\Users;
 use Yii;
+use yii\data\Pagination;
 use yii\db\Query;
 use yii\web\Controller;
 
 class UsersController extends Controller
 {
-    public function actionIndex($sort = 'dt_reg', $curPage = 1)
+    public function actionIndex($sort = 'dt_reg', $page = 1)
     {
         $listStyle = [];
         $request = Users::find()
@@ -70,25 +71,18 @@ class UsersController extends Controller
             }
             if ($model->name) {
                 $request = $request->andWhere('MATCH(name) AGAINST (:name)', [':name' => $model->name]);
-                $curPage = 1;
             }
-
         }
 
-        //кол-во элементов на странице
-        $usersLimit = 5;
-        //кол-во всех записей
-        $usersNumber = $request->count();
-        //количество страниц для пагинации
-        $pages = ceil($usersNumber / $usersLimit);
-        //оффсет
-        $offset = ($curPage - 1) * $usersLimit;
+        $count = $request->count();
+        $pagination = new Pagination(['totalCount' => $count, 'pageSize' => 5]);
+        $pagination->route = "/users/$sort/";
+        $users = $request
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
 
-        $request = $request
-            ->limit($usersLimit)
-            ->offset($offset);
 
-        $users = $request->all();
         // получаю массив id пользователей
         $userIds = [];
         foreach ($users as $user) {
@@ -98,7 +92,6 @@ class UsersController extends Controller
         //рассчитываю рейтинг, количество заданий и отзывов для каждого юзера
         $usersInfo = $this->addInfo($userIds);
 
-
         //передаю все в представление
         return $this->render('index', [
             'users' => $users,
@@ -106,9 +99,8 @@ class UsersController extends Controller
             'model' => $model,
             'usersInfo' => $usersInfo,
             'listStyle' => $listStyle,
-            'pages' => $pages,
             'sort' => $sort,
-            'curPage' => $curPage
+            'pagination' => $pagination
         ]);
     }
 

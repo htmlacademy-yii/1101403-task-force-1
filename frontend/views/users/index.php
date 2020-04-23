@@ -3,6 +3,8 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use \Htmlacademy\logic\PluralForms;
 use \Htmlacademy\logic\TimeCounter;
+use yii\widgets\LinkPager;
+
 ?>
 <section class="user__search">
     <div class="user__search-link">
@@ -57,25 +59,41 @@ use \Htmlacademy\logic\TimeCounter;
             </div>
         </div>
     <?php endforeach; ?>
-    <?php if ($pages > 1): ?>
-        <div class="new-task__pagination">
-            <ul class="new-task__pagination-list">
-                <li class="pagination__item">
-                    <?php $p = $curPage - 1; ?>
-                    <a href="/users/<?php echo $sort . '/' . (($p > 0) ? $p : 1); ?>">&nbsp;</a>
-                </li>
-                <?php for ($i = 1; $i <= $pages; $i++): ?>
-                    <li class="pagination__item<?php if (intval($curPage) === $i): echo ' pagination__item--current'; endif; ?>">
-                        <a href="/users/<?php echo $sort . '/' . $i; ?>"><?php echo $i; ?></a>
-                    </li>
-                <?php endfor; ?>
-                <li class="pagination__item">
-                    <?php $p = $curPage + 1; ?>
-                    <a href="/users/<?php echo $sort . '/' . (($p <= $pages) ? $p : $pages); ?>">&nbsp;</a>
-                </li>
-            </ul>
-        </div>
-    <?php endif; ?>
+    <div class="new-task__pagination">
+        <?php
+        echo LinkPager::widget([
+            'pagination' => $pagination,
+            'activePageCssClass' => 'pagination__item--current',
+            'options' => ['class' => 'new-task__pagination-list'],
+            'linkContainerOptions' => ['class' => 'pagination__item'],
+            'nextPageLabel' => '&nbsp;',
+            'prevPageLabel' => '&nbsp;'
+        ]);
+        ?>
+    </div>
+<!--    --><?php
+//    $pages = $pagination->pageCount;
+//    $p = $pagination->page;
+//    ?>
+<!--    --><?php //if ($pages > 1): ?>
+<!--        <div class="new-task__pagination">-->
+<!--            <ul class="new-task__pagination-list">-->
+<!--                <li class="pagination__item">-->
+<!--                    --><?php //$pageLink = $p - 1; ?>
+<!--                    <a href="--><?php //echo $pagination->createUrl(($pageLink >= 0) ? $pageLink : 0); ?><!--">&nbsp;</a>-->
+<!--                </li>-->
+<!--                --><?php //for ($i = 0; $i < $pages; $i++): ?>
+<!--                    <li class="pagination__item--><?php //if (intval($p) === $i): echo ' pagination__item--current'; endif; ?><!--">-->
+<!--                        <a href="--><?php //echo $pagination->createUrl($i); ?><!--">--><?php //echo $i + 1; ?><!--</a>-->
+<!--                    </li>-->
+<!--                --><?php //endfor; ?>
+<!--                <li class="pagination__item">-->
+<!--                    --><?php //$pageLink = $p + 1; ?>
+<!--                    <a href="--><?php //echo $pagination->createUrl(($pageLink < $pages) ? $pageLink : $pages - 1); ?><!--">&nbsp;</a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    --><?php //endif; ?>
 </section>
 <section  class="search-task">
     <div class="search-task__wrapper">
