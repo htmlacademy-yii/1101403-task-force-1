@@ -11,7 +11,7 @@ use yii\web\Controller;
 
 class UsersController extends Controller
 {
-    public function actionIndex($sort = 'dt_reg', $page = 1)
+    public function actionIndex($sort = 'dt_reg')
     {
         $listStyle = [];
         $request = Users::find()
@@ -42,8 +42,8 @@ class UsersController extends Controller
         $categories = $result;
         $model = new SearchUsersForm();
         //фильтры
-        if (Yii::$app->request->isPost) {
-            $model->load(Yii::$app->request->post());
+        if (Yii::$app->request->isGet) {
+            $model->load(Yii::$app->request->get());
             if ($model->categories) {
                 $request = $request
                     ->joinWith('usersSpecialisations')
@@ -76,7 +76,7 @@ class UsersController extends Controller
 
         $count = $request->count();
         $pagination = new Pagination(['totalCount' => $count, 'pageSize' => 5]);
-        $pagination->route = "/users/$sort/";
+        $pagination->route = "users/index";
         $users = $request
             ->offset($pagination->offset)
             ->limit($pagination->limit)
