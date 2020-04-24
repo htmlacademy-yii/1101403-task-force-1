@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use \Htmlacademy\logic\PluralForms;
 use \Htmlacademy\logic\TimeCounter;
@@ -11,13 +12,13 @@ use yii\widgets\LinkPager;
         <p>Сортировать по:</p>
         <ul class="user__search-list">
             <li class="user__search-item <?php if (isset($listStyle['rating'])): echo $listStyle['rating']; endif; ?>">
-                <a href="/users/rating/1" class="link-regular">Рейтингу</a>
+                <a href="<?php echo Url::toRoute(['users/index', 'sort' => 'rating', 'page' => 1]); ?>" class="link-regular">Рейтингу</a>
             </li>
             <li class="user__search-item <?php if (isset($listStyle['order_count'])): echo $listStyle['order_count']; endif; ?>">
-                <a href="/users/order_count/1" class="link-regular">Числу заказов</a>
+                <a href="<?php echo Url::toRoute(['users/index', 'sort' => 'order_count', 'page' => 1]); ?>" class="link-regular">Числу заказов</a>
             </li>
             <li class="user__search-item <?php if (isset($listStyle['view_count'])): echo $listStyle['view_count']; endif; ?>">
-                <a href="/users/view_count/1" class="link-regular">Популярности</a>
+                <a href="<?php echo Url::toRoute(['users/index', 'sort' => 'view_count', 'page' => 1]); ?>" class="link-regular">Популярности</a>
             </li>
         </ul>
     </div>
@@ -99,7 +100,7 @@ use yii\widgets\LinkPager;
     <div class="search-task__wrapper">
         <?php
         $form = ActiveForm::begin([
-            'method' => 'post',
+            'method' => 'get',
             'options' => ['class' => 'search-task__form']
         ]);
         ?>
