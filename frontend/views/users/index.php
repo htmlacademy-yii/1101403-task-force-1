@@ -72,29 +72,6 @@ use yii\widgets\LinkPager;
         ]);
         ?>
     </div>
-<!--    --><?php
-//    $pages = $pagination->pageCount;
-//    $p = $pagination->page;
-//    ?>
-<!--    --><?php //if ($pages > 1): ?>
-<!--        <div class="new-task__pagination">-->
-<!--            <ul class="new-task__pagination-list">-->
-<!--                <li class="pagination__item">-->
-<!--                    --><?php //$pageLink = $p - 1; ?>
-<!--                    <a href="--><?php //echo $pagination->createUrl(($pageLink >= 0) ? $pageLink : 0); ?><!--">&nbsp;</a>-->
-<!--                </li>-->
-<!--                --><?php //for ($i = 0; $i < $pages; $i++): ?>
-<!--                    <li class="pagination__item--><?php //if (intval($p) === $i): echo ' pagination__item--current'; endif; ?><!--">-->
-<!--                        <a href="--><?php //echo $pagination->createUrl($i); ?><!--">--><?php //echo $i + 1; ?><!--</a>-->
-<!--                    </li>-->
-<!--                --><?php //endfor; ?>
-<!--                <li class="pagination__item">-->
-<!--                    --><?php //$pageLink = $p + 1; ?>
-<!--                    <a href="--><?php //echo $pagination->createUrl(($pageLink < $pages) ? $pageLink : $pages - 1); ?><!--">&nbsp;</a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
-<!--    --><?php //endif; ?>
 </section>
 <section  class="search-task">
     <div class="search-task__wrapper">
