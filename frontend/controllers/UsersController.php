@@ -42,41 +42,42 @@ class UsersController extends Controller
         $categories = $result;
         $model = new SearchUsersForm();
         //фильтры
-        if (Yii::$app->request->isGet) {
-            $model->load(Yii::$app->request->get());
-            if ($model->categories) {
-                $request = $request
-                    ->joinWith('usersSpecialisations')
-                    ->andWhere(['users_specialisations.cat_id' => $model->categories]);
-            }
-            if ($model->freeNow) {
-                $request = $request
-                    ->joinWith('executivesTasks')
-                    ->andWhere(['tasks.id' => null]);
-            }
-            if ($model->online) {
-                $halfAnHourAgo = date('Y-m-d H:i:s', strtotime('-30 mins'));
-                $request = $request->andFilterCompare('users.dt_last_visit', ">$halfAnHourAgo");
-            }
-            if ($model->hasReplies) {
-                $request = $request
-                    ->joinWith('reviewsByExecutive')
-                    ->andWhere(['not', ['reviews.comment' => null]]);
-            }
-            if ($model->inFavorites) {
-                //TO DO: брать u.id из сессии
-                $request = $request
-                    ->joinWith('executorsInFavor u')
-                    ->andWhere(['u.id' => 11]);
-            }
-            if ($model->name) {
-                $request = $request->andWhere('MATCH(name) AGAINST (:name)', [':name' => $model->name]);
-            }
+        $model->load(Yii::$app->request->get());
+        if ($model->categories) {
+            $request = $request
+                ->joinWith('usersSpecialisations')
+                ->andWhere(['users_specialisations.cat_id' => $model->categories]);
+        }
+        if ($model->freeNow) {
+            $request = $request
+                ->joinWith('executivesTasks')
+                ->andWhere(['tasks.id' => null]);
+        }
+        if ($model->online) {
+            $halfAnHourAgo = date('Y-m-d H:i:s', strtotime('-30 mins'));
+            $request = $request->andFilterCompare('users.dt_last_visit', ">$halfAnHourAgo");
+        }
+        if ($model->hasReplies) {
+            $request = $request
+                ->joinWith('reviewsByExecutive')
+                ->andWhere(['not', ['reviews.comment' => null]]);
+        }
+        if ($model->inFavorites) {
+            //TO DO: брать u.id из сессии
+            $request = $request
+                ->joinWith('executorsInFavor u')
+                ->andWhere(['u.id' => 11]);
+        }
+        if ($model->name) {
+            $request = $request->andWhere('MATCH(name) AGAINST (:name)', [':name' => $model->name]);
         }
 
         $count = $request->count();
-        $pagination = new Pagination(['totalCount' => $count, 'pageSize' => 5]);
-        $pagination->route = "users/index";
+        $pagination = new Pagination([
+            'totalCount' => $count,
+            'pageSize' => 5,
+            'route' => 'users/index'
+        ]);
         $users = $request
             ->offset($pagination->offset)
             ->limit($pagination->limit)

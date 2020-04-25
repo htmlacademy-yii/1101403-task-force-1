@@ -44,8 +44,7 @@ return [
             'rules' => [
                 '//' => '/',
                 'users/<sort>/page/<page>' => 'users/index',
-                'users/' => 'users/index',
-                'tasks/<curPage>' => 'tasks/index'
+                'users/' => 'users/index'
             ],
         ],
     ],
