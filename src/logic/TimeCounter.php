@@ -4,7 +4,10 @@ namespace Htmlacademy\logic;
 
 use Htmlacademy\logic\PluralForms;
 
-
+/**
+ * Класс считает, сколько времени прошло с момента создания какой-либо сущности и переводит это время в
+ * человекопонятную строку «минут/часов/дней назад» с округлением в меньшую сторону
+ */
 class TimeCounter
 {
     /**
@@ -18,8 +21,7 @@ class TimeCounter
     protected $timeDiff;
 
     /**
-     * TimeCounter constructor. Класс считает, сколько времени прошло с момента создания какой-либо сущности и переводит это время в
-     * человекопонятную строку «минут/часов/дней назад» с округлением в меньшую сторону
+     * TimeCounter constructor.
      * @param $dtCreate
      */
     public function __construct($dtCreate)
