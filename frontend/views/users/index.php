@@ -28,8 +28,8 @@ use yii\widgets\LinkPager;
                 <div class="user__search-icon">
                     <a href="#"><img src="<?php echo $user->avatar_path ?: '/img/man-glasses.jpg'; ?>" width="65" height="65"></a>
                     <?php
-                    $tasks = $usersInfo[$user->id]['tasks'] ?: 0;
-                    $reviews = $usersInfo[$user->id]['reviews'] ?: 0;
+                    $tasks = $tasksCount[$user->id] ?: 0;
+                    $reviews = $reviewsCount[$user->id] ?: 0;
                     ?>
                     <span><?php echo $tasks . ' ' . PluralForms::pluralNouns(intval($tasks), 'задание', 'задания','заданий'); ?></span>
                     <span><?php echo $reviews . ' ' . PluralForms::pluralNouns(intval($reviews), 'отзыв','отзыва','отзывов'); ?></span>
@@ -38,7 +38,7 @@ use yii\widgets\LinkPager;
                     <p class="link-name"><a href="#" class="link-regular"><?php echo $user->name ?: ''; ?></a></p>
                     <span></span><span></span><span></span><span></span><span class="star-disabled"></span>
                     <b>
-                        <?php echo $usersInfo[$user->id]['rating'] ?: 0; ?>
+                        <?php echo $ratings[$user->id] ?: 0; ?>
                     </b>
                     <p class="user__search-content">
                         <?php echo $user->bio ?: ''; ?>
