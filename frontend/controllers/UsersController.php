@@ -4,9 +4,9 @@ namespace frontend\controllers;
 use frontend\models\Categories;
 use frontend\models\SearchUsersForm;
 use frontend\models\Users;
+use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
 use yii\data\Pagination;
-use yii\db\Query;
 use yii\web\Controller;
 
 class UsersController extends Controller
@@ -91,60 +91,23 @@ class UsersController extends Controller
         }
 
         //рассчитываю рейтинг, количество заданий и отзывов для каждого юзера
-        $usersInfo = $this->addInfo($userIds);
+        $info = new ExecutivesInfo($userIds);
+        $ratings = $info->getRating();
+        $tasksCount = $info->getTasks();
+        $reviewsCount = $info->getReviews();
 
         //передаю все в представление
         return $this->render('index', [
             'users' => $users,
             'categories' => $categories,
             'model' => $model,
-            'usersInfo' => $usersInfo,
+            'ratings' => $ratings,
+            'tasksCount' => $tasksCount,
+            'reviewsCount' => $reviewsCount,
             'listStyle' => $listStyle,
             'sort' => $sort,
             'pagination' => $pagination
         ]);
-    }
-
-    /**
-     * Метод рассчитывает и записывает в модели рейтинг юзеров
-     * @param array $userIds - массив с id юзеров, которым надо рассчитать рейтинг, количество заданий и количество отзывов
-     * @return array $usersInfo массив вида [id => ['rating' => 5, 'reviews' => 4, 'tasks' => 0],[...]] с данными о юзере
-     */
-    protected function addInfo(array $userIds): array
-    {
-        $usersInfo = [];
-        foreach ($userIds as $id) {
-            $usersInfo[$id] = ['rating' => 0, 'reviews' => 0, 'tasks' => 0];
-        }
-        $reviewQuery = new Query();
-        $ratingAndReviews = $reviewQuery
-            ->select(["executive_id AS id", "ROUND(AVG(rate),1) AS rating", "COUNT(comment) AS reviews"])
-            ->from(['reviews'])
-            ->where(['executive_id' => $userIds])
-            ->groupBy('executive_id')
-            ->all();
-
-        foreach ($ratingAndReviews as $info) {
-            if (in_array(intval($info['id']), $userIds)) {
-                $usersInfo[$info['id']]['rating'] = $info['rating'] ?: 0;
-                $usersInfo[$info['id']]['reviews'] = $info['reviews'] ?: 0;
-            }
-        }
-        $tasksQuery = new Query();
-        $tasks = $tasksQuery
-            ->select(["executive_id AS id", "COUNT(id) AS count"])
-            ->from('tasks')
-            ->where(['executive_id' => $userIds])
-            ->groupBy('executive_id')
-            ->all();
-
-        foreach ($tasks as $task) {
-            if (in_array(intval($task['id']), $userIds)) {
-                $usersInfo[$task['id']]['tasks'] = $task['count'] ?: 0;
-            }
-        }
-
-        return $usersInfo;
     }
 
 }
