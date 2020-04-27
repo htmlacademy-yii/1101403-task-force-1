@@ -3,6 +3,8 @@ namespace frontend\controllers;
 
 use frontend\models\Categories;
 use frontend\models\SearchTaskForm;
+use frontend\models\TaskReplies;
+use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
 use yii\data\Pagination;
 use yii\web\Controller;
@@ -73,4 +75,30 @@ class TasksController extends Controller
             'pagination' => $pagination
         ]);
     }
+
+    public function actionView($id = 1)
+    {
+        $task = Tasks::find()
+            ->where(['id' => $id])
+            ->with(['category','city', 'client'])
+            ->one();
+        $replies = TaskReplies::find()
+            ->where(['task_id' => $id])
+            ->with('executive')
+            ->all();
+
+        $executivesIds = [];
+        foreach ($replies as $reply) {
+            $executivesIds[] = $reply->executive->id;
+        }
+        $info = new ExecutivesInfo($executivesIds);
+        $ratings = $info->getRating();
+
+        return $this->render('view', [
+            'task' => $task,
+            'replies' => $replies,
+            'ratings' => $ratings
+        ]);
+    }
+
 }

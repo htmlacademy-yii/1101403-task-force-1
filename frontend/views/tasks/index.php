@@ -2,6 +2,7 @@
 
 use Htmlacademy\logic\TimeCounter;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\ActiveField;
 use yii\widgets\LinkPager;
@@ -12,7 +13,7 @@ use yii\widgets\LinkPager;
         <?php foreach ($tasks as $task): ?>
         <div class="new-task__card">
             <div class="new-task__title">
-                <a href="#" class="link-regular"><h2><?php echo $task->title; ?></h2></a>
+                <a href="<?php echo Url::toRoute(['tasks/view', 'id' => $task->id]); ?>" class="link-regular"><h2><?php echo $task->title; ?></h2></a>
                 <a  class="new-task__type link-regular" href="#"><p><?php echo $task->category->title; ?></p></a>
             </div>
             <div class="new-task__icon new-task__icon--<?php echo $task->category->icon; ?>"></div>
@@ -25,7 +26,7 @@ use yii\widgets\LinkPager;
             $counter = new TimeCounter($task->dt_create);
             $timeString = $counter->countTimePassed();
             ?>
-            <span class="new-task__time"><?php echo $timeString; ?></span>
+            <span class="new-task__time"><?php echo $timeString . ' назад'; ?></span>
         </div>
         <?php endforeach; ?>
     </div>
