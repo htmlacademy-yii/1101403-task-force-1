@@ -6,7 +6,7 @@ use Htmlacademy\logic\PluralForms;
 
 /**
  * Класс считает, сколько времени прошло с момента создания какой-либо сущности и переводит это время в
- * человекопонятную строку «минут/часов/дней назад» с округлением в меньшую сторону
+ * человекопонятную строку «минут/часов/дней» с округлением в меньшую сторону
  */
 class TimeCounter
 {
@@ -39,12 +39,12 @@ class TimeCounter
         $timeInMinutes = $this->timeDiff/60;
         if ($timeInMinutes > 1440) {
             $timePassed = floor($timeInMinutes/1440);
-            return $timePassed . ' ' . PluralForms::pluralNouns($timePassed, 'день','дня','дней') . ' назад';
+            return $timePassed . ' ' . PluralForms::pluralNouns($timePassed, 'день','дня','дней');
         } elseif ($timeInMinutes > 60 && $timeInMinutes < 1440) {
             $timePassed = floor($timeInMinutes/60);
-            return $timePassed . ' ' . PluralForms::pluralNouns($timePassed, 'час','часа','часов') . ' назад';
+            return $timePassed . ' ' . PluralForms::pluralNouns($timePassed, 'час','часа','часов');
         } elseif ($timeInMinutes < 60) {
-            return floor($timeInMinutes) . ' ' . PluralForms::pluralNouns($timeInMinutes, 'минута','минуты','минут') . ' назад';
+            return floor($timeInMinutes) . ' ' . PluralForms::pluralNouns($timeInMinutes, 'минута','минуты','минут');
         }
     }
 

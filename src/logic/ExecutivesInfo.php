@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Htmlacademy\logic;
 
 use yii\db\Query;
