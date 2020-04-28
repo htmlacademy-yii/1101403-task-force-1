@@ -110,4 +110,23 @@ class UsersController extends Controller
         ]);
     }
 
+    public function actionView(int $id)
+    {
+        $user = Users::find()
+            ->where(['id' => $id])
+            ->with(['usersSpecialisations', 'reviewsByExecutive', 'city', 'executivesTasks'])
+            ->one();
+
+        $info = new ExecutivesInfo([$id]);
+        $ratings = $info->getRating();
+        $reviewsCount = $info->getReviews();
+        $reviewsCount = $reviewsCount[$user->id];
+
+        return $this->render('view', [
+            'user' => $user,
+            'ratings' => $ratings,
+            'reviewsCount' => $reviewsCount
+        ]);
+    }
+
 }

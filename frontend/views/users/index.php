@@ -26,7 +26,7 @@ use yii\widgets\LinkPager;
         <div class="content-view__feedback-card user__search-wrapper">
             <div class="feedback-card__top">
                 <div class="user__search-icon">
-                    <a href="#"><img src="<?php echo $user->avatar_path ?: '/img/man-glasses.jpg'; ?>" width="65" height="65"></a>
+                    <a href="<?php echo Url::toRoute(['users/view', 'id' => $user->id]); ?>"><img src="<?php echo $user->avatar_path ?: '/img/man-glasses.jpg'; ?>" width="65" height="65"></a>
                     <?php
                     $tasks = $tasksCount[$user->id] ?: 0;
                     $reviews = $reviewsCount[$user->id] ?: 0;
@@ -35,8 +35,21 @@ use yii\widgets\LinkPager;
                     <span><?php echo $reviews . ' ' . PluralForms::pluralNouns(intval($reviews), 'отзыв','отзыва','отзывов'); ?></span>
                 </div>
                 <div class="feedback-card__top--name user__search-card">
-                    <p class="link-name"><a href="#" class="link-regular"><?php echo $user->name ?: ''; ?></a></p>
-                    <span></span><span></span><span></span><span></span><span class="star-disabled"></span>
+                    <p class="link-name"><a href="<?php echo Url::toRoute(['users/view', 'id' => $user->id]); ?>" class="link-regular"><?php echo $user->name ?: ''; ?></a></p>
+                    <?php
+                    $stars = intval(ceil($ratings[$user->id] ?: 0));
+                    if ($stars > 0) {
+                        for ($i = 0; $i < $stars; $i++) {
+                            echo '<span></span>';
+                        }
+                    }
+                    $rest = 5 - $stars;
+                    if ($rest > 0) {
+                        for ($i = 0; $i < $rest; $i++) {
+                            echo '<span class="star-disabled"></span>';
+                        }
+                    }
+                    ?>
                     <b>
                         <?php echo $ratings[$user->id] ?: 0; ?>
                     </b>
@@ -48,7 +61,7 @@ use yii\widgets\LinkPager;
                 $counter = new TimeCounter($user->dt_last_visit);
                 $timeString = $counter->countTimePassed();
                 ?>
-                <span class="new-task__time"><?php echo 'Был(a) на сайте ' . $timeString; ?></span>
+                <span class="new-task__time"><?php echo 'Был(a) на сайте ' . $timeString . ' назад'; ?></span>
             </div>
             <div class="link-specialization user__search-link--bottom">
                 <?php if ($user->usersSpecialisations) {
