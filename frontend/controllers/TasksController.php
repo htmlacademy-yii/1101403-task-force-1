@@ -80,15 +80,11 @@ class TasksController extends Controller
     {
         $task = Tasks::find()
             ->where(['id' => $id])
-            ->with(['category','city', 'client'])
+            ->with(['category','city', 'client', 'taskReplies'])
             ->one();
-        $replies = TaskReplies::find()
-            ->where(['task_id' => $id])
-            ->with('executive')
-            ->all();
 
         $executivesIds = [];
-        foreach ($replies as $reply) {
+        foreach ($task->taskReplies as $reply) {
             $executivesIds[] = $reply->executive->id;
         }
         $info = new ExecutivesInfo($executivesIds);
@@ -96,7 +92,6 @@ class TasksController extends Controller
 
         return $this->render('view', [
             'task' => $task,
-            'replies' => $replies,
             'ratings' => $ratings
         ]);
     }

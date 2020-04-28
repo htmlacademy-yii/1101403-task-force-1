@@ -2,6 +2,8 @@
 
 use Htmlacademy\logic\PluralForms;
 use Htmlacademy\logic\TimeCounter;
+use yii\helpers\Url;
+
 ?>
 <section class="content-view">
     <div class="content-view__card">
@@ -53,21 +55,34 @@ use Htmlacademy\logic\TimeCounter;
         </div>
     </div>
     <div class="content-view__feedback">
-        <h2>Отклики <span><?php echo '(' . count($replies) . ')'; ?></span></h2>
+        <h2>Отклики <span><?php echo '(' . count($task->taskReplies) . ')'; ?></span></h2>
         <div class="content-view__feedback-wrapper">
-            <?php foreach ($replies as $reply): ?>
+            <?php foreach ($task->taskReplies as $reply): ?>
                 <div class="content-view__feedback-card">
                     <div class="feedback-card__top">
-                        <a href="#"><img src="/img/man-glasses.jpg" width="55" height="55"></a>
+                        <a href="<?php echo Url::toRoute(['users/view', 'id' => $reply->executive_id]); ?>"><img src="/img/man-glasses.jpg" width="55" height="55"></a>
                         <div class="feedback-card__top--name">
-                            <p><a href="#" class="link-regular"><?php echo $reply->executive->name ?: ''; ?></a></p>
-                            <span></span><span></span><span></span><span></span><span class="star-disabled"></span>
+                            <p><a href="<?php echo Url::toRoute(['users/view', 'id' => $reply->executive_id]); ?>" class="link-regular"><?php echo $reply->executive->name ?: ''; ?></a></p>
+                            <?php
+                            $stars = intval(ceil($ratings[$reply->executive->id] ?: 0));
+                            if ($stars > 0) {
+                                for ($i = 0; $i < $stars; $i++) {
+                                    echo '<span></span>';
+                                }
+                            }
+                            $rest = 5 - $stars;
+                            if ($rest > 0) {
+                                for ($i = 0; $i < $rest; $i++) {
+                                    echo '<span class="star-disabled"></span>';
+                                }
+                            }
+                            ?>
                            <b><?php echo $ratings[$reply->executive->id] ?: 0; ?></b>
                         </div>
                         <span class="new-task__time">
                             <?php
                             $counter = new TimeCounter($reply->dt_create);
-                            echo $counter->countTimePassed();
+                            echo $counter->countTimePassed() ?: '';
                             ?></span>
                     </div>
                     <div class="feedback-card__content">
