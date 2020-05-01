@@ -50,6 +50,7 @@ use yii\widgets\LinkPager;
         $form = ActiveForm::begin([
             'method' => 'get',
             'options' => ['class' => 'search-task__form', 'name' => 'test'],
+            'action' => Url::toRoute('tasks/index')
         ]);
         ?>
         <?php echo Html::beginTag('fieldset', ['class' => 'search-task__categories']); ?>
