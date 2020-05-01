@@ -3,12 +3,12 @@ namespace frontend\controllers;
 
 use frontend\models\Categories;
 use frontend\models\SearchTaskForm;
-use frontend\models\TaskReplies;
 use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
 use yii\data\Pagination;
 use yii\web\Controller;
 use frontend\models\Tasks;
+use yii\web\NotFoundHttpException;
 
 class TasksController extends Controller
 {
@@ -76,12 +76,21 @@ class TasksController extends Controller
         ]);
     }
 
-    public function actionView($id = 1)
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionView($id)
     {
         $task = Tasks::find()
             ->where(['id' => $id])
             ->with(['category','city', 'client', 'taskReplies'])
             ->one();
+
+        if (!$task) {
+            throw new NotFoundHttpException("Задание с ID $id не найдено");
+        }
 
         $executivesIds = [];
         foreach ($task->taskReplies as $reply) {

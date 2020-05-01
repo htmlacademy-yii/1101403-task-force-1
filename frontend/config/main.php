@@ -40,11 +40,14 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => false,
+            'enableStrictParsing' => true,
             'rules' => [
                 '//' => '/',
                 'users/<sort>/page/<page>' => 'users/index',
-                'users/' => 'users/index'
+                'users/' => 'users/index',
+                'users/view/<id:\d+>' => 'users/view',
+                'tasks/' => 'tasks/index',
+                'tasks/view/<id:\d+>' => 'tasks/view'
             ],
         ],
     ],

@@ -8,6 +8,8 @@ use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
 use yii\data\Pagination;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+
 
 class UsersController extends Controller
 {
@@ -110,12 +112,21 @@ class UsersController extends Controller
         ]);
     }
 
-    public function actionView(int $id)
+    /**
+     * @param int $id  юзера, запись которого нужно показать
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionView($id)
     {
         $user = Users::find()
             ->where(['id' => $id])
             ->with(['usersSpecialisations', 'reviewsByExecutive', 'city', 'executivesTasks'])
             ->one();
+
+        if (!$user) {
+            throw new NotFoundHttpException("Пользователь с ID $id не найден");
+        }
 
         $info = new ExecutivesInfo([$id]);
         $ratings = $info->getRating();
