@@ -122,7 +122,7 @@ use yii\helpers\Url;
                     <?php $counter = new TimeCounter($task->client->dt_reg);
                     echo $counter->countTimePassed(); ?> на сайте
                 </span></p>
-            <a href="#" class="link-regular">Смотреть профиль</a>
+            <a href="<?php echo Url::toRoute(['users/view', 'id' => $task->client->id]); ?>" class="link-regular">Смотреть профиль</a>
         </div>
     </div>
     <div class="connect-desk__chat">
