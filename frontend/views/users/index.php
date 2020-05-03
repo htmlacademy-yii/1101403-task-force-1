@@ -1,21 +1,24 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use \Htmlacademy\logic\PluralForms;
 use \Htmlacademy\logic\TimeCounter;
+use yii\widgets\LinkPager;
+
 ?>
 <section class="user__search">
     <div class="user__search-link">
         <p>Сортировать по:</p>
         <ul class="user__search-list">
-            <li class="user__search-item user__search-item--current">
-                <a href="users/rating" class="link-regular">Рейтингу</a>
+            <li class="user__search-item <?php if (isset($listStyle['rating'])): echo $listStyle['rating']; endif; ?>">
+                <a href="<?php echo Url::toRoute(['users/index', 'sort' => 'rating', 'page' => 1]); ?>" class="link-regular">Рейтингу</a>
             </li>
-            <li class="user__search-item">
-                <a href="users/order_count" class="link-regular">Числу заказов</a>
+            <li class="user__search-item <?php if (isset($listStyle['order_count'])): echo $listStyle['order_count']; endif; ?>">
+                <a href="<?php echo Url::toRoute(['users/index', 'sort' => 'order_count', 'page' => 1]); ?>" class="link-regular">Числу заказов</a>
             </li>
-            <li class="user__search-item">
-                <a href="users/view_count" class="link-regular">Популярности</a>
+            <li class="user__search-item <?php if (isset($listStyle['view_count'])): echo $listStyle['view_count']; endif; ?>">
+                <a href="<?php echo Url::toRoute(['users/index', 'sort' => 'view_count', 'page' => 1]); ?>" class="link-regular">Популярности</a>
             </li>
         </ul>
     </div>
@@ -23,19 +26,32 @@ use \Htmlacademy\logic\TimeCounter;
         <div class="content-view__feedback-card user__search-wrapper">
             <div class="feedback-card__top">
                 <div class="user__search-icon">
-                    <a href="#"><img src="./img/man-glasses.jpg" width="65" height="65"></a>
+                    <a href="<?php echo Url::toRoute(['users/view', 'id' => $user->id]); ?>"><img src="<?php echo $user->avatar_path ?: '/img/man-glasses.jpg'; ?>" width="65" height="65"></a>
                     <?php
-                    $tasks = $usersInfo[$user->id]['tasks'] ?: 0;
-                    $reviews = $usersInfo[$user->id]['reviews'] ?: 0;
+                    $tasks = $tasksCount[$user->id] ?: 0;
+                    $reviews = $reviewsCount[$user->id] ?: 0;
                     ?>
                     <span><?php echo $tasks . ' ' . PluralForms::pluralNouns(intval($tasks), 'задание', 'задания','заданий'); ?></span>
                     <span><?php echo $reviews . ' ' . PluralForms::pluralNouns(intval($reviews), 'отзыв','отзыва','отзывов'); ?></span>
                 </div>
                 <div class="feedback-card__top--name user__search-card">
-                    <p class="link-name"><a href="#" class="link-regular"><?php echo $user->name ?: ''; ?></a></p>
-                    <span></span><span></span><span></span><span></span><span class="star-disabled"></span>
+                    <p class="link-name"><a href="<?php echo Url::toRoute(['users/view', 'id' => $user->id]); ?>" class="link-regular"><?php echo $user->name ?: ''; ?></a></p>
+                    <?php
+                    $stars = intval(ceil($ratings[$user->id] ?: 0));
+                    if ($stars > 0) {
+                        for ($i = 0; $i < $stars; $i++) {
+                            echo '<span></span>';
+                        }
+                    }
+                    $rest = 5 - $stars;
+                    if ($rest > 0) {
+                        for ($i = 0; $i < $rest; $i++) {
+                            echo '<span class="star-disabled"></span>';
+                        }
+                    }
+                    ?>
                     <b>
-                        <?php echo $usersInfo[$user->id]['rating'] ?: 0; ?>
+                        <?php echo $ratings[$user->id] ?: 0; ?>
                     </b>
                     <p class="user__search-content">
                         <?php echo $user->bio ?: ''; ?>
@@ -45,7 +61,7 @@ use \Htmlacademy\logic\TimeCounter;
                 $counter = new TimeCounter($user->dt_last_visit);
                 $timeString = $counter->countTimePassed();
                 ?>
-                <span class="new-task__time"><?php echo 'Был(a) на сайте ' . $timeString; ?></span>
+                <span class="new-task__time"><?php echo 'Был(a) на сайте ' . $timeString . ' назад'; ?></span>
             </div>
             <div class="link-specialization user__search-link--bottom">
                 <?php if ($user->usersSpecialisations) {
@@ -57,13 +73,26 @@ use \Htmlacademy\logic\TimeCounter;
             </div>
         </div>
     <?php endforeach; ?>
+    <div class="new-task__pagination">
+        <?php
+        echo LinkPager::widget([
+            'pagination' => $pagination,
+            'activePageCssClass' => 'pagination__item--current',
+            'options' => ['class' => 'new-task__pagination-list'],
+            'linkContainerOptions' => ['class' => 'pagination__item'],
+            'nextPageLabel' => '&nbsp;',
+            'prevPageLabel' => '&nbsp;'
+        ]);
+        ?>
+    </div>
 </section>
 <section  class="search-task">
     <div class="search-task__wrapper">
         <?php
         $form = ActiveForm::begin([
-            'method' => 'post',
-            'options' => ['class' => 'search-task__form']
+            'method' => 'get',
+            'options' => ['class' => 'search-task__form'],
+            'action' => Url::toRoute('users/index')
         ]);
         ?>
         <?php echo Html::beginTag('fieldset', ['class' => 'search-task__categories']); ?>

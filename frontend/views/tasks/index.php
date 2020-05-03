@@ -1,10 +1,19 @@
+<?php
+
+use Htmlacademy\logic\TimeCounter;
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\widgets\ActiveForm;
+use yii\widgets\ActiveField;
+use yii\widgets\LinkPager;
+?>
 <section class="new-task">
     <div class="new-task__wrapper">
         <h1>Новые задания</h1>
         <?php foreach ($tasks as $task): ?>
         <div class="new-task__card">
             <div class="new-task__title">
-                <a href="#" class="link-regular"><h2><?php echo $task->title; ?></h2></a>
+                <a href="<?php echo Url::toRoute(['tasks/view', 'id' => $task->id]); ?>" class="link-regular"><h2><?php echo $task->title; ?></h2></a>
                 <a  class="new-task__type link-regular" href="#"><p><?php echo $task->category->title; ?></p></a>
             </div>
             <div class="new-task__icon new-task__icon--<?php echo $task->category->icon; ?>"></div>
@@ -14,33 +23,34 @@
             <b class="new-task__price new-task__price--<?php echo $task->category->icon; ?>"><?php echo $task->budget;?><b> ₽</b></b>
             <p class="new-task__place"><?php echo $task->city ? $task->city->title . ',': ''; ?> Центральный район</p>
             <?php
-            $counter = new \Htmlacademy\logic\TimeCounter($task->dt_create);
+            $counter = new TimeCounter($task->dt_create);
             $timeString = $counter->countTimePassed();
             ?>
-            <span class="new-task__time"><?php echo $timeString; ?></span>
+            <span class="new-task__time"><?php echo $timeString . ' назад'; ?></span>
         </div>
         <?php endforeach; ?>
     </div>
     <div class="new-task__pagination">
-        <ul class="new-task__pagination-list">
-            <li class="pagination__item"><a href="#"></a></li>
-            <li class="pagination__item pagination__item--current">
-                <a>1</a></li>
-            <li class="pagination__item"><a href="#">2</a></li>
-            <li class="pagination__item"><a href="#">3</a></li>
-            <li class="pagination__item"><a href="#"></a></li>
-        </ul>
+        <?php
+        echo LinkPager::widget([
+            'pagination' => $pagination,
+            'activePageCssClass' => 'pagination__item--current',
+            'options' => ['class' => 'new-task__pagination-list'],
+            'linkContainerOptions' => ['class' => 'pagination__item'],
+            'nextPageLabel' => '&nbsp;',
+            'prevPageLabel' => '&nbsp;'
+        ]);
+        ?>
     </div>
 </section>
 <section  class="search-task">
     <div class="search-task__wrapper">
         <?php
-        use yii\helpers\Html;
-        use yii\widgets\ActiveForm;
-        use yii\widgets\ActiveField;
+
         $form = ActiveForm::begin([
-            'method' => 'post',
+            'method' => 'get',
             'options' => ['class' => 'search-task__form', 'name' => 'test'],
+            'action' => Url::toRoute('tasks/index')
         ]);
         ?>
         <?php echo Html::beginTag('fieldset', ['class' => 'search-task__categories']); ?>

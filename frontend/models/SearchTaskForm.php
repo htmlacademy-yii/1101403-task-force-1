@@ -24,7 +24,7 @@ class SearchTaskForm extends Model
         'all' => 'За все время'
     ];
 
-    public $chosenPeriod = 'week';
+    public $chosenPeriod = 'all';
 
     public $title;
 

@@ -4,26 +4,34 @@ namespace frontend\controllers;
 use frontend\models\Categories;
 use frontend\models\SearchUsersForm;
 use frontend\models\Users;
+use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
-use yii\db\Query;
+use yii\data\Pagination;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+
 
 class UsersController extends Controller
 {
     public function actionIndex($sort = 'dt_reg')
     {
+        $listStyle = [];
         $request = Users::find()
-            ->where(['role' => 'executive'])
+            ->where(['users.role' => 'executive'])
             ->with(['executivesTasks', 'reviewsByExecutive', 'usersSpecialisations'])
             ->groupBy('users.id');
         if ($sort === 'order_count') {
+            $listStyle['order_count'] = 'user__search-item--current';
             $request = $request
                 ->select('users.*, COUNT(tasks.id) AS order_count')
                 ->joinWith('executivesTasks');
         } elseif ($sort === 'rating') {
+            $listStyle['rating'] = 'user__search-item--current';
             $request = $request
                 ->select('users.*, AVG(reviews.rate) AS rating')
                 ->joinWith('reviewsByExecutive');
+        } elseif ($sort === 'view_count') {
+            $listStyle['view_count'] = 'user__search-item--current';
         }
         $request = $request->orderBy([$sort => SORT_DESC]);
 
@@ -36,39 +44,48 @@ class UsersController extends Controller
         $categories = $result;
         $model = new SearchUsersForm();
         //фильтры
-        if (Yii::$app->request->isPost) {
-            $model->load(Yii::$app->request->post());
-            if ($model->categories) {
-                $request = $request
-                    ->joinWith('usersSpecialisations')
-                    ->andWhere(['users_specialisations.cat_id' => $model->categories]);
-            }
-            if ($model->freeNow) {
-                $request = $request
-                    ->joinWith('executivesTasks')
-                    ->andWhere(['tasks.id' => null]);
-            }
-            if ($model->online) {
-                $halfAnHourAgo = date('Y-m-d H:i:s', strtotime('-30 mins'));
-                $request = $request->andFilterCompare('users.dt_last_visit', ">$halfAnHourAgo");
-            }
-            if ($model->hasReplies) {
-                $request = $request
-                    ->joinWith('reviewsByExecutive')
-                    ->andWhere(['not', ['reviews.comment' => null]]);
-            }
-            if ($model->inFavorites) {
-                $request = $request
-                    ->joinWith('recordsInFavorites')
-                    ->andWhere(['not', ['clients_favorites_executors.id' => null]]);
-            }
-            if ($model->name) {
-                $request = $request->andWhere('MATCH(name) AGAINST (:name)', [':name' => $model->name]);
-            }
-
+        $model->load(Yii::$app->request->get());
+        if ($model->categories) {
+            $request = $request
+                ->joinWith('usersSpecialisations')
+                ->andWhere(['users_specialisations.cat_id' => $model->categories]);
+        }
+        if ($model->freeNow) {
+            $request = $request
+                ->joinWith('executivesTasks')
+                ->andWhere(['tasks.id' => null]);
+        }
+        if ($model->online) {
+            $halfAnHourAgo = date('Y-m-d H:i:s', strtotime('-30 mins'));
+            $request = $request->andFilterCompare('users.dt_last_visit', ">$halfAnHourAgo");
+        }
+        if ($model->hasReplies) {
+            $request = $request
+                ->joinWith('reviewsByExecutive')
+                ->andWhere(['not', ['reviews.comment' => null]]);
+        }
+        if ($model->inFavorites) {
+            //TO DO: брать u.id из сессии
+            $request = $request
+                ->joinWith('executorsInFavor u')
+                ->andWhere(['u.id' => 11]);
+        }
+        if ($model->name) {
+            $request = $request->andWhere('MATCH(name) AGAINST (:name)', [':name' => $model->name]);
         }
 
-        $users = $request->all();
+        $count = $request->count();
+        $pagination = new Pagination([
+            'totalCount' => $count,
+            'pageSize' => 5,
+            'route' => 'users/index'
+        ]);
+        $users = $request
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+
         // получаю массив id пользователей
         $userIds = [];
         foreach ($users as $user) {
@@ -76,52 +93,51 @@ class UsersController extends Controller
         }
 
         //рассчитываю рейтинг, количество заданий и отзывов для каждого юзера
-        $usersInfo = $this->addInfo($userIds);
+        $info = new ExecutivesInfo($userIds);
+        $ratings = $info->getRating();
+        $tasksCount = $info->getTasks();
+        $reviewsCount = $info->getReviews();
 
         //передаю все в представление
-        return $this->render('index', ['users' => $users, 'categories' => $categories, 'model' => $model, 'usersInfo' => $usersInfo]);
+        return $this->render('index', [
+            'users' => $users,
+            'categories' => $categories,
+            'model' => $model,
+            'ratings' => $ratings,
+            'tasksCount' => $tasksCount,
+            'reviewsCount' => $reviewsCount,
+            'listStyle' => $listStyle,
+            'sort' => $sort,
+            'pagination' => $pagination
+        ]);
     }
 
     /**
-     * Метод рассчитывает и записывает в модели рейтинг юзеров
-     * @param array $userIds - массив с id юзеров, которым надо рассчитать рейтинг, количество заданий и количество отзывов
-     * @return array $usersInfo массив вида [id => ['rating' => 5, 'reviews' => 4, 'tasks' => 0],[...]] с данными о юзере
+     * @param int $id  юзера, запись которого нужно показать
+     * @return string
+     * @throws NotFoundHttpException
      */
-    protected function addInfo(array $userIds): array
+    public function actionView($id)
     {
-        $usersInfo = [];
-        foreach ($userIds as $id) {
-            $usersInfo[$id] = ['rating' => 0, 'reviews' => 0, 'tasks' => 0];
-        }
-        $reviewQuery = new Query();
-        $ratingAndReviews = $reviewQuery
-            ->select(["executive_id AS id", "ROUND(AVG(rate),1) AS rating", "COUNT(comment) AS reviews"])
-            ->from(['reviews'])
-            ->where(['executive_id' => $userIds])
-            ->groupBy('executive_id')
-            ->all();
+        $user = Users::find()
+            ->where(['id' => $id])
+            ->with(['usersSpecialisations', 'reviewsByExecutive', 'city', 'executivesTasks'])
+            ->one();
 
-        foreach ($ratingAndReviews as $info) {
-            if (in_array(intval($info['id']), $userIds)) {
-                $usersInfo[$info['id']]['rating'] = $info['rating'] ?: 0;
-                $usersInfo[$info['id']]['reviews'] = $info['reviews'] ?: 0;
-            }
-        }
-        $tasksQuery = new Query();
-        $tasks = $tasksQuery
-            ->select(["executive_id AS id", "COUNT(id) AS count"])
-            ->from('tasks')
-            ->where(['executive_id' => $userIds])
-            ->groupBy('executive_id')
-            ->all();
-
-        foreach ($tasks as $task) {
-            if (in_array(intval($task['id']), $userIds)) {
-                $usersInfo[$task['id']]['tasks'] = $task['count'] ?: 0;
-            }
+        if (!$user) {
+            throw new NotFoundHttpException("Пользователь с ID $id не найден");
         }
 
-        return $usersInfo;
+        $info = new ExecutivesInfo([$id]);
+        $ratings = $info->getRating();
+        $reviewsCount = $info->getReviews();
+        $reviewsCount = $reviewsCount[$user->id];
+
+        return $this->render('view', [
+            'user' => $user,
+            'ratings' => $ratings,
+            'reviewsCount' => $reviewsCount
+        ]);
     }
 
 }
