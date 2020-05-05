@@ -44,10 +44,8 @@ return [
             'rules' => [
                 '//' => '/',
                 'users/<sort>/page/<page>' => 'users/index',
-                'users/' => 'users/index',
-                'users/view/<id:\d+>' => 'users/view',
-                'tasks/' => 'tasks/index',
-                'tasks/view/<id:\d+>' => 'tasks/view'
+                '<controller:(users|tasks|signup)>/' => '<controller>/index',
+                '<controller:(users|tasks)>/view/<id:\d+>' => '<controller>/view',
             ],
         ],
     ],
