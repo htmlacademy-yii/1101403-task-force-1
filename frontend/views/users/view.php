@@ -4,6 +4,10 @@ use Htmlacademy\logic\PluralForms;
 use Htmlacademy\logic\TimeCounter;
 use yii\helpers\Url;
 
+/* @var $user frontend\Models\Users */
+/* @var $ratings  array */
+/* @var $reviewsCount array */
+
 ?>
 <section class="content-view">
     <div class="user__card-wrapper">

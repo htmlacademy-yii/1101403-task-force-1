@@ -6,6 +6,12 @@ use \Htmlacademy\logic\PluralForms;
 use \Htmlacademy\logic\TimeCounter;
 use yii\widgets\LinkPager;
 
+/* @var $users frontend\models\Users */
+/* @var $tasksCount array */
+/* @var $reviewsCount array */
+/* @var $ratings array */
+/* @var $pagination yii\data\Pagination */
+/* @var $categories array */
 ?>
 <section class="user__search">
     <div class="user__search-link">

@@ -4,6 +4,9 @@ use Htmlacademy\logic\PluralForms;
 use Htmlacademy\logic\TimeCounter;
 use yii\helpers\Url;
 
+/* @var $task frontend\models\Tasks */
+/* @var $ratings array */
+
 ?>
 <section class="content-view">
     <div class="content-view__card">

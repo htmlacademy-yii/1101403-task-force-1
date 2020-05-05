@@ -4,8 +4,11 @@ use Htmlacademy\logic\TimeCounter;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use yii\widgets\ActiveField;
 use yii\widgets\LinkPager;
+
+/* @var $tasks frontend\models\Tasks */
+/* @var $pagination yii\data\Pagination */
+/* @var $categories array */
 ?>
 <section class="new-task">
     <div class="new-task__wrapper">
