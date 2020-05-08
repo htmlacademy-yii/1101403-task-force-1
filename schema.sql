@@ -22,7 +22,7 @@ CREATE TABLE stop_words (
 );
 CREATE TABLE users (
     id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    city_id         INT UNSIGNED NOT NULL,
+    city_id         INT UNSIGNED,
     role            ENUM('client', 'executive') NOT NULL,
     message_alert   TINYINT(1) UNSIGNED DEFAULT 1 NOT NULL,
     action_alert    TINYINT(1) UNSIGNED DEFAULT 1 NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE users (
     phone           VARCHAR(32),
     skype           VARCHAR(64),
     oth_contact     VARCHAR(64),
-    password        CHAR(128) NOT NULL,
+    password        CHAR(255) NOT NULL,
     longitude       DECIMAL(10,7),
     latitude        DECIMAL(10,7),
     bio             VARCHAR(16383),
