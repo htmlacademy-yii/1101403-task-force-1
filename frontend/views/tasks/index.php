@@ -59,7 +59,7 @@ use yii\widgets\LinkPager;
         <?php echo Html::beginTag('fieldset', ['class' => 'search-task__categories']); ?>
         <?php echo Html::tag('legend', 'Категории'); ?>
         <?php echo $form
-            ->field($model, 'categories', ['options' => ['tag' => null]])
+            ->field($model, 'categories', ['options' => ['tag' => false]])
             ->label(false)
             ->CheckboxList($categories, [
                 'unselect' => null,
