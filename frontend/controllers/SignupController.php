@@ -4,7 +4,6 @@ namespace frontend\controllers;
 use frontend\models\SignupForm;
 use frontend\models\Users;
 use Yii;
-use yii\helpers\Url;
 use yii\web\Controller;
 
 class SignupController extends Controller
@@ -24,13 +23,16 @@ class SignupController extends Controller
                $user->role = 'client';
                $user->save();
                //TO DO поменять роут на главную страницу
-               header(Url::toRoute('users/index'));
+               header('Location:/users');
+               exit();
             }
             $errors = $model->getErrors();
         }
 
         return $this->render('index', [
-            'model' => $model
+            'model' => $model,
+            'errors' => $errors
         ]);
     }
+
 }
