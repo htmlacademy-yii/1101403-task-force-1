@@ -171,7 +171,7 @@ AppAsset::register($this);
             </div>
             <?php if ($this->context->id === 'signup'): ?>
                 <div class="clipart-woman">
-                    <img src="./img/clipart-woman.png" width="238" height="450">
+                    <img src="/img/clipart-woman.png" width="238" height="450">
                 </div>
                 <div class="clipart-message">
                     <div class="clipart-message-text">
