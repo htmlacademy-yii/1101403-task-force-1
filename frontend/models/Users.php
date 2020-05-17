@@ -60,7 +60,7 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['city_id', 'role', 'name', 'email', 'password'], 'required'],
+            [['role', 'name', 'email', 'password'], 'required'],
             [['city_id', 'message_alert', 'action_alert', 'review_alert', 'show_contacts', 'show_profile'], 'integer'],
             [['role'], 'string'],
             [['dt_reg', 'dt_birth', 'dt_last_visit'], 'safe'],

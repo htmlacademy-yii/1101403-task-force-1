@@ -4,8 +4,11 @@ use Htmlacademy\logic\TimeCounter;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use yii\widgets\ActiveField;
 use yii\widgets\LinkPager;
+
+/* @var $tasks frontend\models\Tasks */
+/* @var $pagination yii\data\Pagination */
+/* @var $categories array */
 ?>
 <section class="new-task">
     <div class="new-task__wrapper">
@@ -56,7 +59,7 @@ use yii\widgets\LinkPager;
         <?php echo Html::beginTag('fieldset', ['class' => 'search-task__categories']); ?>
         <?php echo Html::tag('legend', 'Категории'); ?>
         <?php echo $form
-            ->field($model, 'categories', ['options' => ['tag' => null]])
+            ->field($model, 'categories', ['options' => ['tag' => false]])
             ->label(false)
             ->CheckboxList($categories, [
                 'unselect' => null,

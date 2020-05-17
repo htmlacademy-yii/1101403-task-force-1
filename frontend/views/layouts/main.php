@@ -4,11 +4,8 @@
 /* @var $content string */
 
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
-use common\widgets\Alert;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 ?>
@@ -73,54 +70,56 @@ AppAsset::register($this);
                     </li>
                 </ul>
             </div>
-            <div class="header__town">
-                <select class="multiple-select input town-select" size="1" name="town[]">
-                    <option value="Moscow">Москва</option>
-                    <option selected value="SPB">Санкт-Петербург</option>
-                    <option value="Krasnodar">Краснодар</option>
-                    <option value="Irkutsk">Иркутск</option>
-                    <option value="Vladivostok">Владивосток</option>
-                </select>
-            </div>
-            <div class="header__lightbulb"></div>
-            <div class="lightbulb__pop-up">
-                <h3>Новые события</h3>
-                <p class="lightbulb__new-task lightbulb__new-task--message">
-                    Новое сообщение в чате
-                    <a href="#" class="link-regular">«Помочь с курсовой»</a>
-                </p>
-                <p class="lightbulb__new-task lightbulb__new-task--executor">
-                    Выбран исполнитель для
-                    <a href="#" class="link-regular">«Помочь с курсовой»</a>
-                </p>
-                <p class="lightbulb__new-task lightbulb__new-task--close">
-                    Завершено задание
-                    <a href="#" class="link-regular">«Помочь с курсовой»</a>
-                </p>
-            </div>
-            <div class="header__account">
-                <a class="header__account-photo">
-                    <img src="/img/user-photo.png"
-                         width="43" height="44"
-                         alt="Аватар пользователя">
-                </a>
-                <span class="header__account-name">
-                 Василий
-             </span>
-            </div>
-            <div class="account__pop-up">
-                <ul class="account__pop-up-list">
-                    <li>
-                        <a href="#">Мои задания</a>
-                    </li>
-                    <li>
-                        <a href="#">Настройки</a>
-                    </li>
-                    <li>
-                        <a href="#">Выход</a>
-                    </li>
-                </ul>
-            </div>
+            <?php if ($this->context->id !== 'signup'): ?>
+                <div class="header__town">
+                    <select class="multiple-select input town-select" size="1" name="town[]">
+                        <option value="Moscow">Москва</option>
+                        <option selected value="SPB">Санкт-Петербург</option>
+                        <option value="Krasnodar">Краснодар</option>
+                        <option value="Irkutsk">Иркутск</option>
+                        <option value="Vladivostok">Владивосток</option>
+                    </select>
+                </div>
+                <div class="header__lightbulb"></div>
+                <div class="lightbulb__pop-up">
+                    <h3>Новые события</h3>
+                    <p class="lightbulb__new-task lightbulb__new-task--message">
+                        Новое сообщение в чате
+                        <a href="#" class="link-regular">«Помочь с курсовой»</a>
+                    </p>
+                    <p class="lightbulb__new-task lightbulb__new-task--executor">
+                        Выбран исполнитель для
+                        <a href="#" class="link-regular">«Помочь с курсовой»</a>
+                    </p>
+                    <p class="lightbulb__new-task lightbulb__new-task--close">
+                        Завершено задание
+                        <a href="#" class="link-regular">«Помочь с курсовой»</a>
+                    </p>
+                </div>
+                <div class="header__account">
+                    <a class="header__account-photo">
+                        <img src="/img/user-photo.png"
+                             width="43" height="44"
+                             alt="Аватар пользователя">
+                    </a>
+                    <span class="header__account-name">
+                     Василий
+                 </span>
+                </div>
+                <div class="account__pop-up">
+                    <ul class="account__pop-up-list">
+                        <li>
+                            <a href="#">Мои задания</a>
+                        </li>
+                        <li>
+                            <a href="#">Настройки</a>
+                        </li>
+                        <li>
+                            <a href="#">Выход</a>
+                        </li>
+                    </ul>
+                </div>
+            <?php endif; ?>
         </div>
     </header>
     <main class="page-main">
@@ -152,7 +151,7 @@ AppAsset::register($this);
                         <a href="">Исполнители</a>
                     </li>
                     <li class="links__item">
-                        <a href="">Регистрация</a>
+                        <a href="<?php echo Url::toRoute('signup/index'); ?>">Регистрация</a>
                     </li>
                     <li class="links__item">
                         <a href="">Создать задание</a>
@@ -170,6 +169,20 @@ AppAsset::register($this);
                          alt="Логотип HTML Academy">
                 </a>
             </div>
+            <?php if ($this->context->id === 'signup'): ?>
+                <div class="clipart-woman">
+                    <img src="/img/clipart-woman.png" width="238" height="450">
+                </div>
+                <div class="clipart-message">
+                    <div class="clipart-message-text">
+                    <h2>Знаете ли вы, что?</h2>
+                    <p>После регистрации вам будет доступно более
+                        двух тысяч заданий из двадцати разных категорий.</p>
+                        <p>В среднем, наши исполнители зарабатывают
+                        от 500 рублей в час.</p>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </footer>
 </div>
