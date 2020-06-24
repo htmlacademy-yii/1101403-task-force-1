@@ -22,7 +22,6 @@ AppAsset::register($this);
 </head>
 <body>
 <?php $this->beginBody(); ?>
-
 <div class="table-layout">
     <header class="page-header">
         <div class="main-container page-header__container">
@@ -115,7 +114,7 @@ AppAsset::register($this);
                             <a href="#">Настройки</a>
                         </li>
                         <li>
-                            <a href="#">Выход</a>
+                            <a href="<?php echo Url::toRoute('users/logout'); ?>">Выход</a>
                         </li>
                     </ul>
                 </div>
@@ -186,7 +185,6 @@ AppAsset::register($this);
         </div>
     </footer>
 </div>
-
 <?php $this->endBody(); ?>
 </body>
 </html>
