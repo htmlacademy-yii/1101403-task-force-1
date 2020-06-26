@@ -17,9 +17,8 @@ return [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'identityClass' => 'frontend\models\Users',
+            'loginUrl' => ['landing/']
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend
@@ -44,10 +43,13 @@ return [
             'rules' => [
                 '//' => '/',
                 'users/<sort>/page/<page>' => 'users/index',
+                'landing/' => 'landing/login',
+                'users/logout' => 'users/logout',
                 '<controller:(users|tasks|signup)>/' => '<controller>/index',
                 '<controller:(users|tasks)>/view/<id:\d+>' => '<controller>/view',
             ],
         ],
     ],
     'params' => $params,
+    'homeUrl' => ['landing/']
 ];

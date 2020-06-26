@@ -4,6 +4,7 @@ namespace frontend\models;
 
 use Yii;
 use yii\db\Query;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "users".
@@ -43,7 +44,7 @@ use yii\db\Query;
  * @property Categories[] $usersSpecialisations
  * @property Users[] $executorsInFavor
  */
-class Users extends \yii\db\ActiveRecord
+class Users extends \yii\db\ActiveRecord implements IdentityInterface
 {
 
     /**
@@ -230,4 +231,33 @@ class Users extends \yii\db\ActiveRecord
         return $this->hasOne(Cities::className(), ['id' => 'city_id']);
     }
 
+    public static function findIdentity($id)
+    {
+        return self::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        // TODO: Implement findIdentityByAccessToken() method.
+    }
+
+    public function getId()
+    {
+        return $this->getPrimaryKey();
+    }
+
+    public function getAuthKey()
+    {
+        // TODO: Implement getAuthKey() method.
+    }
+
+    public function validateAuthKey($authKey)
+    {
+        // TODO: Implement validateAuthKey() method.
+    }
+
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password);
+    }
 }
