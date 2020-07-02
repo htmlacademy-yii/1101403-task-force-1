@@ -68,16 +68,25 @@ class SQLwriter
             $this->mysql->real_escape_string($header);
         }
         foreach ($content as $line) {
-            if (count($headers) === count($line)) {
+            $limit = count($headers);
+            $lastTurn = $limit - 1;
+            if ($limit === count($line)) {
                 $id++;
                 $ids[] = $id;
-                foreach ($headers as $header) {
-                    $this->mysql->real_escape_string($header);
+                $this->request .= "INSERT INTO " . $this->tableName . " SET id = " . $id . ", ";
+                for ($i = 0; $i < $limit; $i++) {
+                    $this->mysql->real_escape_string($headers[$i]);
+                    $this->mysql->real_escape_string($line[$i]);
+                    if ($headers[$i] === 'password') {
+                        $this->request .= " " . $headers[$i] . " = " . password_hash($line[$i], PASSWORD_DEFAULT);
+                    } else {
+                        $this->request .= " " . $headers[$i] . " = " . $line[$i];
+                    }
+                    if ($i !== $lastTurn) {
+                        $this->request .= ", ";
+                    }
                 }
-                foreach ($line as $value) {
-                    $this->mysql->real_escape_string($value);
-                }
-                $this->request .= "INSERT INTO " . $this->tableName . " (id, " . implode(", ", $headers) . ") VALUES (" . $id . ", '" . implode("', '", $line) . "' );\r\n";
+                $this->request .= " ;\r\n";
             }
         }
 
