@@ -18,7 +18,7 @@ return [
         ],
         'user' => [
             'identityClass' => 'frontend\models\Users',
-            'loginUrl' => ['landing/']
+            'loginUrl' => ['/']
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend
@@ -41,9 +41,8 @@ return [
             'showScriptName' => false,
             'enableStrictParsing' => true,
             'rules' => [
-                '//' => '/',
                 'users/<sort>/page/<page>' => 'users/index',
-                'landing/' => 'landing/login',
+                '/' => 'landing/login',
                 'users/logout' => 'users/logout',
                 '<controller:(users|tasks|signup)>/' => '<controller>/index',
                 '<controller:(users|tasks)>/view/<id:\d+>' => '<controller>/view',
@@ -51,5 +50,5 @@ return [
         ],
     ],
     'params' => $params,
-    'homeUrl' => ['landing/']
+    'homeUrl' => ['/']
 ];

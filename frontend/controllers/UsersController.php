@@ -143,7 +143,7 @@ class UsersController extends ControllerClass
     {
         Yii::$app->user->logout();
 
-        return $this->redirect(['landing/']);
+        return $this->redirect(['/']);
     }
 
 }

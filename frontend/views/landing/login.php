@@ -18,7 +18,7 @@ $this->params['title'] = $title;
 <?php
 $form = ActiveForm::begin([
     'method' => 'post',
-    'action' => Url::toRoute('landing/'),
+    'action' => Url::toRoute('/'),
 ]);
 echo $form
     ->field($model, 'email', [
