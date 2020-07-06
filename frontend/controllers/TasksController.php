@@ -6,11 +6,10 @@ use frontend\models\SearchTaskForm;
 use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
 use yii\data\Pagination;
-use yii\web\Controller;
 use frontend\models\Tasks;
 use yii\web\NotFoundHttpException;
 
-class TasksController extends Controller
+class TasksController extends ControllerClass
 {
     public function actionIndex()
     {

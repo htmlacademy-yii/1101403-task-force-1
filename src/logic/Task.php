@@ -30,8 +30,8 @@ class Task
      * Конструктор класса Task
      * @param int $clientId
      * @param int $executiveId
-     * @param string|null $dtEnd
      * @param string $statusActive
+     * @param string $dtEnd
      * @throws StatusInvalid
      */
     public function __construct(int $clientId, int $executiveId, string $statusActive, string $dtEnd = null)

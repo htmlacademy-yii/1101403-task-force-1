@@ -1,9 +1,9 @@
 USE taskforce;
-INSERT INTO categories (id, title, icon) VALUES (1, 'Курьерские услуги', 'translation' );
-INSERT INTO categories (id, title, icon) VALUES (2, 'Уборка', 'clean' );
-INSERT INTO categories (id, title, icon) VALUES (3, 'Переезды', 'cargo' );
-INSERT INTO categories (id, title, icon) VALUES (4, 'Компьютерная помощь', 'neo' );
-INSERT INTO categories (id, title, icon) VALUES (5, 'Ремонт квартирный', 'flat' );
-INSERT INTO categories (id, title, icon) VALUES (6, 'Ремонт техники', 'repair' );
-INSERT INTO categories (id, title, icon) VALUES (7, 'Красота', 'beauty' );
-INSERT INTO categories (id, title, icon) VALUES (8, 'Фото', 'photo' );
+INSERT INTO categories SET id = 1,  title = Перевод,  icon = translation ;
+INSERT INTO categories SET id = 2,  title = Уборка,  icon = clean ;
+INSERT INTO categories SET id = 3,  title = Переезды,  icon = cargo ;
+INSERT INTO categories SET id = 4,  title = Компьютерная помощь,  icon = neo ;
+INSERT INTO categories SET id = 5,  title = Ремонт квартирный,  icon = flat ;
+INSERT INTO categories SET id = 6,  title = Ремонт техники,  icon = repair ;
+INSERT INTO categories SET id = 7,  title = Красота,  icon = beauty ;
+INSERT INTO categories SET id = 8,  title = Фото,  icon = photo ;

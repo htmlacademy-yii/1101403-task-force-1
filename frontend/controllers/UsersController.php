@@ -7,11 +7,10 @@ use frontend\models\Users;
 use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
 use yii\data\Pagination;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 
-class UsersController extends Controller
+class UsersController extends ControllerClass
 {
     public function actionIndex($sort = 'dt_reg')
     {
@@ -138,6 +137,13 @@ class UsersController extends Controller
             'ratings' => $ratings,
             'reviewsCount' => $reviewsCount
         ]);
+    }
+
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        return $this->redirect(['/']);
     }
 
 }
