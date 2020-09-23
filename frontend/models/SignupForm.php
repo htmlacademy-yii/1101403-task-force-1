@@ -32,12 +32,15 @@ class SignupForm extends Model
             [['email', 'username'], 'trim'],
             ['email', 'email', 'message' => 'Введите валидный адрес электронной почты'],
             ['email', 'string', 'max' => 64],
-            ['email', 'unique', 'targetClass' => Users::classname(), 'message' => 'Данный адрес почты занят.'],
+            ['email', 'unique', 'targetClass' => Users::classname(), 'message' => 'Данный адрес почты занят'],
 
-            ['password', 'string', 'min' => 8, 'max' => 64, 'message' => 'Пароль должен быть не короче 8 символов.'],
+            [
+                'password', 'string', 'min' => 8, 'max' => 64,
+                'tooShort' => 'Пароль должен быть не короче 8 символов.', 'tooLong' => 'Пароль должен быть не длиннее 64 символов'
+            ],
 
             ['username', 'string', 'min' => 2, 'max' => 50],
-            ['username', 'unique', 'targetClass' => Users::classname(), 'message' => 'Данное имя пользователя занято.', 'targetAttribute' => ['username' => 'name']],
+            ['username', 'unique', 'targetClass' => Users::classname(), 'message' => 'Данное имя пользователя занято', 'targetAttribute' => ['username' => 'name']],
 
             ['chosenCity', 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['chosenCity' => 'id']]
         ];
@@ -48,8 +51,8 @@ class SignupForm extends Model
         return [
             'email' => 'Электронная почта',
             'username' => 'Ваше имя',
-            'city' => 'Город проживания',
-            'password' => 'Пароль'
+            'password' => 'Пароль',
+            'chosenCity' => 'Город проживания'
         ];
     }
 }
