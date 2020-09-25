@@ -11,7 +11,7 @@ use Yii;
  * @property string $title
  * @property string $icon
  *
- * @property Task[] $tasks
+ * @property Tasks[] $tasks
  * @property UsersSpecialisation[] $usersSpecialisations
  */
 class Categories extends \yii\db\ActiveRecord

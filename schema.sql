@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `cities` (
     `id`              INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `title`           VARCHAR(64) NOT NULL,
     `lat`             DECIMAL(10,7),
-    `lng`            DECIMAL(10,7),
+    `lng`             DECIMAL(10,7),
     PRIMARY KEY (`id`)
 );
 CREATE TABLE IF NOT EXISTS `stop_words` (
