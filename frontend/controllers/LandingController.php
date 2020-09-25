@@ -46,7 +46,7 @@ class LandingController extends Controller
            if ($model->validate()) {
                $user = $model->getUser();
                Yii::$app->user->login($user);
-               // TO DO: поменять адрес редиректа на страницу пользователя
+               // TODO: поменять адрес редиректа на страницу пользователя
                return $this->redirect(['users/']);
            }
            return $this->goHome();

@@ -1,6 +1,6 @@
 <?php
 
-/* @var $this \yii\web\View */
+/* @var $this View */
 /* @var $content string */
 /* @var $tasks Tasks */
 
@@ -9,6 +9,7 @@ use frontend\models\Tasks;
 use Htmlacademy\logic\TimeCounter;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\View;
 
 $tasks = $this->params['tasks'];
 $this->title = $this->params['title'];

@@ -64,7 +64,7 @@ class UsersController extends ControllerClass
                 ->andWhere(['not', ['reviews.comment' => null]]);
         }
         if ($model->inFavorites) {
-            //TO DO: брать u.id из сессии
+            //TODO: брать u.id из сессии
             $request = $request
                 ->joinWith('executorsInFavor u')
                 ->andWhere(['u.id' => 11]);
