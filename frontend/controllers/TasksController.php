@@ -1,16 +1,38 @@
 <?php
 namespace frontend\controllers;
 
+use DateTime;
 use frontend\models\Categories;
+use frontend\models\CreateTaskForm;
 use frontend\models\SearchTaskForm;
+use frontend\models\Users;
 use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
 use yii\data\Pagination;
 use frontend\models\Tasks;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 class TasksController extends ControllerClass
 {
+    public function behaviors()
+    {
+        $rules = parent::behaviors();
+        $rule = [
+            'allow' => false,
+            'actions' => ['create'],
+            'matchCallback' => function ($rule, $action) {
+                $id = Yii::$app->user->id;
+                $user = Users::findOne($id);
+
+                return $user->role !== 'client';
+            }
+        ];
+        array_unshift($rules['access']['rules'], $rule);
+
+        return $rules;
+    }
+
     public function actionIndex()
     {
         $request = Tasks::find()
@@ -101,6 +123,48 @@ class TasksController extends ControllerClass
         return $this->render('view', [
             'task' => $task,
             'ratings' => $ratings
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionCreate()
+    {
+        $model = new CreateTaskForm();
+        $errors = [];
+        if (Yii::$app->request->isPost) {
+            $model->load(Yii::$app->request->post());
+            if ($model->validate()) {
+                $task = new Tasks();
+                $task->client_id = Yii::$app->user->getId();
+                $task->cat_id = intval($model->chosenCategory);
+                $task->status = 'new';
+                $task->title = $model->title;
+                $task->description = $model->description;
+                $task->budget = intval($model->budget);
+                $task->dt_end = $model->dt_end;
+                var_dump($task->save());
+                var_dump($task->getErrors());
+
+                if (isset($model->attachments[0])) {
+                    if (!empty($model->attachments[0])) {
+                        echo 'тут';
+                        $model->attachments = UploadedFile::getInstances($model, 'attachments');
+                        if ($model->upload()) {
+                            var_dump($model->attachments);
+                        }
+                    }
+                }
+
+                //TODO поменять роут на главную страницу
+                return $this->redirect(['/tasks']);
+            }
+            $errors = $model->getErrors();
+        }
+        return $this->render('create', [
+            'model' => $model,
+            'errors' => $errors
         ]);
     }
 

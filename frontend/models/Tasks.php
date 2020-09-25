@@ -48,7 +48,7 @@ class Tasks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['client_id', 'executive_id', 'cat_id', 'city_id', 'status', 'title', 'description'], 'required'],
+            [['client_id', 'cat_id', 'status', 'title', 'description'], 'required'],
             [['client_id', 'executive_id', 'cat_id', 'city_id', 'budget', 'view_count'], 'integer'],
             [['status'], 'string'],
             [['dt_create', 'dt_end'], 'safe'],

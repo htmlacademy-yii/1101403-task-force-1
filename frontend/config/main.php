@@ -44,6 +44,7 @@ return [
                 'users/<sort>/page/<page>' => 'users/index',
                 '/' => 'landing/login',
                 'users/logout' => 'users/logout',
+                'tasks/create' => 'tasks/create',
                 '<controller:(users|tasks|signup)>/' => '<controller>/index',
                 '<controller:(users|tasks)>/view/<id:\d+>' => '<controller>/view',
             ],

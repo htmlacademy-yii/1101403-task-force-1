@@ -1,10 +1,8 @@
 <?php
 namespace frontend\models;
 
-use phpDocumentor\Reflection\Types\Boolean;
-use Yii;
+
 use yii\base\Model;
-use yii\helpers\Html;
 
 /**
  * Class SearchTask Form
@@ -32,8 +30,7 @@ class SearchTaskForm extends Model
     {
         return [
             [['isRepliesExist', 'remoteWorking'], 'boolean'],
-            [['title'], 'safe'],
-            [['categories', 'chosenPeriod', 'period'], 'safe']
+            [['categories', 'chosenPeriod', 'period', 'title'], 'safe']
         ];
     }
 
