@@ -2,6 +2,7 @@
 namespace frontend\controllers;
 
 use DateTime;
+use frontend\models\Attachments;
 use frontend\models\Categories;
 use frontend\models\CreateTaskForm;
 use frontend\models\SearchTaskForm;
@@ -144,15 +145,19 @@ class TasksController extends ControllerClass
                 $task->description = $model->description;
                 $task->budget = intval($model->budget);
                 $task->dt_end = $model->dt_end;
-                var_dump($task->save());
-                var_dump($task->getErrors());
+                $task->save();
 
                 if (isset($model->attachments[0])) {
-                    if (!empty($model->attachments[0])) {
-                        echo 'тут';
-                        $model->attachments = UploadedFile::getInstances($model, 'attachments');
-                        if ($model->upload()) {
-                            var_dump($model->attachments);
+                    $model->attachments = UploadedFile::getInstances($model, 'attachments');
+                    foreach ($model->attachments as $file) {
+                        $filePath = __DIR__ . '\..\web\uploads\\' . uniqid() . '.' . $file->extension;
+                        if ($file->saveAs($filePath)) {
+                            $attachment = new Attachments();
+                            $attachment->user_id = Yii::$app->user->getId();
+                            $attachment->task_id = $task->id;
+                            $attachment->attach_type = 'task';
+                            $attachment->image_path = $filePath;
+                            $attachment->save();
                         }
                     }
                 }

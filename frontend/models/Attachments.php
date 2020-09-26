@@ -13,8 +13,8 @@ use Yii;
  * @property string $attach_type
  * @property string $image_path
  *
- * @property User $user
- * @property Task $task
+ * @property Users $user
+ * @property Tasks $task
  */
 class Attachments extends \yii\db\ActiveRecord
 {

@@ -53,7 +53,7 @@ class CreateTaskForm extends Model
             [
                 'dt_end', function ($attribute, $params)
                 {
-                    if (strtotime($attribute) < strtotime('tomorrow')) {
+                    if (strtotime($this->$attribute) < strtotime('tomorrow')) {
                         $this->addError($attribute, 'Дата не является допустимой. Выберите дату хотя бы на один день позднее, чем сегодня.');
                     }
 
@@ -85,17 +85,4 @@ class CreateTaskForm extends Model
         ];
     }
 
-    // TODO: нужно ли изменять имя, чтобы не было совпадений, или это делает Yii?
-    public function upload(): bool
-    {
-        if ($this->validate()) {
-            foreach ($this->attachments as $file) {
-                $file->saveAs('uploads/' . $file->baseName . '.' . $file->extension);
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
 }
