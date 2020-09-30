@@ -37,7 +37,10 @@ class CreateTaskForm extends Model
                 'tooLong' => 'Описание должно содержать не более 255 символов'
             ],
             [
-                ['title', 'attachments', 'budget', 'dt_end'], 'required', 'message' => 'Поле не может быть пустым'
+                ['title', 'attachments', 'dt_end'], 'required', 'message' => 'Поле не может быть пустым'
+            ],
+            [
+                'budget', 'integer', 'min' => 1, 'tooSmall' => 'Бюджет задания не может быть меньше 1'
             ],
             [
                 'dt_end', function ($attribute, $params)
