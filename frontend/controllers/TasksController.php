@@ -167,7 +167,13 @@ class TasksController extends ControllerClass
             }
             $errors = $model->getErrors();
         }
+        $categoriesArray = Categories::find()->all();
+        $categories = [];
+        foreach ($categoriesArray as $category) {
+            $categories[$category->id] = $category->title;
+        }
         return $this->render('create', [
+            'categories' => $categories,
             'model' => $model,
             'errors' => $errors
         ]);

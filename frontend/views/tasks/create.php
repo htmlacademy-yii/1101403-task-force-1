@@ -2,6 +2,7 @@
 
 /* @var $model CreateTaskForm */
 /* @var $errors array */
+/* @var $categories array */
 
 use frontend\models\CreateTaskForm;
 use yii\helpers\Url;
@@ -53,7 +54,7 @@ use yii\widgets\ActiveForm;
                 'labelOptions' => ['class' => isset($errors['chosenCategory']) ? 'input-danger' : ''],
                 'template' => "{label}\n{input}\n{hint}"
             ])
-            ->listBox($model->category, [
+            ->listBox($categories, [
                 'options' => [$model->chosenCategory => ['selected' => true]],
                 'class' => 'multiple-select input multiple-select-big',
                 'size' => 1,

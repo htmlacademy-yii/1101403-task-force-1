@@ -13,17 +13,6 @@ class CreateTaskForm extends Model
 
     public $description;
 
-    public $category = [
-        '1' => 'Перевод',
-        '2' => 'Уборка',
-        '3' => 'Переезды',
-        '4' => 'Компьютерная помощь',
-        '5' => 'Ремонт квартирный',
-        '6' => 'Ремонт техники',
-        '7' => 'Красота',
-        '8' => 'Фото'
-    ];
-
     public $chosenCategory;
 
     /**
@@ -48,7 +37,7 @@ class CreateTaskForm extends Model
                 'tooLong' => 'Описание должно содержать не более 255 символов'
             ],
             [
-                ['title', 'category', 'attachments', 'budget', 'dt_end'], 'required', 'message' => 'Поле не может быть пустым'
+                ['title', 'attachments', 'budget', 'dt_end'], 'required', 'message' => 'Поле не может быть пустым'
             ],
             [
                 'dt_end', function ($attribute, $params)
@@ -75,7 +64,6 @@ class CreateTaskForm extends Model
         return [
             'title' => 'Мне нужно',
             'description' => 'Подробности задания',
-            'category' => 'Категория',
             'attachments' => 'Файлы',
             // TODO: доделать
 //            'location' => 'Локация',
