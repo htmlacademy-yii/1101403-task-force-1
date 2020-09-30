@@ -1,7 +1,7 @@
 <?php
 namespace frontend\controllers;
 
-use DateTime;
+
 use frontend\models\Attachments;
 use frontend\models\Categories;
 use frontend\models\CreateTaskForm;
@@ -134,49 +134,58 @@ class TasksController extends ControllerClass
     {
         $model = new CreateTaskForm();
         $errors = [];
-        if (Yii::$app->request->isPost) {
-            $model->load(Yii::$app->request->post());
-            if ($model->validate()) {
-                $task = new Tasks();
-                $task->client_id = Yii::$app->user->getId();
-                $task->cat_id = intval($model->chosenCategory);
-                $task->status = 'new';
-                $task->title = $model->title;
-                $task->description = $model->description;
-                $task->budget = intval($model->budget);
-                $task->dt_end = $model->dt_end;
-                $task->save();
-
-                if (isset($model->attachments[0])) {
-                    $model->attachments = UploadedFile::getInstances($model, 'attachments');
-                    foreach ($model->attachments as $file) {
-                        $filePath = __DIR__ . '\..\web\uploads\\' . uniqid() . '.' . $file->extension;
-                        if ($file->saveAs($filePath)) {
-                            $attachment = new Attachments();
-                            $attachment->user_id = Yii::$app->user->getId();
-                            $attachment->task_id = $task->id;
-                            $attachment->attach_type = 'task';
-                            $attachment->image_path = $filePath;
-                            $attachment->save();
-                        }
-                    }
-                }
-
-                //TODO поменять роут на главную страницу
-                return $this->redirect(['/tasks']);
-            }
-            $errors = $model->getErrors();
-        }
         $categoriesArray = Categories::find()->all();
         $categories = [];
         foreach ($categoriesArray as $category) {
             $categories[$category->id] = $category->title;
         }
-        return $this->render('create', [
-            'categories' => $categories,
-            'model' => $model,
-            'errors' => $errors
-        ]);
+
+        if (!Yii::$app->request->isPost) {
+            return $this->render('create', [
+                'categories' => $categories,
+                'model' => $model,
+                'errors' => $errors
+            ]);
+        }
+
+        $model->load(Yii::$app->request->post());
+
+        if (!$model->validate()) {
+            $errors = $model->getErrors();
+            return $this->render('create', [
+                'categories' => $categories,
+                'model' => $model,
+                'errors' => $errors
+            ]);
+        }
+
+        $task = new Tasks();
+        $task->client_id = Yii::$app->user->getId();
+        $task->cat_id = intval($model->chosenCategory);
+        $task->status = 'new';
+        $task->title = $model->title;
+        $task->description = $model->description;
+        $task->budget = intval($model->budget);
+        $task->dt_end = $model->dt_end;
+        $task->save();
+
+        if (isset($model->attachments[0])) {
+            $model->attachments = UploadedFile::getInstances($model, 'attachments');
+            foreach ($model->attachments as $file) {
+                $filePath = __DIR__ . '\..\web\uploads\\' . uniqid() . '.' . $file->extension;
+                if ($file->saveAs($filePath)) {
+                    $attachment = new Attachments();
+                    $attachment->user_id = Yii::$app->user->getId();
+                    $attachment->task_id = $task->id;
+                    $attachment->attach_type = 'task';
+                    $attachment->image_path = $filePath;
+                    $attachment->save();
+                }
+            }
+        }
+
+        //TODO поменять роут на главную страницу
+        return $this->redirect(['/tasks']);
     }
 
 }
