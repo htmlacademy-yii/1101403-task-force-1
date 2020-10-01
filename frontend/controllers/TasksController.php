@@ -9,6 +9,7 @@ use frontend\models\SearchTaskForm;
 use frontend\models\Users;
 use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
+use yii\base\Exception;
 use yii\data\Pagination;
 use frontend\models\Tasks;
 use yii\web\NotFoundHttpException;
@@ -129,6 +130,7 @@ class TasksController extends ControllerClass
 
     /**
      * @return string
+     * @throws Exception
      */
     public function actionCreate()
     {
@@ -180,6 +182,8 @@ class TasksController extends ControllerClass
                     $attachment->attach_type = 'task';
                     $attachment->image_path = $filePath;
                     $attachment->save();
+                } else {
+                    throw new Exception('Не удалось загрузить файл(ы)');
                 }
             }
         }
