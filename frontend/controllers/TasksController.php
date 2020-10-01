@@ -1,16 +1,40 @@
 <?php
 namespace frontend\controllers;
 
+
+use frontend\models\Attachments;
 use frontend\models\Categories;
+use frontend\models\CreateTaskForm;
 use frontend\models\SearchTaskForm;
+use frontend\models\Users;
 use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
+use yii\base\Exception;
 use yii\data\Pagination;
 use frontend\models\Tasks;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 class TasksController extends ControllerClass
 {
+    public function behaviors()
+    {
+        $rules = parent::behaviors();
+        $rule = [
+            'allow' => false,
+            'actions' => ['create'],
+            'matchCallback' => function ($rule, $action) {
+                $id = Yii::$app->user->id;
+                $user = Users::findOne($id);
+
+                return $user->role !== 'client';
+            }
+        ];
+        array_unshift($rules['access']['rules'], $rule);
+
+        return $rules;
+    }
+
     public function actionIndex()
     {
         $request = Tasks::find()
@@ -102,6 +126,70 @@ class TasksController extends ControllerClass
             'task' => $task,
             'ratings' => $ratings
         ]);
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function actionCreate()
+    {
+        $model = new CreateTaskForm();
+        $errors = [];
+        $categoriesArray = Categories::find()->all();
+        $categories = [];
+        foreach ($categoriesArray as $category) {
+            $categories[$category->id] = $category->title;
+        }
+
+        if (!Yii::$app->request->isPost) {
+            return $this->render('create', [
+                'categories' => $categories,
+                'model' => $model,
+                'errors' => $errors
+            ]);
+        }
+
+        $model->load(Yii::$app->request->post());
+
+        if (!$model->validate()) {
+            $errors = $model->getErrors();
+            return $this->render('create', [
+                'categories' => $categories,
+                'model' => $model,
+                'errors' => $errors
+            ]);
+        }
+
+        $task = new Tasks();
+        $task->client_id = Yii::$app->user->getId();
+        $task->cat_id = intval($model->chosenCategory);
+        $task->status = 'new';
+        $task->title = $model->title;
+        $task->description = $model->description;
+        $task->budget = intval($model->budget);
+        $task->dt_end = $model->dt_end;
+        $task->save();
+
+        if (isset($model->attachments[0])) {
+            $model->attachments = UploadedFile::getInstances($model, 'attachments');
+            foreach ($model->attachments as $file) {
+                $filePath = __DIR__ . '\..\web\uploads\\' . uniqid() . '.' . $file->extension;
+                if ($file->saveAs($filePath)) {
+                    $attachment = new Attachments();
+                    $attachment->user_id = Yii::$app->user->getId();
+                    $attachment->task_id = $task->id;
+                    $attachment->attach_type = 'task';
+                    $attachment->image_path = $filePath;
+                    $attachment->save();
+                } else {
+                    throw new Exception('Не удалось загрузить файл(ы)');
+                }
+            }
+        }
+
+        //TODO поменять роут на главную страницу
+        return $this->redirect(['/tasks']);
     }
 
 }

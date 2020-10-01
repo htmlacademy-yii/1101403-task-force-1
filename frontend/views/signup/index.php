@@ -29,8 +29,9 @@ use yii\widgets\ActiveForm;
             ])
             ->textarea(['class' => 'input textarea', 'rows' => 1, 'placeholder' => 'Мамедов Кумар']);
         echo $form
-            ->field($model, 'city', [
-                'options' => ['tag' => false], 'errorOptions' => ['tag' => 'span'],
+            ->field($model, 'chosenCity', [
+                'options' => ['tag' => false],
+                'errorOptions' => ['tag' => 'span'],
                 'labelOptions' => ['class' => isset($errors['city']) ? 'input-danger' : '']
             ])
             ->listBox($model->city, [

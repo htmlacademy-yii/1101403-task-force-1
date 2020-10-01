@@ -60,13 +60,13 @@ AppAsset::register($this);
             <div class="header__nav">
                 <ul class="header-nav__list site-list">
                     <li class="site-list__item">
-                        <a href="#">Задания</a>
+                        <a href="<?php echo Url::toRoute('tasks/'); ?>">Задания</a>
                     </li>
                     <li class="site-list__item">
-                        <a href="#">Исполнители</a>
+                        <a href="<?php echo Url::toRoute('users/'); ?>">Исполнители</a>
                     </li>
                     <li class="site-list__item">
-                        <a href="#">Создать задание</a>
+                        <a href="<?php echo Url::toRoute('tasks/create'); ?>">Создать задание</a>
                     </li>
                     <li class="site-list__item">
                         <a>Мой профиль</a>
@@ -145,19 +145,19 @@ AppAsset::register($this);
             <div class="page-footer__links">
                 <ul class="links__list">
                     <li class="links__item">
-                        <a href="">Задания</a>
+                        <a href="<?php echo Url::toRoute('tasks/'); ?>">Задания</a>
                     </li>
                     <li class="links__item">
                         <a href="">Мой профиль</a>
                     </li>
                     <li class="links__item">
-                        <a href="">Исполнители</a>
+                        <a href="<?php echo Url::toRoute('users/'); ?>">Исполнители</a>
                     </li>
                     <li class="links__item">
-                        <a href="<?php echo Url::toRoute('signup/index'); ?>">Регистрация</a>
+                        <a href="<?php echo Url::toRoute('signup/'); ?>">Регистрация</a>
                     </li>
                     <li class="links__item">
-                        <a href="">Создать задание</a>
+                        <a href="<?php echo Url::toRoute('tasks/create'); ?>">Создать задание</a>
                     </li>
                     <li class="links__item">
                         <a href="">Справка</a>

@@ -39,7 +39,7 @@ class SignupController extends Controller
                 $user->city_id = !empty($model->chosenCity) ? $model->chosenCity : '';
                 $user->role = 'client';
                 $user->save();
-                //TO DO поменять роут на главную страницу
+                //TODO поменять роут на главную страницу
                 return $this->redirect(['/users']);
             }
             $errors = $model->getErrors();
