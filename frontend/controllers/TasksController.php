@@ -6,6 +6,7 @@ use frontend\models\Attachments;
 use frontend\models\Categories;
 use frontend\models\CreateTaskForm;
 use frontend\models\SearchTaskForm;
+use frontend\models\TaskReplies;
 use frontend\models\Users;
 use Htmlacademy\logic\ExecutivesInfo;
 use Yii;
@@ -13,6 +14,7 @@ use yii\base\Exception;
 use yii\data\Pagination;
 use frontend\models\Tasks;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 class TasksController extends ControllerClass
@@ -191,6 +193,39 @@ class TasksController extends ControllerClass
 
         //TODO поменять роут на главную страницу
         return $this->redirect(['/tasks']);
+    }
+
+    /**
+     * @param int $replyId
+     * @param int $taskId
+     * @return Response
+     */
+    public function actionReject(int $replyId, int $taskId)
+    {
+        $reply = TaskReplies::find()
+            ->where(['id' => $replyId])
+            ->one();
+        $reply->status = 'rejected';
+        $reply->save();
+
+        return $this->redirect(['/tasks/view/', 'id' => $taskId]);
+    }
+
+    /**
+     * @param int $executiveId
+     * @param int $taskId
+     * @return Response
+     */
+    public function actionSubmit(int $executiveId, int $taskId)
+    {
+        $task = Tasks::find()
+            ->where(['id' => $taskId])
+            ->one();
+        $task->executive_id = $executiveId;
+        $task->status = 'in progress';
+        $task->save();
+
+        return $this->redirect(['/tasks/view/', 'id' => $taskId]);
     }
 
 }

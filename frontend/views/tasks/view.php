@@ -109,11 +109,11 @@ use yii\helpers\Url;
                                     <p><?php echo $reply->comment ?: ''; ?></p>
                                     <span><?php echo $reply->price ?: ''; ?> ₽</span>
                                 </div>
-                                <?php if($task->client_id === Yii::$app->user->getId()): ?>
+                                <?php if($task->client_id === Yii::$app->user->getId() && $reply->status === 'new' && $task->status === 'new'): ?>
                                     <div class="feedback-card__actions">
-                                        <a class="button__small-color request-button button"
+                                        <a href="<?php echo Url::toRoute(['tasks/submit', 'executiveId' => $reply->executive_id, 'taskId' => $task->id]); ?>" class="button__small-color request-button button"
                                                 type="button">Подтвердить</a>
-                                        <a class="button__small-color refusal-button button"
+                                        <a href="<?php echo Url::toRoute(['tasks/reject', 'replyId' => $reply->id, 'taskId' => $task->id]); ?>" class="button__small-color refusal-button button"
                                                 type="button">Отказать</a>
                                     </div>
                                 <?php endif; ?>
