@@ -1,5 +1,7 @@
 <?php
-namespace Htmlacademy\Logic;
+namespace Htmlacademy\Logic\Actions;
+
+use frontend\models\Tasks;
 use Htmlacademy\MyExceptions\RoleInvalid;
 use Htmlacademy\MyExceptions\ActionInvalid;
 
@@ -35,10 +37,9 @@ class AvailableActions
      *
      * @return array $actions
      */
-    static function getActions(): array
+    public static function getActions(): array
     {
-        $actions = [self::ACTION_REPLY, self::ACTION_COMPLETE, self::ACTION_CANCEL, self::ACTION_REFUSE, self::ACTION_APPOINT];
-        return $actions;
+        return [self::ACTION_REPLY, self::ACTION_COMPLETE, self::ACTION_CANCEL, self::ACTION_REFUSE, self::ACTION_APPOINT];
     }
 
     /**
@@ -46,10 +47,9 @@ class AvailableActions
      *
      * @return array
      */
-    static function getStatuses(): array
+    public static function getStatuses(): array
     {
-        $statuses = [self::STATUS_NEW, self::STATUS_COMPLETED, self::STATUS_CANCELLED, self::STATUS_FAILED, self::STATUS_IN_PROGRESS];
-        return $statuses;
+        return [self::STATUS_NEW, self::STATUS_COMPLETED, self::STATUS_CANCELLED, self::STATUS_FAILED, self::STATUS_IN_PROGRESS];
     }
 
     /**
@@ -57,22 +57,22 @@ class AvailableActions
      *
      * @return array
      */
-    static function getRoles(): array
+    public static function getRoles(): array
     {
-        $roles = [self::ROLE_CLIENT, self::ROLE_EXECUTIVE];
-        return $roles;
+        return [self::ROLE_CLIENT, self::ROLE_EXECUTIVE];
     }
 
     /**
      * Возвращает статус, в который перейдет задача для указанного действия
      *
-     * @param Task $task - объект класса Task
+     * @param Tasks $task - объект класса Task
      * @param string $actionClassName - название класса действия
      * @return string $statusNew
+     * @throws ActionInvalid
      */
-    public function ifAction(Task $task, string $actionClassName): string
+    public static function ifAction(Tasks $task, string $actionClassName): string
     {
-        if (!in_array($actionClassName, $this->getActions())) {
+        if (!in_array($actionClassName, self::getActions())) {
             throw new ActionInvalid();
         }
         $connections = [
@@ -80,7 +80,7 @@ class AvailableActions
             self::ACTION_CANCEL => self::STATUS_CANCELLED,
             self::ACTION_REFUSE => self::STATUS_FAILED,
             self::ACTION_APPOINT => self::STATUS_IN_PROGRESS,
-            self::ACTION_REPLY => $task->getstatus()
+            self::ACTION_REPLY => $task->status
         ];
         $statusNew = null;
         if (array_key_exists($actionClassName, $connections)) {
@@ -91,34 +91,35 @@ class AvailableActions
 
     /**
      *
+     * @param Tasks $task - объект задачи
      * @param string $role роль пользователя
      * @param int $userId
-     * @param Task $task - объект задачи
      * @return array $openActions список из названий доступных классов действий
+     * @throws RoleInvalid
      */
-    public function getOpenActions(Task $task, string $role, int $userId): array
+    public static function getOpenActions(Tasks $task, string $role, int $userId): array
     {
-        if (!in_array($role, $this->getRoles())) {
+        if (!in_array($role, self::getRoles())) {
             throw new RoleInvalid();
         }
         $openActions = [];
-        if ($role === 'client' && $userId === $task->getClientId()) {
-            if ($task->getStatus() === self::STATUS_NEW ) {
+        if ($role === 'client' && $userId === $task->client_id) {
+            if ($task->status === self::STATUS_NEW) {
                 $openActions = [
                     self::ACTION_APPOINT,
                     self::ACTION_CANCEL
                 ];
-            } elseif ($task->getStatus() === self::STATUS_IN_PROGRESS) {
+            } elseif ($task->status === self::STATUS_IN_PROGRESS) {
                 $openActions = [
                     self::ACTION_COMPLETE
                 ];
             }
-        } elseif ($role === 'executive' && $userId === $task->getExecutiveId()) {
-            if ($task->getStatus() === self::STATUS_NEW) {
+        } elseif ($role === 'executive' && $userId === $task->executive_id) {
+            if ($task->status === self::STATUS_NEW) {
                 $openActions = [
                     self::ACTION_REPLY
                 ];
-            } elseif ($task->getStatus() === self::STATUS_IN_PROGRESS) {
+            } elseif ($task->status === self::STATUS_IN_PROGRESS) {
                 $openActions = [
                     self::ACTION_REFUSE
                 ];

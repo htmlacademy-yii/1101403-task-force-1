@@ -6,7 +6,7 @@
 
 use frontend\assets\AppAsset;
 use frontend\models\Tasks;
-use Htmlacademy\logic\TimeCounter;
+use Htmlacademy\Logic\TimeCounter;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;

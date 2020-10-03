@@ -1,5 +1,5 @@
 <?php
-namespace Htmlacademy\Logic;
+namespace Htmlacademy\Logic\Actions;
 
 class RefuseAction extends AbstractAction
 {
@@ -7,7 +7,7 @@ class RefuseAction extends AbstractAction
      * Возвращает название класса
      * @return string
      */
-    static function getTitle()
+    public static function getTitle()
     {
         return 'Отказаться';
     }
@@ -16,7 +16,7 @@ class RefuseAction extends AbstractAction
      * Возвращает внутреннее имя класса
      * @return string
      */
-    static function getInnerName()
+    public static function getInnerName()
     {
         return 'refuse';
     }
@@ -24,10 +24,11 @@ class RefuseAction extends AbstractAction
     /**
      * Проверяет, разрешено ли действие
      *
-     * @param int $clientId
+     * @param int $userId
+     * @param $executiveId
      * @return bool
      */
-    static function isPermitted($userId, $executiveId)
+    public static function isPermitted(int $userId, int $executiveId)
     {
         if ($executiveId === $userId) {
             return true;

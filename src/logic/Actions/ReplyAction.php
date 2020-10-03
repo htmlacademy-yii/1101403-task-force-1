@@ -1,35 +1,36 @@
 <?php
-namespace Htmlacademy\Logic;
+namespace Htmlacademy\Logic\Actions;
 
-class CancelAction extends AbstractAction
+class ReplyAction extends AbstractAction
 {
     /**
      * Возвращает название класса
      * @return string
      */
-    static function getTitle()
+    public static function getTitle()
     {
-        return 'Отменить';
+        return 'Откликнуться';
     }
 
     /**
      * Возвращает внутреннее имя класса
      * @return string
      */
-    static function getInnerName()
+    public static function getInnerName()
     {
-        return 'cancel';
+        return 'reply';
     }
 
     /**
      * Проверяет, разрешено ли действие
      *
-     * @param int $clientId
+     * @param int $userId
+     * @param int $executiveId
      * @return bool
      */
-    static function isPermitted($userId, $clientId)
+    public static function isPermitted(int $userId, int $executiveId)
     {
-        if ($clientId === $userId) {
+        if ($executiveId === $userId) {
             return true;
         }
         return false;

@@ -2,8 +2,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use \Htmlacademy\logic\PluralForms;
-use \Htmlacademy\logic\TimeCounter;
+use \Htmlacademy\Logic\PluralForms;
+use \Htmlacademy\Logic\TimeCounter;
 use yii\widgets\LinkPager;
 
 /* @var $users frontend\models\Users */

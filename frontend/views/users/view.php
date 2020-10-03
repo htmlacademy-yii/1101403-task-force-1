@@ -1,7 +1,7 @@
 <?php
-use Htmlacademy\logic\AgeCounter;
-use Htmlacademy\logic\PluralForms;
-use Htmlacademy\logic\TimeCounter;
+use Htmlacademy\Logic\AgeCounter;
+use Htmlacademy\Logic\PluralForms;
+use Htmlacademy\Logic\TimeCounter;
 use yii\helpers\Url;
 
 /* @var $user frontend\Models\Users */

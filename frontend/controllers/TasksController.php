@@ -8,7 +8,7 @@ use frontend\models\CreateTaskForm;
 use frontend\models\SearchTaskForm;
 use frontend\models\TaskReplies;
 use frontend\models\Users;
-use Htmlacademy\logic\ExecutivesInfo;
+use Htmlacademy\Logic\ExecutivesInfo;
 use Yii;
 use yii\base\Exception;
 use yii\data\Pagination;
