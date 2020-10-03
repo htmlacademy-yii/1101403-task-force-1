@@ -18,7 +18,7 @@ use yii\helpers\Url;
                         <a href="#" class="link-regular"><?php echo $task->category->title ?: ''; ?></a>
                         <?php
                         $counter = new TimeCounter($task->dt_create);
-                        echo $counter->countTimePassed();
+                        echo $counter->countTimePassed() . ' назад';
                         ?></span>
                 </div>
                 <b class="new-task__price <?php echo ('new-task__price--' . $task->category->icon) ?: '';?> content-view-price"><?php echo $task->budget ?: ''; ?><b> ₽</b></b>
@@ -28,11 +28,14 @@ use yii\helpers\Url;
                 <h3 class="content-view__h3">Общее описание</h3>
                 <p><?php echo $task->description ?: ''; ?></p>
             </div>
+            <?php if(!empty($task->attachments)): ?>
             <div class="content-view__attach">
                 <h3 class="content-view__h3">Вложения</h3>
-                <a href="#">my_picture.jpeg</a>
-                <a href="#">agreement.docx</a>
+                <?php foreach($task->attachments as $attachment): ?>
+                    <a href="<?php echo $attachment->image_path; ?>" download=""><?php echo $attachment->title; ?></a>
+                <?php endforeach; ?>
             </div>
+            <?php endif; ?>
             <div class="content-view__location">
                 <h3 class="content-view__h3">Расположение</h3>
                 <div class="content-view__location-wrapper">

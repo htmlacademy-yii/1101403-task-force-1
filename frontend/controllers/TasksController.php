@@ -108,7 +108,7 @@ class TasksController extends ControllerClass
     {
         $task = Tasks::find()
             ->where(['id' => $id])
-            ->with(['category','city', 'client', 'taskReplies'])
+            ->with(['category','city', 'client', 'taskReplies', 'attachments'])
             ->one();
 
         if (!$task) {
@@ -174,13 +174,14 @@ class TasksController extends ControllerClass
         if (isset($model->attachments[0])) {
             $model->attachments = UploadedFile::getInstances($model, 'attachments');
             foreach ($model->attachments as $file) {
-                $filePath = __DIR__ . '\..\web\uploads\\' . uniqid() . '.' . $file->extension;
+                $filePath = 'uploads/' . uniqid() . '.' . $file->extension;
                 if ($file->saveAs($filePath)) {
                     $attachment = new Attachments();
                     $attachment->user_id = Yii::$app->user->getId();
                     $attachment->task_id = $task->id;
                     $attachment->attach_type = 'task';
-                    $attachment->image_path = $filePath;
+                    $attachment->image_path = '/' . $filePath;
+                    $attachment->title = $file->baseName . '.' . $file->extension;
                     $attachment->save();
                 } else {
                     throw new Exception('Не удалось загрузить файл(ы)');

@@ -12,12 +12,14 @@ use Yii;
  * @property int $task_id
  * @property string $attach_type
  * @property string $image_path
+ * @property string $title
  *
  * @property Users $user
  * @property Tasks $task
  */
 class Attachments extends \yii\db\ActiveRecord
 {
+
     /**
      * {@inheritdoc}
      */
