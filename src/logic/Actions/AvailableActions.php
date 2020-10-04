@@ -106,7 +106,6 @@ class AvailableActions
         if ($role === 'client' && $userId === $task->client_id) {
             if ($task->status === self::STATUS_NEW) {
                 $openActions = [
-                    self::ACTION_APPOINT,
                     self::ACTION_CANCEL
                 ];
             } elseif ($task->status === self::STATUS_IN_PROGRESS) {
@@ -114,12 +113,12 @@ class AvailableActions
                     self::ACTION_COMPLETE
                 ];
             }
-        } elseif ($role === 'executive' && $userId === $task->executive_id) {
+        } elseif ($role === 'executive') {
             if ($task->status === self::STATUS_NEW) {
                 $openActions = [
                     self::ACTION_REPLY
                 ];
-            } elseif ($task->status === self::STATUS_IN_PROGRESS) {
+            } elseif ($task->status === self::STATUS_IN_PROGRESS && $userId === $task->executive_id) {
                 $openActions = [
                     self::ACTION_REFUSE
                 ];
