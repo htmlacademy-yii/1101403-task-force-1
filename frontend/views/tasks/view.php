@@ -1,16 +1,15 @@
 <?php
 
 use frontend\models\ResponseForm;
-use frontend\models\Users;
 use Htmlacademy\Logic\PluralForms;
 use Htmlacademy\Logic\TimeCounter;
-use Htmlacademy\MyExceptions\RoleInvalid;
 use yii\helpers\Url;
-use Htmlacademy\Logic\Actions\AvailableActions;
 
 /* @var $task frontend\models\Tasks */
 /* @var $ratings array */
 /* @var $responseModel ResponseForm */
+/* @var $actions array */
+/* @var $userId int */
 
 $this->params['responseModel'] = $responseModel;
 $this->params['taskId'] = $task->id;
@@ -60,38 +59,21 @@ $this->params['taskId'] = $task->id;
             </div>
         </div>
         <div class="content-view__action-buttons">
-            <?php
-            $user = Users::findOne(Yii::$app->user->getId());
-            try {
-                $actions = AvailableActions::getOpenActions($task, $user->role, $user->id);
-            } catch (RoleInvalid $exception) {
-                $actions = [];
-            }
-
-            foreach ($actions as $action):
-            ?>
+            <?php foreach ($actions as $action): ?>
                 <button class="button button__big-color <?php echo $action::getInnerName(); ?>-button open-modal" type="button" data-for="<?php echo $action::getInnerName(); ?>-form">
                     <?php echo $action::getTitle(); ?></button>
-
             <?php endforeach; ?>
-
-<!--            <button class="button button__big-color response-button open-modal"-->
-<!--                        type="button" data-for="response-form">Откликнуться</button>-->
-<!--            <button class="button button__big-color refusal-button open-modal"-->
-<!--                        type="button" data-for="refuse-form">Отказаться</button>-->
-<!--            <button class="button button__big-color request-button open-modal"-->
-<!--                  type="button" data-for="complete-form">Завершить</button>-->
         </div>
     </div>
         <?php
         $isAuthorOfReply = false;
         $isTaskAuthor = false;
         foreach($task->taskReplies as $reply) {
-            if ($reply->executive_id === Yii::$app->user->getId()) {
+            if ($reply->executive_id === $userId) {
                 $isAuthorOfReply = true;
             }
         }
-        if ($task->client_id === Yii::$app->user->getId()) {
+        if ($task->client_id === $userId) {
             $isTaskAuthor = true;
         }
         ?>
@@ -132,7 +114,8 @@ $this->params['taskId'] = $task->id;
                                     <p><?php echo $reply->comment ?: ''; ?></p>
                                     <span><?php echo $reply->price ?: ''; ?> ₽</span>
                                 </div>
-                                <?php if($task->client_id === Yii::$app->user->getId() && $reply->status === 'new' && $task->status === 'new'): ?>
+                                <-- реализовать этот функционал в AvailableActions -->
+                                <?php if($task->client_id === $userId && $reply->status === 'new' && $task->status === 'new'): ?>
                                     <div class="feedback-card__actions">
                                         <a href="<?php echo Url::toRoute(['tasks/submit', 'executiveId' => $reply->executive_id, 'taskId' => $task->id]); ?>" class="button__small-color request-button button"
                                                 type="button">Подтвердить</a>

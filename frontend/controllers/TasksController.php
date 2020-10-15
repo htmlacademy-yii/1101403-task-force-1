@@ -9,7 +9,9 @@ use frontend\models\ResponseForm;
 use frontend\models\SearchTaskForm;
 use frontend\models\TaskReplies;
 use frontend\models\Users;
+use Htmlacademy\Logic\Actions\AvailableActions;
 use Htmlacademy\Logic\ExecutivesInfo;
+use Htmlacademy\MyExceptions\RoleInvalid;
 use Yii;
 use yii\base\Exception;
 use yii\data\Pagination;
@@ -140,10 +142,19 @@ class TasksController extends ControllerClass
             }
         }
 
+        $user = Users::findOne(Yii::$app->user->getId());
+        try {
+            $actions = AvailableActions::getOpenActions($task, $user->role, $user->id);
+        } catch (RoleInvalid $exception) {
+            $actions = [];
+        }
+
         return $this->render('view', [
+            'actions' => $actions,
             'task' => $task,
             'ratings' => $ratings,
             'responseModel' => $responseModel,
+            'userId' => $user->id
         ]);
     }
 
