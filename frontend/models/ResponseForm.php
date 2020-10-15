@@ -15,7 +15,7 @@ class ResponseForm extends Model
     public function rules()
     {
         return [
-            [['price', 'comment', 'required']],
+            [['price', 'comment'], 'required'],
             ['price', 'integer', 'min' => 1, 'tooSmall' => 'Ваша цена не может быть меньше 1']
         ];
     }
