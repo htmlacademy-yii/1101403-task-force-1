@@ -18,7 +18,7 @@ class ReplyAction extends AbstractAction
      */
     public static function getInnerName()
     {
-        return 'reply';
+        return 'response';
     }
 
     /**

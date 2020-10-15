@@ -2,7 +2,6 @@
 
 namespace Htmlacademy\Logic;
 
-use Htmlacademy\Logic\PluralForms;
 
 /**
  * Класс считает, сколько времени прошло с момента создания какой-либо сущности и переводит это время в

@@ -1,12 +1,19 @@
 <?php
 
+use frontend\models\ResponseForm;
+use frontend\models\Users;
 use Htmlacademy\Logic\PluralForms;
 use Htmlacademy\Logic\TimeCounter;
+use Htmlacademy\MyExceptions\RoleInvalid;
 use yii\helpers\Url;
 use Htmlacademy\Logic\Actions\AvailableActions;
 
 /* @var $task frontend\models\Tasks */
 /* @var $ratings array */
+/* @var $responseModel ResponseForm */
+
+$this->params['responseModel'] = $responseModel;
+$this->params['taskId'] = $task->id;
 
 ?>
 <section class="content-view">
@@ -53,13 +60,27 @@ use Htmlacademy\Logic\Actions\AvailableActions;
             </div>
         </div>
         <div class="content-view__action-buttons">
-            <?php ?>
-            <button class="button button__big-color response-button open-modal"
-                        type="button" data-for="response-form">Откликнуться</button>
-            <button class="button button__big-color refusal-button open-modal"
-                        type="button" data-for="refuse-form">Отказаться</button>
-            <button class="button button__big-color request-button open-modal"
-                  type="button" data-for="complete-form">Завершить</button>
+            <?php
+            $user = Users::findOne(Yii::$app->user->getId());
+            try {
+                $actions = AvailableActions::getOpenActions($task, $user->role, $user->id);
+            } catch (RoleInvalid $exception) {
+                $actions = [];
+            }
+
+            foreach ($actions as $action):
+            ?>
+                <button class="button button__big-color <?php echo $action::getInnerName(); ?>-button open-modal" type="button" data-for="<?php echo $action::getInnerName(); ?>-form">
+                    <?php echo $action::getTitle(); ?></button>
+
+            <?php endforeach; ?>
+
+<!--            <button class="button button__big-color response-button open-modal"-->
+<!--                        type="button" data-for="response-form">Откликнуться</button>-->
+<!--            <button class="button button__big-color refusal-button open-modal"-->
+<!--                        type="button" data-for="refuse-form">Отказаться</button>-->
+<!--            <button class="button button__big-color request-button open-modal"-->
+<!--                  type="button" data-for="complete-form">Завершить</button>-->
         </div>
     </div>
         <?php
@@ -151,6 +172,8 @@ use Htmlacademy\Logic\Actions\AvailableActions;
             <a href="<?php echo Url::toRoute(['users/view', 'id' => $task->client->id]); ?>" class="link-regular">Смотреть профиль</a>
         </div>
     </div>
+    <div id="chat-container">
+<!--добавьте сюда атрибут task с указанием в нем id текущего задания-->
     <div class="connect-desk__chat">
         <h3>Переписка</h3>
         <div class="chat__overflow">
@@ -174,6 +197,7 @@ use Htmlacademy\Logic\Actions\AvailableActions;
             <textarea class="input textarea textarea-chat" rows="2" name="message-text" placeholder="Текст сообщения"></textarea>
             <button class="button chat__button" type="submit">Отправить</button>
         </form>
+    </div>
     </div>
 </section>
 

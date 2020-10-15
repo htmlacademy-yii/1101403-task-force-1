@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use frontend\models\Attachments;
 use frontend\models\Categories;
 use frontend\models\CreateTaskForm;
+use frontend\models\ResponseForm;
 use frontend\models\SearchTaskForm;
 use frontend\models\TaskReplies;
 use frontend\models\Users;
@@ -124,9 +125,25 @@ class TasksController extends ControllerClass
         $info = new ExecutivesInfo($executivesIds);
         $ratings = $info->getRating();
 
+        $responseModel = new ResponseForm();
+
+        if (Yii::$app->request->getIsPost()) {
+            $responseModel->load(Yii::$app->request->post());
+            if ($responseModel->validate()) {
+                $response = new TaskReplies();
+                $response->task_id = $id;
+                $response->executive_id = Yii::$app->user->getId();
+                $response->comment = $responseModel->comment;
+                $response->price = $responseModel->price;
+                $response->save();
+                return $this->redirect(['tasks/']);
+            }
+        }
+
         return $this->render('view', [
             'task' => $task,
-            'ratings' => $ratings
+            'ratings' => $ratings,
+            'responseModel' => $responseModel,
         ]);
     }
 

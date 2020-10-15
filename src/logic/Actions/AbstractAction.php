@@ -14,6 +14,7 @@ abstract class AbstractAction
      * @var string
      */
     protected $status;
+
     /**
      * @var int
      */
