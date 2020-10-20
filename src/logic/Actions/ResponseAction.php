@@ -1,7 +1,7 @@
 <?php
 namespace Htmlacademy\Logic\Actions;
 
-class AppointAction extends AbstractAction
+class ResponseAction extends AbstractAction
 {
     /**
      * Возвращает название класса
@@ -9,7 +9,7 @@ class AppointAction extends AbstractAction
      */
     public static function getTitle()
     {
-        return 'Назначить';
+        return 'Откликнуться';
     }
 
     /**
@@ -18,19 +18,19 @@ class AppointAction extends AbstractAction
      */
     public static function getInnerName()
     {
-        return 'appoint';
+        return 'response';
     }
 
     /**
      * Проверяет, разрешено ли действие
      *
      * @param int $userId
-     * @param int $clientId
+     * @param int $executiveId
      * @return bool
      */
-    public static function isPermitted(int $userId, int $clientId)
+    public static function isPermitted(int $userId, int $executiveId)
     {
-        if ($clientId === $userId) {
+        if ($executiveId === $userId) {
             return true;
         }
         return false;

@@ -10,11 +10,11 @@ class AvailableActions
     /**
      * Константы возможных действий
      */
-    const ACTION_REPLY = ReplyAction::class;
+    const ACTION_RESPONSE = ResponseAction::class;
     const ACTION_COMPLETE = CompleteAction::class;
     const ACTION_CANCEL = CancelAction::class;
     const ACTION_REFUSE = RefuseAction::class;
-    const ACTION_APPOINT = AppointAction::class;
+    const ACTION_SUBMIT = SubmitAction::class;
 
     /**
      * Константы возможных статусов
@@ -39,7 +39,7 @@ class AvailableActions
      */
     public static function getActions(): array
     {
-        return [self::ACTION_REPLY, self::ACTION_COMPLETE, self::ACTION_CANCEL, self::ACTION_REFUSE, self::ACTION_APPOINT];
+        return [self::ACTION_RESPONSE, self::ACTION_COMPLETE, self::ACTION_CANCEL, self::ACTION_REFUSE, self::ACTION_SUBMIT];
     }
 
     /**
@@ -79,8 +79,8 @@ class AvailableActions
             self::ACTION_COMPLETE => self::STATUS_COMPLETED,
             self::ACTION_CANCEL => self::STATUS_CANCELLED,
             self::ACTION_REFUSE => self::STATUS_FAILED,
-            self::ACTION_APPOINT => self::STATUS_IN_PROGRESS,
-            self::ACTION_REPLY => $task->status
+            self::ACTION_SUBMIT => self::STATUS_IN_PROGRESS,
+            self::ACTION_RESPONSE => $task->status
         ];
         $statusNew = null;
         if (array_key_exists($actionClassName, $connections)) {
@@ -116,7 +116,7 @@ class AvailableActions
         } elseif ($role === 'executive') {
             if ($task->status === self::STATUS_NEW) {
                 $openActions = [
-                    self::ACTION_REPLY
+                    self::ACTION_RESPONSE
                 ];
             } elseif ($task->status === self::STATUS_IN_PROGRESS && $userId === $task->executive_id) {
                 $openActions = [
