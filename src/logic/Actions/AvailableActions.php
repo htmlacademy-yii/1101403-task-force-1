@@ -1,9 +1,11 @@
 <?php
 namespace Htmlacademy\Logic\Actions;
 
+use frontend\models\TaskReplies;
 use frontend\models\Tasks;
 use Htmlacademy\MyExceptions\RoleInvalid;
 use Htmlacademy\MyExceptions\ActionInvalid;
+use Yii;
 
 class AvailableActions
 {
@@ -126,6 +128,20 @@ class AvailableActions
         }
 
         return $openActions;
+    }
+
+    /**
+     * @param Tasks $task
+     * @param TaskReplies $reply
+     * @return bool
+     */
+    public static function isHiddenSubmitForm(Tasks $task, TaskReplies $reply): bool
+    {
+        if ($task->client_id === Yii::$app->user->getId() && $reply->status === 'new' && $task->status === 'new') {
+            return true;
+        }
+        return false;
+
     }
 }
 

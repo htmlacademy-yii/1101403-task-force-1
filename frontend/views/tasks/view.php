@@ -1,6 +1,7 @@
 <?php
 
 use frontend\models\ResponseForm;
+use Htmlacademy\Logic\Actions\AvailableActions;
 use Htmlacademy\Logic\PluralForms;
 use Htmlacademy\Logic\TimeCounter;
 use yii\helpers\Html;
@@ -113,8 +114,7 @@ use yii\widgets\ActiveForm;
                                     <p><?php echo $reply->comment ?: ''; ?></p>
                                     <span><?php echo $reply->price ?: ''; ?> ₽</span>
                                 </div>
-                                <-- реализовать этот функционал в AvailableActions -->
-                                <?php if($task->client_id === $userId && $reply->status === 'new' && $task->status === 'new'): ?>
+                                <?php if(AvailableActions::isHiddenSubmitForm($task, $reply)): ?>
                                     <div class="feedback-card__actions">
                                         <a href="<?php echo Url::toRoute(['tasks/submit', 'executiveId' => $reply->executive_id, 'taskId' => $task->id]); ?>" class="button__small-color request-button button"
                                                 type="button">Подтвердить</a>
@@ -253,6 +253,19 @@ use yii\widgets\ActiveForm;
             type="button">Отмена</button>
     <button class="button__form-modal refusal-button button"
             type="button">Отказаться</button>
+    <button class="form-modal-close" type="button">Закрыть</button>
+</section>
+<!--блок далее необходимо переделать-->
+<section class="modal form-modal refusal-form" id="refuse-form">
+    <h2>Отмена</h2>
+    <p>
+        Вы собираетесь отменить задание.
+        Вы уверены?
+    </p>
+    <button class="button__form-modal button" id="close-modal"
+            type="button">Вернуться к заданию</button>
+    <button class="button__form-modal refusal-button button"
+            type="button">Отменить</button>
     <button class="form-modal-close" type="button">Закрыть</button>
 </section>
 <div class="overlay"></div>
