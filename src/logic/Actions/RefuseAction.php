@@ -1,6 +1,8 @@
 <?php
 namespace Htmlacademy\Logic\Actions;
 
+use frontend\models\Tasks;
+
 class RefuseAction extends AbstractAction
 {
     /**
@@ -25,12 +27,12 @@ class RefuseAction extends AbstractAction
      * Проверяет, разрешено ли действие
      *
      * @param int $userId
-     * @param $executiveId
+     * @param Tasks $task
      * @return bool
      */
-    public static function isPermitted(int $userId, int $executiveId)
+    public static function isPermitted(int $userId, Tasks $task): bool
     {
-        if ($executiveId === $userId) {
+        if ($task->executive_id === $userId) {
             return true;
         }
         return false;

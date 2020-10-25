@@ -1,8 +1,10 @@
 <?php
 namespace Htmlacademy\Logic\Actions;
 
+
 use frontend\models\TaskReplies;
 use frontend\models\Tasks;
+use frontend\models\Users;
 use Htmlacademy\MyExceptions\RoleInvalid;
 use Htmlacademy\MyExceptions\ActionInvalid;
 use Yii;
@@ -94,36 +96,22 @@ class AvailableActions
     /**
      *
      * @param Tasks $task - объект задачи
-     * @param string $role роль пользователя
-     * @param int $userId
+     * @param Users $user
      * @return array $openActions список из названий доступных классов действий
      * @throws RoleInvalid
      */
-    public static function getOpenActions(Tasks $task, string $role, int $userId): array
+    public static function getOpenActions(Tasks $task, Users $user): array
     {
+        $role = $user->role;
+        $userId = $user->id;
         if (!in_array($role, self::getRoles())) {
             throw new RoleInvalid();
         }
         $openActions = [];
-        if ($role === 'client' && $userId === $task->client_id) {
-            if ($task->status === self::STATUS_NEW) {
-                $openActions = [
-                    self::ACTION_CANCEL
-                ];
-            } elseif ($task->status === self::STATUS_IN_PROGRESS) {
-                $openActions = [
-                    self::ACTION_COMPLETE
-                ];
-            }
-        } elseif ($role === 'executive') {
-            if ($task->status === self::STATUS_NEW) {
-                $openActions = [
-                    self::ACTION_RESPONSE
-                ];
-            } elseif ($task->status === self::STATUS_IN_PROGRESS && $userId === $task->executive_id) {
-                $openActions = [
-                    self::ACTION_REFUSE
-                ];
+
+        foreach (self::getActions() as $action) {
+            if ($action::isPermitted($userId, $task)) {
+                $actions[] = $action;
             }
         }
 
