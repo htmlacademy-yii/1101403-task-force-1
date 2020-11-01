@@ -1,7 +1,6 @@
 <?php
 namespace Htmlacademy\Logic\Actions;
 
-use frontend\models\Tasks;
 
 class SubmitAction extends AbstractAction
 {
@@ -27,12 +26,13 @@ class SubmitAction extends AbstractAction
      * Проверяет, разрешено ли действие
      *
      * @param int $userId
-     * @param Tasks $task
+     * @param int $clientId
+     * @param int $executiveId
      * @return bool
      */
-    public static function isPermitted(int $userId, Tasks $task): bool
+    public static function isPermitted(int $userId, int $clientId, int $executiveId): bool
     {
-        if ($task->client_id === $userId) {
+        if ($clientId === $userId) {
             return true;
         }
         return false;

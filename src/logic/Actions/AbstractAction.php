@@ -1,7 +1,6 @@
 <?php
 namespace Htmlacademy\Logic\Actions;
 
-use frontend\models\Tasks;
 
 abstract class AbstractAction
 {
@@ -40,5 +39,5 @@ abstract class AbstractAction
 
     abstract public static function getInnerName();
 
-    abstract public static function isPermitted(int $userId, Tasks $task);
+    abstract public static function isPermitted(int $userId, int $clientId, int $executiveId);
 }

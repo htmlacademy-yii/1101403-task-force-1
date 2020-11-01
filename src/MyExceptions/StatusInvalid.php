@@ -1,5 +1,7 @@
 <?php
 namespace Htmlacademy\MyExceptions;
+
+
 use Throwable;
 
 class StatusInvalid extends \Exception

@@ -108,6 +108,7 @@ class TasksController extends ControllerClass
      * @param $id
      * @return string
      * @throws NotFoundHttpException
+     * @throws RoleInvalid
      */
     public function actionView($id)
     {
@@ -138,16 +139,12 @@ class TasksController extends ControllerClass
                 $response->comment = $responseModel->comment;
                 $response->price = $responseModel->price;
                 $response->save();
-                return $this->redirect(['tasks/']);
+                return $this->redirect(['tasks/view', ['id' => $id]]);
             }
         }
 
-        $user = Users::findOne(Yii::$app->user->getId());
-        try {
-            $actions = AvailableActions::getOpenActions($task, $user->role, $user->id);
-        } catch (RoleInvalid $exception) {
-            $actions = [];
-        }
+        $user = Yii::$app->user->identity;
+        $actions = AvailableActions::getOpenActions($task, $user);
 
         return $this->render('view', [
             'actions' => $actions,

@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\db\ActiveRecord;
 
 /**
@@ -23,15 +22,15 @@ use yii\db\ActiveRecord;
  * @property float|null $latitude
  * @property int|null $view_count
  *
- * @property Alert[] $alerts
- * @property Attachment[] $attachments
- * @property Message[] $messages
- * @property Review[] $reviews
- * @property TaskReply[] $taskReplies
- * @property User $client
- * @property User $executive
- * @property Category $cat
- * @property City $city
+ * @property Alerts[] $alerts
+ * @property Attachments[] $attachments
+ * @property Messages[] $messages
+ * @property Reviews[] $reviews
+ * @property TaskReplies[] $taskReplies
+ * @property Users $client
+ * @property Users $executive
+ * @property Categories $cat
+ * @property Cities $city
  */
 class Tasks extends ActiveRecord
 {

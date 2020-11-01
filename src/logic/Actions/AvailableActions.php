@@ -2,9 +2,7 @@
 namespace Htmlacademy\Logic\Actions;
 
 
-use frontend\models\TaskReplies;
-use frontend\models\Tasks;
-use frontend\models\Users;
+use Htmlacademy\MyExceptions\StatusInvalid;
 use Htmlacademy\MyExceptions\RoleInvalid;
 use Htmlacademy\MyExceptions\ActionInvalid;
 use Yii;
@@ -69,22 +67,25 @@ class AvailableActions
     /**
      * Возвращает статус, в который перейдет задача для указанного действия
      *
-     * @param Tasks $task - объект класса Task
+     * @param string $status - статус задания
      * @param string $actionClassName - название класса действия
      * @return string $statusNew
      * @throws ActionInvalid
+     * @throws StatusInvalid
      */
-    public static function ifAction(Tasks $task, string $actionClassName): string
+    public static function ifAction(string $status, string $actionClassName): string
     {
         if (!in_array($actionClassName, self::getActions())) {
             throw new ActionInvalid();
+        } elseif (!in_array($status, self::getStatuses())) {
+            throw new StatusInvalid();
         }
         $connections = [
             self::ACTION_COMPLETE => self::STATUS_COMPLETED,
             self::ACTION_CANCEL => self::STATUS_CANCELLED,
             self::ACTION_REFUSE => self::STATUS_FAILED,
             self::ACTION_SUBMIT => self::STATUS_IN_PROGRESS,
-            self::ACTION_RESPONSE => $task->status
+            self::ACTION_RESPONSE => $status
         ];
         $statusNew = null;
         if (array_key_exists($actionClassName, $connections)) {
@@ -95,22 +96,22 @@ class AvailableActions
 
     /**
      *
-     * @param Tasks $task - объект задачи
-     * @param Users $user
+     * @param string $role
+     * @param int $userId
+     * @param int $clientId
+     * @param int $executiveId
      * @return array $openActions список из названий доступных классов действий
      * @throws RoleInvalid
      */
-    public static function getOpenActions(Tasks $task, Users $user): array
+    public static function getOpenActions(string $role, int $userId, int $clientId, int $executiveId): array
     {
-        $role = $user->role;
-        $userId = $user->id;
         if (!in_array($role, self::getRoles())) {
             throw new RoleInvalid();
         }
-        $openActions = [];
 
+        $openActions = [];
         foreach (self::getActions() as $action) {
-            if ($action::isPermitted($userId, $task)) {
+            if ($action::isPermitted($userId, $clientId, $executiveId)) {
                 $actions[] = $action;
             }
         }
@@ -119,17 +120,17 @@ class AvailableActions
     }
 
     /**
-     * @param Tasks $task
-     * @param TaskReplies $reply
+     * @param int $clientId
+     * @param string $replyStatus
+     * @param string $taskStatus
      * @return bool
      */
-    public static function isHiddenSubmitForm(Tasks $task, TaskReplies $reply): bool
+    public static function isHiddenSubmitForm(int $clientId, string $replyStatus, string $taskStatus): bool
     {
-        if ($task->client_id === Yii::$app->user->getId() && $reply->status === 'new' && $task->status === 'new') {
+        if ($clientId === Yii::$app->user->getId() && $replyStatus === 'new' && $taskStatus === 'new') {
             return true;
         }
         return false;
-
     }
 }
 

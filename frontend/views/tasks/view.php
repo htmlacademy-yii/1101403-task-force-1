@@ -187,7 +187,7 @@ use yii\widgets\ActiveForm;
     <?php
     $responseForm = ActiveForm::begin([
         'method' => 'post',
-        'action' => Url::toRoute(['tasks/view/', 'id' => $taskId ?? false])
+        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id ?? false])
     ]);
     echo $responseForm->
         field($responseModel, 'price', [
