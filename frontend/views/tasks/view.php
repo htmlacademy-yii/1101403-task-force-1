@@ -85,7 +85,7 @@ use yii\widgets\ActiveForm;
                         <?php if($isAuthorOfReply or $isTaskAuthor): ?>
                             <div class="content-view__feedback-card">
                                 <div class="feedback-card__top">
-                                    <a href="<?php echo Url::toRoute(['users/view', 'id' => $reply->executive_id]); ?>"><img src="/img/man-glasses.jpg" width="55" height="55"></a>
+                                    <a href="<?php echo Url::toRoute(['users/view', 'id' => $reply->executive_id]); ?>"><img src="/img/man-glasses.jpg" width="55" height="55" alt="<?php echo $reply->executive->name ?: ''; ?>"></a>
                                     <div class="feedback-card__top--name">
                                         <p><a href="<?php echo Url::toRoute(['users/view', 'id' => $reply->executive_id]); ?>" class="link-regular"><?php echo $reply->executive->name ?: ''; ?></a></p>
                                         <?php
@@ -114,7 +114,7 @@ use yii\widgets\ActiveForm;
                                     <p><?php echo $reply->comment ?: ''; ?></p>
                                     <span><?php echo $reply->price ?: ''; ?> ₽</span>
                                 </div>
-                                <?php if(AvailableActions::isHiddenSubmitForm($task, $reply)): ?>
+                                <?php if(AvailableActions::isHiddenSubmitForm($task->client_id, $reply->status, $task->status)): ?>
                                     <div class="feedback-card__actions">
                                         <a href="<?php echo Url::toRoute(['tasks/submit', 'executiveId' => $reply->executive_id, 'taskId' => $task->id]); ?>" class="button__small-color request-button button"
                                                 type="button">Подтвердить</a>
@@ -187,7 +187,7 @@ use yii\widgets\ActiveForm;
     <?php
     $responseForm = ActiveForm::begin([
         'method' => 'post',
-        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id ?? false])
+        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id])
     ]);
     echo $responseForm->
         field($responseModel, 'price', [
@@ -218,6 +218,12 @@ use yii\widgets\ActiveForm;
 <section class="modal completion-form form-modal" id="complete-form">
     <h2>Завершение задания</h2>
     <p class="form-modal-description">Задание выполнено?</p>
+    <?php
+//    $completeForm = ActiveForm::begin([
+//        'method' => 'post',
+//        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id])
+//    ]);
+    ?>
     <form action="#" method="post">
         <input class="visually-hidden completion-input completion-input--yes" type="radio" id="completion-radio--yes" name="completion" value="yes">
         <label class="completion-label completion-label--yes" for="completion-radio--yes">Да</label>
@@ -229,13 +235,13 @@ use yii\widgets\ActiveForm;
         </p>
         <p class="form-modal-description">
             Оценка
-        <div class="feedback-card__top--name completion-form-star">
-            <span class="star-disabled"></span>
-            <span class="star-disabled"></span>
-            <span class="star-disabled"></span>
-            <span class="star-disabled"></span>
-            <span class="star-disabled"></span>
-        </div>
+            <div class="feedback-card__top--name completion-form-star">
+                <span class="star-disabled"></span>
+                <span class="star-disabled"></span>
+                <span class="star-disabled"></span>
+                <span class="star-disabled"></span>
+                <span class="star-disabled"></span>
+            </div>
         </p>
         <input type="hidden" name="rating" id="rating">
         <button class="button modal-button" type="submit">Отправить</button>
@@ -255,8 +261,7 @@ use yii\widgets\ActiveForm;
             type="button">Отказаться</button>
     <button class="form-modal-close" type="button">Закрыть</button>
 </section>
-<!--блок далее необходимо переделать-->
-<section class="modal form-modal refusal-form" id="refuse-form">
+<section class="modal form-modal cancel-form" id="cancel-form">
     <h2>Отмена</h2>
     <p>
         Вы собираетесь отменить задание.
@@ -264,7 +269,7 @@ use yii\widgets\ActiveForm;
     </p>
     <button class="button__form-modal button" id="close-modal"
             type="button">Вернуться к заданию</button>
-    <button class="button__form-modal refusal-button button"
+    <button class="button__form-modal cancel-button button"
             type="button">Отменить</button>
     <button class="form-modal-close" type="button">Закрыть</button>
 </section>
