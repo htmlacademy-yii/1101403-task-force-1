@@ -1,15 +1,14 @@
 <?php
-
-/* @var $this \yii\web\View */
+/* @var $this View */
 /* @var $content string */
 
 use frontend\models\Users;
 use yii\helpers\Html;
 use frontend\assets\AppAsset;
 use yii\helpers\Url;
+use yii\web\View;
 
 $user = Users::findOne(Yii::$app->user->getId());
-
 
 AppAsset::register($this);
 ?>
@@ -106,8 +105,8 @@ AppAsset::register($this);
                              alt="Аватар пользователя">
                     </a>
                     <span class="header__account-name">
-                     <?php echo $user->name; ?>
-                 </span>
+                        <?php echo $user->name; ?>
+                    </span>
                 </div>
                 <div class="account__pop-up">
                     <ul class="account__pop-up-list">

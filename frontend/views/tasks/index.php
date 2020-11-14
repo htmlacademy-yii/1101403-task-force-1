@@ -1,6 +1,6 @@
 <?php
 
-use Htmlacademy\logic\TimeCounter;
+use Htmlacademy\Logic\TimeCounter;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;

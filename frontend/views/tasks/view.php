@@ -1,11 +1,20 @@
 <?php
 
-use Htmlacademy\logic\PluralForms;
-use Htmlacademy\logic\TimeCounter;
+use frontend\models\CompleteTaskForm;
+use frontend\models\ResponseForm;
+use Htmlacademy\Logic\Actions\AvailableActions;
+use Htmlacademy\Logic\PluralForms;
+use Htmlacademy\Logic\TimeCounter;
+use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /* @var $task frontend\models\Tasks */
 /* @var $ratings array */
+/* @var $responseModel ResponseForm */
+/* @var $completeModel CompleteTaskForm */
+/* @var $actions array */
+/* @var $userId int */
 
 ?>
 <section class="content-view">
@@ -18,7 +27,7 @@ use yii\helpers\Url;
                         <a href="#" class="link-regular"><?php echo $task->category->title ?: ''; ?></a>
                         <?php
                         $counter = new TimeCounter($task->dt_create);
-                        echo $counter->countTimePassed();
+                        echo $counter->countTimePassed() . ' назад';
                         ?></span>
                 </div>
                 <b class="new-task__price <?php echo ('new-task__price--' . $task->category->icon) ?: '';?> content-view-price"><?php echo $task->budget ?: ''; ?><b> ₽</b></b>
@@ -28,11 +37,14 @@ use yii\helpers\Url;
                 <h3 class="content-view__h3">Общее описание</h3>
                 <p><?php echo $task->description ?: ''; ?></p>
             </div>
+            <?php if(!empty($task->attachments)): ?>
             <div class="content-view__attach">
                 <h3 class="content-view__h3">Вложения</h3>
-                <a href="#">my_picture.jpeg</a>
-                <a href="#">agreement.docx</a>
+                <?php foreach($task->attachments as $attachment): ?>
+                    <a href="<?php echo $attachment->image_path; ?>" download=""><?php echo $attachment->title; ?></a>
+                <?php endforeach; ?>
             </div>
+            <?php endif; ?>
             <div class="content-view__location">
                 <h3 class="content-view__h3">Расположение</h3>
                 <div class="content-view__location-wrapper">
@@ -49,60 +61,76 @@ use yii\helpers\Url;
             </div>
         </div>
         <div class="content-view__action-buttons">
-                <button class=" button button__big-color response-button open-modal"
-                        type="button" data-for="response-form">Откликнуться</button>
-                <button class="button button__big-color refusal-button open-modal"
-                        type="button" data-for="refuse-form">Отказаться</button>
-          <button class="button button__big-color request-button open-modal"
-                  type="button" data-for="complete-form">Завершить</button>
-        </div>
-    </div>
-    <div class="content-view__feedback">
-        <h2>Отклики <span><?php echo '(' . count($task->taskReplies) . ')'; ?></span></h2>
-        <div class="content-view__feedback-wrapper">
-            <?php foreach ($task->taskReplies as $reply): ?>
-                <div class="content-view__feedback-card">
-                    <div class="feedback-card__top">
-                        <a href="<?php echo Url::toRoute(['users/view', 'id' => $reply->executive_id]); ?>"><img src="/img/man-glasses.jpg" width="55" height="55"></a>
-                        <div class="feedback-card__top--name">
-                            <p><a href="<?php echo Url::toRoute(['users/view', 'id' => $reply->executive_id]); ?>" class="link-regular"><?php echo $reply->executive->name ?: ''; ?></a></p>
-                            <?php
-                            $stars = intval(ceil($ratings[$reply->executive->id] ?: 0));
-                            if ($stars > 0) {
-                                for ($i = 0; $i < $stars; $i++) {
-                                    echo '<span></span>';
-                                }
-                            }
-                            $rest = 5 - $stars;
-                            if ($rest > 0) {
-                                for ($i = 0; $i < $rest; $i++) {
-                                    echo '<span class="star-disabled"></span>';
-                                }
-                            }
-                            ?>
-                           <b><?php echo $ratings[$reply->executive->id] ?: 0; ?></b>
-                        </div>
-                        <span class="new-task__time">
-                            <?php
-                            $counter = new TimeCounter($reply->dt_create);
-                            echo $counter->countTimePassed() ?: '';
-                            ?></span>
-                    </div>
-                    <div class="feedback-card__content">
-                        <p><?php echo $reply->comment ?: ''; ?></p>
-                        <span><?php echo $reply->price ?: ''; ?> ₽</span>
-                    </div>
-                    <div class="feedback-card__actions">
-                        <a class="button__small-color request-button button"
-                                type="button">Подтвердить</a>
-                        <a class="button__small-color refusal-button button"
-                                type="button">Отказать</a>
-                    </div>
-                </div>
+            <?php foreach ($actions as $action): ?>
+                <button class="button button__big-color <?php echo $action::getInnerName(); ?>-button open-modal" type="button" data-for="<?php echo $action::getInnerName(); ?>-form">
+                    <?php echo $action::getTitle(); ?></button>
             <?php endforeach; ?>
-
         </div>
     </div>
+        <?php
+        $isAuthorOfReply = false;
+        $isTaskAuthor = false;
+        foreach($task->taskReplies as $reply) {
+            if ($reply->executive_id === $userId) {
+                $isAuthorOfReply = true;
+            }
+        }
+        if ($task->client_id === $userId) {
+            $isTaskAuthor = true;
+        }
+        ?>
+        <?php if(count($task->taskReplies) > 0 && ($isTaskAuthor or $isAuthorOfReply)): ?>
+            <div class="content-view__feedback">
+                <h2>Отклики <span><?php echo '(' . count($task->taskReplies) . ')'; ?></span></h2>
+                <div class="content-view__feedback-wrapper">
+                    <?php foreach ($task->taskReplies as $reply): ?>
+                        <?php if($isAuthorOfReply or $isTaskAuthor): ?>
+                            <div class="content-view__feedback-card">
+                                <div class="feedback-card__top">
+                                    <a href="<?php echo Url::toRoute(['users/view', 'id' => $reply->executive_id]); ?>"><img src="/img/man-glasses.jpg" width="55" height="55" alt="<?php echo $reply->executive->name ?: ''; ?>"></a>
+                                    <div class="feedback-card__top--name">
+                                        <p><a href="<?php echo Url::toRoute(['users/view', 'id' => $reply->executive_id]); ?>" class="link-regular"><?php echo $reply->executive->name ?: ''; ?></a></p>
+                                        <?php
+                                        $stars = intval(ceil($ratings[$reply->executive->id] ?: 0));
+                                        if ($stars > 0) {
+                                            for ($i = 0; $i < $stars; $i++) {
+                                                echo '<span></span>';
+                                            }
+                                        }
+                                        $rest = 5 - $stars;
+                                        if ($rest > 0) {
+                                            for ($i = 0; $i < $rest; $i++) {
+                                                echo '<span class="star-disabled"></span>';
+                                            }
+                                        }
+                                        ?>
+                                       <b><?php echo $ratings[$reply->executive->id] ?: 0; ?></b>
+                                    </div>
+                                    <span class="new-task__time">
+                                        <?php
+                                        $counter = new TimeCounter($reply->dt_create);
+                                        echo $counter->countTimePassed() ?: '';
+                                        ?></span>
+                                </div>
+                                <div class="feedback-card__content">
+                                    <p><?php echo $reply->comment ?: ''; ?></p>
+                                    <span><?php echo $reply->price ?: ''; ?> ₽</span>
+                                </div>
+                                <?php if(AvailableActions::isHiddenSubmitForm($task->client_id, $reply->status, $task->status)): ?>
+                                    <div class="feedback-card__actions">
+                                        <a href="<?php echo Url::toRoute(['tasks/submit', 'executiveId' => $reply->executive_id, 'taskId' => $task->id]); ?>" class="button__small-color request-button button"
+                                                type="button">Подтвердить</a>
+                                        <a href="<?php echo Url::toRoute(['tasks/reject', 'replyId' => $reply->id, 'taskId' => $task->id]); ?>" class="button__small-color refusal-button button"
+                                                type="button">Отказать</a>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+
+                </div>
+            </div>
+        <?php endif; ?>
 </section>
 <section class="connect-desk">
     <div class="connect-desk__profile-mini">
@@ -128,6 +156,8 @@ use yii\helpers\Url;
             <a href="<?php echo Url::toRoute(['users/view', 'id' => $task->client->id]); ?>" class="link-regular">Смотреть профиль</a>
         </div>
     </div>
+    <div id="chat-container">
+<!--добавьте сюда атрибут task с указанием в нем id текущего задания-->
     <div class="connect-desk__chat">
         <h3>Переписка</h3>
         <div class="chat__overflow">
@@ -152,5 +182,150 @@ use yii\helpers\Url;
             <button class="button chat__button" type="submit">Отправить</button>
         </form>
     </div>
+    </div>
 </section>
+
+<section class="modal response-form form-modal" id="response-form">
+    <h2>Отклик на задание</h2>
+    <?php
+    $responseForm = ActiveForm::begin([
+        'method' => 'post',
+        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id, 'form' => 'response'])
+    ]);
+    echo $responseForm->
+        field($responseModel, 'price', [
+            'labelOptions' => ['class' => 'form-modal-description'],
+            'options' => ['tag' => 'p']
+        ])
+        ->input('text', [
+            'class' => 'response-form-payment input input-middle input-money'
+        ]);
+    echo $responseForm->
+        field($responseModel, 'comment', [
+            'labelOptions' => ['class' => 'form-modal-description'],
+            'options' => ['tag' => 'p']
+        ])
+        ->textarea([
+            'class' => 'input textarea',
+            'rows' => 4,
+            'placeholder' => 'Напишите, почему стоит выбрать именно Вас'
+        ]);
+    echo Html::submitButton('Отправить', [
+        'class' => 'button modal-button',
+        'type' => 'submit'
+    ]);
+    ActiveForm::end();
+    ?>
+    <button class="form-modal-close" type="button">Закрыть</button>
+</section>
+
+<section class="modal completion-form form-modal" id="complete-form">
+    <h2>Завершение задания</h2>
+    <p class="form-modal-description">Задание выполнено?</p>
+    <?php
+    $completeForm = ActiveForm::begin([
+        'method' => 'post',
+        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id, 'form' => 'complete'])
+    ]);
+    echo $completeForm->
+        field($completeModel, 'chosenCompletion', [
+            'options' => ['tag' => false],
+            'template' => "{input}",
+        ])
+        ->radioList($completeModel->completion, [
+            'tag' => false,
+            'unselect' => null,
+            'item' => function ($index, $label, $name, $checked, $value) {
+                $inputClass = 'visually-hidden completion-input completion-input--' . $value;
+                $labelClass = 'completion-label completion-label--' . $value;
+                $id = 'completion-radio--' . $value;
+                return "<input class=\"$inputClass\" type=\"radio\" id=\"$id\" name=\"CompleteTaskForm[chosenCompletion]\" value=$value><label class=\"$labelClass\" for=$id>$label</label>";
+            },
+        ]);
+    echo $completeForm->
+        field($completeModel, 'comment', [
+            'labelOptions' => ['class' => 'form-modal-description'],
+            'options' => ['tag' => 'p']
+        ])
+        ->textarea([
+            'class' => 'input textarea',
+            'rows' => 4,
+            'placeholder' => 'Текст комментария'
+        ]);
+    ?>
+    <p class="form-modal-description">
+        Оценка
+        <div class="feedback-card__top--name completion-form-star">
+            <span class="star-disabled"></span>
+            <span class="star-disabled"></span>
+            <span class="star-disabled"></span>
+            <span class="star-disabled"></span>
+            <span class="star-disabled"></span>
+        </div>
+    </p>
+    <?php
+        echo $completeForm->
+        field($completeModel, 'rating', [
+            'template' => "{input}",
+            'options' => ['tag' => false]
+        ])
+        ->hiddenInput();
+        echo Html::submitButton('Отправить', [
+            'class' => 'button modal-button',
+            'type' => 'submit'
+        ]);
+        ActiveForm::end();
+    ?>
+    <button class="form-modal-close" type="button">Закрыть</button>
+</section>
+
+<section class="modal form-modal refusal-form" id="refuse-form">
+    <h2>Отказ от задания</h2>
+    <p>
+        Вы собираетесь отказаться от выполнения задания.
+        Это действие приведёт к снижению вашего рейтинга.
+        Вы уверены?
+    </p>
+    <?php
+    ActiveForm::begin([
+        'method' => 'post',
+        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id, 'form' => 'refuse'])
+    ]);
+    ?>
+    <button class="button__form-modal button" id="close-modal"
+            type="button">Отмена</button>
+    <?php
+    echo Html::submitButton('Отказаться', [
+        'class' => 'button__form-modal refusal-button button',
+        'type' => 'submit'
+    ]);
+    ActiveForm::end();
+    ?>
+    <button class="form-modal-close" type="button">Закрыть</button>
+</section>
+
+<section class="modal form-modal cancel-form" id="cancel-form">
+    <h2>Отмена</h2>
+    <p>
+        Вы собираетесь отменить задание.
+        Вы уверены?
+    </p>
+    <?php
+    ActiveForm::begin([
+        'method' => 'post',
+        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id, 'form' => 'cancel'])
+    ]);
+    ?>
+    <button class="button__form-modal button" id="close-modal"
+            type="button">Вернуться к заданию</button>
+    <?php
+    echo Html::submitButton('Отменить', [
+        'class' => 'button__form-modal cancel-button button',
+        'type' => 'submit'
+    ]);
+    ActiveForm::end();
+    ?>
+    <button class="form-modal-close" type="button">Закрыть</button>
+</section>
+<div class="overlay"></div>
 

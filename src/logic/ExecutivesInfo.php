@@ -1,12 +1,12 @@
 <?php
 
-namespace Htmlacademy\logic;
+namespace Htmlacademy\Logic;
 
 use yii\db\Query;
 
 /**
  * Class ExecutivesInfo рассчитывает рейтинг, количество заданий, отзывов
- * @package Htmlacademy\logic
+ * @package Htmlacademy\Logic
  */
 class ExecutivesInfo
 {

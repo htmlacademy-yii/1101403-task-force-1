@@ -809,6 +809,9 @@ footer {
 .refusal-button {
   background-color: #ff3d71; }
 
+.cancel-button {
+  background-color: #ff7733; }
+
 .connection-button {
   background-color: #00e096; }
 
@@ -841,7 +844,7 @@ footer {
   top: 6px;
   left: 7px; }
 
-.feedback-card__actions .refusal-button::before {
+.feedback-card__actions .refusal-button::before .cancel-button::before{
   position: absolute;
   content: "";
   width: 19px;
@@ -2439,6 +2442,18 @@ footer {
     font-size: 18px;
     color: #ffffff;
     margin-bottom: 20px; }
+
+.cancel-form {
+  width: 460px;
+  margin-left: -260px;
+  display: none; }
+.cancel-form p {
+  background-color: #ff7675;
+  padding: 20px;
+  padding-right: 10px;
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 20px; }
 
 .response-form-payment {
   width: 166px;

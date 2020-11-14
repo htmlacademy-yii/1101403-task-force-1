@@ -4,7 +4,7 @@ namespace frontend\controllers;
 use frontend\models\Categories;
 use frontend\models\SearchUsersForm;
 use frontend\models\Users;
-use Htmlacademy\logic\ExecutivesInfo;
+use Htmlacademy\Logic\ExecutivesInfo;
 use Yii;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;

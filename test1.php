@@ -1,5 +1,5 @@
 <?php
-use \Htmlacademy\Logic\AvailableActions;
+use \Htmlacademy\Logic\Actions\AvailableActions;
 use \Htmlacademy\MyExceptions\StatusInvalid;
 use \Htmlacademy\MyExceptions\RoleInvalid;
 use \Htmlacademy\MyExceptions\ActionInvalid;
@@ -22,16 +22,16 @@ echo 'Метод getStatuses: ';
 var_dump($action->getStatuses());
 
 
-assert($action->getOpenActions($task,'executive',54) === [Logic\RefuseAction::class]);
+assert($action->getOpenActions($task,'executive',54) === [Logic\Actions\RefuseAction::class]);
 assert($action->getOpenActions($task,'executive',58) === []);
-assert($action->getOpenActions($task,'client', 78) === [Logic\CompleteAction::class]);
+assert($action->getOpenActions($task,'client', 78) === [Logic\Actions\CompleteAction::class]);
 assert($action->getOpenActions($task,'client', 54) === []);
 
-assert($action->ifAction($task, Logic\ReplyAction::class) === $task->getStatus());
-assert($action->ifAction($task, Logic\CompleteAction::class) === 'completed');
-assert($action->ifAction($task, Logic\CancelAction::class) === 'cancelled');
-assert($action->ifAction($task, Logic\RefuseAction::class) === 'failed');
-assert($action->ifAction($task, Logic\AppointAction::class) === 'in progress');
+assert($action->ifAction($task, Logic\Actions\ReplyAction::class) === $task->getStatus());
+assert($action->ifAction($task, Logic\Actions\CompleteAction::class) === 'completed');
+assert($action->ifAction($task, Logic\Actions\CancelAction::class) === 'cancelled');
+assert($action->ifAction($task, Logic\Actions\RefuseAction::class) === 'failed');
+assert($action->ifAction($task, Logic\ACtions\SubmitAction::class) === 'in progress');
 
 try {
     $task2 = new Task(55, 68, 'at home', '31-12-2019');

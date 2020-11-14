@@ -1,5 +1,6 @@
 <?php
-namespace Htmlacademy\Logic;
+namespace Htmlacademy\Logic\Actions;
+
 
 abstract class AbstractAction
 {
@@ -15,6 +16,11 @@ abstract class AbstractAction
      */
     protected $status;
 
+    /**
+     * @var int
+     */
+    protected $userId;
+
 
     /**
      * Конструктор класса AbstractAction.
@@ -22,16 +28,16 @@ abstract class AbstractAction
      * @param $status string
      * @param $userId int
      */
-    function __construct($role, $status, $userId)
+    public function __construct(string $role, string $status, int $userId)
     {
         $this->role = $role;
         $this->status = $status;
         $this->userId = $userId;
     }
 
-    abstract static function getTitle();
+    abstract public static function getTitle();
 
-    abstract static function getInnerName();
+    abstract public static function getInnerName();
 
-    abstract static function isPermitted($userId, $roleId);
+    abstract public static function isPermitted(int $userId, int $clientId, int $executiveId);
 }

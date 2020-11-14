@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Htmlacademy\logic;
+namespace Htmlacademy\Logic;
 
 /**
  * Class AgeCounter считает возраст юзера
- * @package Htmlacademy\logic
+ * @package Htmlacademy\Logic
  */
 class AgeCounter
 {

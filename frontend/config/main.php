@@ -45,6 +45,8 @@ return [
                 '/' => 'landing/login',
                 'users/logout' => 'users/logout',
                 'tasks/create' => 'tasks/create',
+                'tasks/reject/<replyId>/<taskId>' => 'tasks/reject',
+                'tasks/submit/<executiveId>/<taskId>' => 'tasks/submit',
                 '<controller:(users|tasks|signup)>/' => '<controller>/index',
                 '<controller:(users|tasks)>/view/<id:\d+>' => '<controller>/view',
             ],

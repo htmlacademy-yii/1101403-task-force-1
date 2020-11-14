@@ -1,7 +1,7 @@
 <?php
-use Htmlacademy\logic\AgeCounter;
-use Htmlacademy\logic\PluralForms;
-use Htmlacademy\logic\TimeCounter;
+use Htmlacademy\Logic\AgeCounter;
+use Htmlacademy\Logic\PluralForms;
+use Htmlacademy\Logic\TimeCounter;
 use yii\helpers\Url;
 
 /* @var $user frontend\Models\Users */
@@ -16,12 +16,14 @@ use yii\helpers\Url;
             <div class="content-view__headline">
                 <h1><?php echo $user->name ?: ''; ?></h1>
                 <p>
-                    Россия,
+                    Россия
                     <?php
-                    $counter = new AgeCounter($user->dt_birth);
-                    $age = $counter->countAge() ?: '';
-                    echo $user->city->title . ', ';
-                    echo $age . ' ' . PluralForms::pluralNouns($age, 'год', 'года','лет');
+                    if ($user->dt_birth) {
+                        $counter = new AgeCounter($user->dt_birth);
+                        $age = $counter->countAge() ?: '';
+                        echo $user->city->title . ', ';
+                        echo ', '. $age . ' ' . PluralForms::pluralNouns($age, 'год', 'года','лет');
+                    }
                     ?>
                 </p>
                 <?php if ($user->role === 'executive'): ?>

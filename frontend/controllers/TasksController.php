@@ -4,15 +4,22 @@ namespace frontend\controllers;
 
 use frontend\models\Attachments;
 use frontend\models\Categories;
+use frontend\models\CompleteTaskForm;
 use frontend\models\CreateTaskForm;
+use frontend\models\ResponseForm;
+use frontend\models\Reviews;
 use frontend\models\SearchTaskForm;
+use frontend\models\TaskReplies;
 use frontend\models\Users;
-use Htmlacademy\logic\ExecutivesInfo;
+use Htmlacademy\Logic\Actions\AvailableActions;
+use Htmlacademy\Logic\ExecutivesInfo;
+use Htmlacademy\MyExceptions\RoleInvalid;
 use Yii;
 use yii\base\Exception;
 use yii\data\Pagination;
 use frontend\models\Tasks;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 class TasksController extends ControllerClass
@@ -100,15 +107,16 @@ class TasksController extends ControllerClass
     }
 
     /**
-     * @param $id
+     * @param int $id
+     * @param string $form
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($id)
+    public function actionView(int $id, string $form = '')
     {
         $task = Tasks::find()
             ->where(['id' => $id])
-            ->with(['category','city', 'client', 'taskReplies'])
+            ->with(['category','city', 'client', 'taskReplies', 'attachments'])
             ->one();
 
         if (!$task) {
@@ -122,9 +130,62 @@ class TasksController extends ControllerClass
         $info = new ExecutivesInfo($executivesIds);
         $ratings = $info->getRating();
 
+        $responseModel = new ResponseForm();
+        $completeModel = new CompleteTaskForm();
+
+        if (Yii::$app->request->getIsPost() && $form) {
+            switch ($form) {
+                case 'response':
+                    $responseModel->load(Yii::$app->request->post());
+                    if ($responseModel->validate()) {
+                        $response = new TaskReplies();
+                        $response->task_id = $id;
+                        $response->executive_id = Yii::$app->user->getId();
+                        $response->comment = $responseModel->comment;
+                        $response->price = $responseModel->price;
+                        $response->save();
+                        return $this->redirect(['tasks/view', 'id' => $id]);
+                    }
+                    break;
+                case 'complete':
+                    $completeModel->load(Yii::$app->request->post());
+                    var_dump($completeModel);
+                    if ($completeModel->validate()) {
+                        echo 'тут2';
+                        $review = new Reviews();
+                        $review->client_id = Yii::$app->user->getId();
+                        $review->executive_id = $task->executive_id;
+                        $review->task_id = $task->id;
+                        $review->comment = $completeModel->comment;
+                        $review->rate = $completeModel->rating;
+                        $review->save();
+                        $task->status = ($completeModel->chosenCompletion === 'yes') ? 'completed' : 'failed';
+                        $task->save();
+                        //TODO поменять редирект на страницу пользователя, когда она будет сделана
+                        return $this->redirect(['tasks/']);
+                    }
+                    break;
+                case 'refuse':
+                    $task->status = 'failed';
+                    $task->save();
+                    return $this->redirect(['tasks/']);
+                case 'cancel':
+                    $task->status = 'cancelled';
+                    $task->save();
+                    return $this->redirect(['tasks/']);
+            }
+        }
+
+        $user = Yii::$app->user->identity;
+        $actions = AvailableActions::getOpenActions($user->id, $task->client_id, $task->executive_id ?? 0);
+        
         return $this->render('view', [
+            'actions' => $actions,
             'task' => $task,
-            'ratings' => $ratings
+            'ratings' => $ratings,
+            'responseModel' => $responseModel,
+            'completeModel' => $completeModel,
+            'userId' => $user->id
         ]);
     }
 
@@ -174,13 +235,14 @@ class TasksController extends ControllerClass
         if (isset($model->attachments[0])) {
             $model->attachments = UploadedFile::getInstances($model, 'attachments');
             foreach ($model->attachments as $file) {
-                $filePath = __DIR__ . '\..\web\uploads\\' . uniqid() . '.' . $file->extension;
+                $filePath = 'uploads/' . uniqid() . '.' . $file->extension;
                 if ($file->saveAs($filePath)) {
                     $attachment = new Attachments();
                     $attachment->user_id = Yii::$app->user->getId();
                     $attachment->task_id = $task->id;
                     $attachment->attach_type = 'task';
-                    $attachment->image_path = $filePath;
+                    $attachment->image_path = '/' . $filePath;
+                    $attachment->title = $file->baseName . '.' . $file->extension;
                     $attachment->save();
                 } else {
                     throw new Exception('Не удалось загрузить файл(ы)');
@@ -192,4 +254,39 @@ class TasksController extends ControllerClass
         return $this->redirect(['/tasks']);
     }
 
+    /**
+     * @param int $replyId
+     * @param int $taskId
+     * @return Response
+     */
+    public function actionReject(int $replyId, int $taskId)
+    {
+        $reply = TaskReplies::find()
+            ->where(['id' => $replyId])
+            ->one();
+        $reply->status = 'rejected';
+        $reply->save();
+
+        return $this->redirect(['/tasks/view/', 'id' => $taskId]);
+    }
+
+    /**
+     * @param int $executiveId
+     * @param int $taskId
+     * @return Response
+     */
+    public function actionSubmit(int $executiveId, int $taskId)
+    {
+        $task = Tasks::find()
+            ->where(['id' => $taskId])
+            ->one();
+        $task->executive_id = $executiveId;
+        $task->status = 'in progress';
+        $task->save();
+
+        return $this->redirect(['/tasks/view/', 'id' => $taskId]);
+    }
+
 }
+
+

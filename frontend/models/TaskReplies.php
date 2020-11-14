@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "task_replies".
@@ -13,12 +14,13 @@ use Yii;
  * @property string|null $comment
  * @property int $price
  * @property string $dt_create
+ * @property string $status
  *
- * @property Alert[] $alerts
- * @property User $executive
- * @property Task $task
+ * @property Alerts[] $alerts
+ * @property Users $executive
+ * @property Tasks $task
  */
-class TaskReplies extends \yii\db\ActiveRecord
+class TaskReplies extends ActiveRecord
 {
     /**
      * {@inheritdoc}

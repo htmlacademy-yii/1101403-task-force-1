@@ -1,33 +1,36 @@
 <?php
-namespace Htmlacademy\Logic;
+namespace Htmlacademy\Logic\Actions;
 
-class AppointAction extends AbstractAction
+
+class CompleteAction extends AbstractAction
 {
     /**
      * Возвращает название класса
      * @return string
      */
-    static function getTitle()
+    public static function getTitle()
     {
-        return 'Назначить';
+        return 'Завершить';
     }
 
     /**
      * Возвращает внутреннее имя класса
      * @return string
      */
-    static function getInnerName()
+    public static function getInnerName()
     {
-        return 'appoint';
+        return 'complete';
     }
 
     /**
      * Проверяет, разрешено ли действие
      *
+     * @param int $userId
      * @param int $clientId
+     * @param int $executiveId
      * @return bool
      */
-    static function isPermitted($userId, $clientId)
+    public static function isPermitted(int $userId, int $clientId, int $executiveId): bool
     {
         if ($clientId === $userId) {
             return true;
