@@ -16,7 +16,7 @@ class AvailableActions
     const ACTION_COMPLETE = CompleteAction::class;
     const ACTION_CANCEL = CancelAction::class;
     const ACTION_REFUSE = RefuseAction::class;
-    const ACTION_SUBMIT = SubmitAction::class;
+//    const ACTION_SUBMIT = SubmitAction::class;
 
     /**
      * Константы возможных статусов
@@ -41,7 +41,7 @@ class AvailableActions
      */
     public static function getActions(): array
     {
-        return [self::ACTION_RESPONSE, self::ACTION_COMPLETE, self::ACTION_CANCEL, self::ACTION_REFUSE, self::ACTION_SUBMIT];
+        return [self::ACTION_RESPONSE, self::ACTION_COMPLETE, self::ACTION_CANCEL, self::ACTION_REFUSE];
     }
 
     /**
@@ -84,7 +84,7 @@ class AvailableActions
             self::ACTION_COMPLETE => self::STATUS_COMPLETED,
             self::ACTION_CANCEL => self::STATUS_CANCELLED,
             self::ACTION_REFUSE => self::STATUS_FAILED,
-            self::ACTION_SUBMIT => self::STATUS_IN_PROGRESS,
+//            self::ACTION_SUBMIT => self::STATUS_IN_PROGRESS,
             self::ACTION_RESPONSE => $status
         ];
         $statusNew = null;
@@ -96,23 +96,17 @@ class AvailableActions
 
     /**
      *
-     * @param string $role
-     * @param int $userId
-     * @param int $clientId
-     * @param int $executiveId
+     * @param int $userId id юзера
+     * @param int $clientId id заказчика
+     * @param int $executiveId id исполнителя
      * @return array $openActions список из названий доступных классов действий
-     * @throws RoleInvalid
      */
-    public static function getOpenActions(string $role, int $userId, int $clientId, int $executiveId): array
+    public static function getOpenActions(int $userId, int $clientId, int $executiveId): array
     {
-        if (!in_array($role, self::getRoles())) {
-            throw new RoleInvalid();
-        }
-
         $openActions = [];
         foreach (self::getActions() as $action) {
             if ($action::isPermitted($userId, $clientId, $executiveId)) {
-                $actions[] = $action;
+                $openActions[] = $action;
             }
         }
 
