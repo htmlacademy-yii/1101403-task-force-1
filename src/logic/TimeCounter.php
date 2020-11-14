@@ -10,7 +10,7 @@ namespace Htmlacademy\Logic;
 class TimeCounter
 {
     /**
-     * @var - время формата '2020-02-11 21:05:22' в прошлом, когда было создано задание/аккаунт или др. сущность
+     * @var - время формата unixtime в прошлом, когда было создано задание/аккаунт или др. сущность
      */
     protected $dtCreate;
 
@@ -21,12 +21,13 @@ class TimeCounter
 
     /**
      * TimeCounter constructor.
+     * 10800 секунд - это GMT+03:00
      * @param $dtCreate
      */
     public function __construct($dtCreate)
     {
-        $this->dtCreate = $dtCreate;
-        $this->timeDiff = time() - strtotime($this->dtCreate);
+        $this->dtCreate = strtotime($dtCreate);
+        $this->timeDiff = time() - $this->dtCreate + 10800;
     }
 
     /**
@@ -46,5 +47,6 @@ class TimeCounter
             return floor($timeInMinutes) . ' ' . PluralForms::pluralNouns($timeInMinutes, 'минута','минуты','минут');
         }
     }
+
 
 }
