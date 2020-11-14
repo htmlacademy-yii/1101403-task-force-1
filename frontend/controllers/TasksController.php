@@ -4,8 +4,10 @@ namespace frontend\controllers;
 
 use frontend\models\Attachments;
 use frontend\models\Categories;
+use frontend\models\CompleteTaskForm;
 use frontend\models\CreateTaskForm;
 use frontend\models\ResponseForm;
+use frontend\models\Reviews;
 use frontend\models\SearchTaskForm;
 use frontend\models\TaskReplies;
 use frontend\models\Users;
@@ -105,12 +107,12 @@ class TasksController extends ControllerClass
     }
 
     /**
-     * @param $id
+     * @param int $id
+     * @param string $form
      * @return string
      * @throws NotFoundHttpException
-     * @throws RoleInvalid
      */
-    public function actionView($id)
+    public function actionView(int $id, string $form = '')
     {
         $task = Tasks::find()
             ->where(['id' => $id])
@@ -129,28 +131,60 @@ class TasksController extends ControllerClass
         $ratings = $info->getRating();
 
         $responseModel = new ResponseForm();
+        $completeModel = new CompleteTaskForm();
 
-        if (Yii::$app->request->getIsPost()) {
-            $responseModel->load(Yii::$app->request->post());
-            if ($responseModel->validate()) {
-                $response = new TaskReplies();
-                $response->task_id = $id;
-                $response->executive_id = Yii::$app->user->getId();
-                $response->comment = $responseModel->comment;
-                $response->price = $responseModel->price;
-                $response->save();
-                return $this->redirect(['tasks/view', ['id' => $id]]);
+        if (Yii::$app->request->getIsPost() && $form) {
+            switch ($form) {
+                case 'response':
+                    $responseModel->load(Yii::$app->request->post());
+                    if ($responseModel->validate()) {
+                        $response = new TaskReplies();
+                        $response->task_id = $id;
+                        $response->executive_id = Yii::$app->user->getId();
+                        $response->comment = $responseModel->comment;
+                        $response->price = $responseModel->price;
+                        $response->save();
+                        return $this->redirect(['tasks/view', 'id' => $id]);
+                    }
+                    break;
+                case 'complete':
+                    $completeModel->load(Yii::$app->request->post());
+                    var_dump($completeModel);
+                    if ($completeModel->validate()) {
+                        echo 'тут2';
+                        $review = new Reviews();
+                        $review->client_id = Yii::$app->user->getId();
+                        $review->executive_id = $task->executive_id;
+                        $review->task_id = $task->id;
+                        $review->comment = $completeModel->comment;
+                        $review->rate = $completeModel->rating;
+                        $review->save();
+                        $task->status = ($completeModel->chosenCompletion === 'yes') ? 'completed' : 'failed';
+                        $task->save();
+                        //TODO поменять редирект на страницу пользователя, когда она будет сделана
+                        return $this->redirect(['tasks/']);
+                    }
+                    break;
+                case 'refuse':
+                    $task->status = 'failed';
+                    $task->save();
+                    return $this->redirect(['tasks/']);
+                case 'cancel':
+                    $task->status = 'cancelled';
+                    $task->save();
+                    return $this->redirect(['tasks/']);
             }
         }
 
         $user = Yii::$app->user->identity;
-        $actions = AvailableActions::getOpenActions($task, $user);
-
+        $actions = AvailableActions::getOpenActions($user->id, $task->client_id, $task->executive_id ?? 0);
+        
         return $this->render('view', [
             'actions' => $actions,
             'task' => $task,
             'ratings' => $ratings,
             'responseModel' => $responseModel,
+            'completeModel' => $completeModel,
             'userId' => $user->id
         ]);
     }
@@ -254,3 +288,5 @@ class TasksController extends ControllerClass
     }
 
 }
+
+

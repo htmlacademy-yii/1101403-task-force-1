@@ -1,5 +1,6 @@
 <?php
 
+use frontend\models\CompleteTaskForm;
 use frontend\models\ResponseForm;
 use Htmlacademy\Logic\Actions\AvailableActions;
 use Htmlacademy\Logic\PluralForms;
@@ -11,6 +12,7 @@ use yii\widgets\ActiveForm;
 /* @var $task frontend\models\Tasks */
 /* @var $ratings array */
 /* @var $responseModel ResponseForm */
+/* @var $completeModel CompleteTaskForm */
 /* @var $actions array */
 /* @var $userId int */
 
@@ -182,12 +184,13 @@ use yii\widgets\ActiveForm;
     </div>
     </div>
 </section>
+
 <section class="modal response-form form-modal" id="response-form">
     <h2>Отклик на задание</h2>
     <?php
     $responseForm = ActiveForm::begin([
         'method' => 'post',
-        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id])
+        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id, 'form' => 'response'])
     ]);
     echo $responseForm->
         field($responseModel, 'price', [
@@ -215,39 +218,67 @@ use yii\widgets\ActiveForm;
     ?>
     <button class="form-modal-close" type="button">Закрыть</button>
 </section>
+
 <section class="modal completion-form form-modal" id="complete-form">
     <h2>Завершение задания</h2>
     <p class="form-modal-description">Задание выполнено?</p>
     <?php
-//    $completeForm = ActiveForm::begin([
-//        'method' => 'post',
-//        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id])
-//    ]);
+    $completeForm = ActiveForm::begin([
+        'method' => 'post',
+        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id, 'form' => 'complete'])
+    ]);
+    echo $completeForm->
+        field($completeModel, 'chosenCompletion', [
+            'options' => ['tag' => false],
+            'template' => "{input}",
+        ])
+        ->radioList($completeModel->completion, [
+            'tag' => false,
+            'unselect' => null,
+            'item' => function ($index, $label, $name, $checked, $value) {
+                $inputClass = 'visually-hidden completion-input completion-input--' . $value;
+                $labelClass = 'completion-label completion-label--' . $value;
+                $id = 'completion-radio--' . $value;
+                return "<input class=\"$inputClass\" type=\"radio\" id=\"$id\" name=\"CompleteTaskForm[chosenCompletion]\" value=$value><label class=\"$labelClass\" for=$id>$label</label>";
+            },
+        ]);
+    echo $completeForm->
+        field($completeModel, 'comment', [
+            'labelOptions' => ['class' => 'form-modal-description'],
+            'options' => ['tag' => 'p']
+        ])
+        ->textarea([
+            'class' => 'input textarea',
+            'rows' => 4,
+            'placeholder' => 'Текст комментария'
+        ]);
     ?>
-    <form action="#" method="post">
-        <input class="visually-hidden completion-input completion-input--yes" type="radio" id="completion-radio--yes" name="completion" value="yes">
-        <label class="completion-label completion-label--yes" for="completion-radio--yes">Да</label>
-        <input class="visually-hidden completion-input completion-input--difficult" type="radio" id="completion-radio--yet" name="completion" value="difficulties">
-        <label  class="completion-label completion-label--difficult" for="completion-radio--yet">Возникли проблемы</label>
-        <p>
-            <label class="form-modal-description" for="completion-comment">Комментарий</label>
-            <textarea class="input textarea" rows="4" id="completion-comment" name="completion-comment" placeholder="Текст комментария"></textarea>
-        </p>
-        <p class="form-modal-description">
-            Оценка
-            <div class="feedback-card__top--name completion-form-star">
-                <span class="star-disabled"></span>
-                <span class="star-disabled"></span>
-                <span class="star-disabled"></span>
-                <span class="star-disabled"></span>
-                <span class="star-disabled"></span>
-            </div>
-        </p>
-        <input type="hidden" name="rating" id="rating">
-        <button class="button modal-button" type="submit">Отправить</button>
-    </form>
+    <p class="form-modal-description">
+        Оценка
+        <div class="feedback-card__top--name completion-form-star">
+            <span class="star-disabled"></span>
+            <span class="star-disabled"></span>
+            <span class="star-disabled"></span>
+            <span class="star-disabled"></span>
+            <span class="star-disabled"></span>
+        </div>
+    </p>
+    <?php
+        echo $completeForm->
+        field($completeModel, 'rating', [
+            'template' => "{input}",
+            'options' => ['tag' => false]
+        ])
+        ->hiddenInput();
+        echo Html::submitButton('Отправить', [
+            'class' => 'button modal-button',
+            'type' => 'submit'
+        ]);
+        ActiveForm::end();
+    ?>
     <button class="form-modal-close" type="button">Закрыть</button>
 </section>
+
 <section class="modal form-modal refusal-form" id="refuse-form">
     <h2>Отказ от задания</h2>
     <p>
@@ -255,22 +286,45 @@ use yii\widgets\ActiveForm;
         Это действие приведёт к снижению вашего рейтинга.
         Вы уверены?
     </p>
+    <?php
+    ActiveForm::begin([
+        'method' => 'post',
+        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id, 'form' => 'refuse'])
+    ]);
+    ?>
     <button class="button__form-modal button" id="close-modal"
             type="button">Отмена</button>
-    <button class="button__form-modal refusal-button button"
-            type="button">Отказаться</button>
+    <?php
+    echo Html::submitButton('Отказаться', [
+        'class' => 'button__form-modal refusal-button button',
+        'type' => 'submit'
+    ]);
+    ActiveForm::end();
+    ?>
     <button class="form-modal-close" type="button">Закрыть</button>
 </section>
+
 <section class="modal form-modal cancel-form" id="cancel-form">
     <h2>Отмена</h2>
     <p>
         Вы собираетесь отменить задание.
         Вы уверены?
     </p>
+    <?php
+    ActiveForm::begin([
+        'method' => 'post',
+        'action' => Url::toRoute(['tasks/view/', 'id' => $task->id, 'form' => 'cancel'])
+    ]);
+    ?>
     <button class="button__form-modal button" id="close-modal"
             type="button">Вернуться к заданию</button>
-    <button class="button__form-modal cancel-button button"
-            type="button">Отменить</button>
+    <?php
+    echo Html::submitButton('Отменить', [
+        'class' => 'button__form-modal cancel-button button',
+        'type' => 'submit'
+    ]);
+    ActiveForm::end();
+    ?>
     <button class="form-modal-close" type="button">Закрыть</button>
 </section>
 <div class="overlay"></div>

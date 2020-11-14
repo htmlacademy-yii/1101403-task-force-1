@@ -16,7 +16,7 @@ class ResponseForm extends Model
     {
         return [
             [['price', 'comment'], 'required'],
-            ['price', 'integer', 'min' => 1, 'tooSmall' => 'Ваша цена не может быть меньше 1']
+            ['price', 'integer', 'min' => 1, 'tooSmall' => 'Ваша цена не может быть меньше 1'],
         ];
     }
 

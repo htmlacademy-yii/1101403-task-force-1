@@ -52,7 +52,7 @@ if (starRating.length) {
       }
     }
 
-    var inputField = document.getElementById("rating");
+    var inputField = document.getElementById("completetaskform-rating");
     inputField.value = rating;
   });
 }
